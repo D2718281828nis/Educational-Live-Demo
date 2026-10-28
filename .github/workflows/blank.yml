@@ -1,0 +1,128 @@
+name: GitHub Pages Audit
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * 1"
+
+permissions:
+  contents: read
+  issues: write
+  projects: write
+
+jobs:
+  audit-pages:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Detect GitHub Pages repos for the account
+        id: audit
+        uses: actions/github-script@v7
+        env:
+          USERNAME: D2718281828nis
+        with:
+          script: |
+            const username = process.env.USERNAME;
+            const repos = await github.paginate(github.rest.repos.listForUser, {
+              username,
+              type: 'owner',
+              per_page: 100
+            });
+
+            const pages = repos
+              .filter(repo => repo.has_pages || /\.github\.io$/i.test(repo.name))
+              .map(repo => ({
+                full_name: repo.full_name,
+                name: repo.name,
+                description: repo.description || 'No description',
+                url: repo.html_url,
+                site: /\.github\.io$/i.test(repo.name)
+                  ? `https://${repo.name}/`
+                  : `https://${username}.github.io/${repo.name}/`,
+                default_branch: repo.default_branch,
+                language: repo.language || 'Unknown',
+                updated_at: repo.updated_at
+              }));
+
+            const lines = [
+              "## GitHub Pages Audit",
+              "",
+              `Scanned account: ${username}`,
+              "",
+              "| Repo | Site | Default branch | Language | Updated |",
+              "| --- | --- | --- | --- | --- |"
+            ];
+
+            for (const item of pages) {
+              lines.push(`| ${item.full_name} | ${item.site} | ${item.default_branch} | ${item.language} | ${item.updated_at} |`);
+            }
+
+            if (pages.length === 0) {
+              lines.push("| none | none | none | none | none |");
+            }
+
+            const body = lines.join("\n");
+            core.setOutput("audit_body", body);
+            core.setOutput("count", String(pages.length));
+
+      - name: Resolve project
+        id: project
+        uses: actions/github-script@v7
+        env:
+          USERNAME: D2718281828nis
+          PROJECT_NUMBER: 5
+        with:
+          script: |
+            const username = process.env.USERNAME;
+            const projectNumber = Number(process.env.PROJECT_NUMBER);
+
+            const result = await github.graphql(`
+              query($login: String!, $number: Int!) {
+                user(login: $login) {
+                  projectV2(number: $number) {
+                    id
+                    title
+                  }
+                }
+              }
+            `, { login: username, number: projectNumber });
+
+            const project = result.user?.projectV2;
+            if (!project) {
+              core.setFailed(`Project #${projectNumber} not found for ${username}`);
+              return;
+            }
+
+            core.setOutput("project_id", project.id);
+            core.setOutput("project_title", project.title);
+
+      - name: Create an issue and add it to project
+        uses: actions/github-script@v7
+        env:
+          PROJECT_ID: ${{ steps.project.outputs.project_id }}
+          BODY: ${{ steps.audit.outputs.audit_body }}
+        with:
+          script: |
+            const projectId = process.env.PROJECT_ID;
+            const body = process.env.BODY;
+
+            const issue = await github.rest.issues.create({
+              owner: 'D2718281828nis',
+              repo: 'TAUforPython.github.io',
+              title: 'GitHub Pages audit',
+              body
+            });
+
+            const addResult = await github.graphql(`
+              mutation($projectId: ID!, $contentId: ID!) {
+                addProjectV2ItemById(input: { projectId: $projectId, contentId: $contentId }) {
+                  item {
+                    id
+                  }
+                }
+              }
+            `, {
+              projectId,
+              contentId: issue.node_id
+            });
+
+            core.info(`Added issue #${issue.number} to project item ${addResult.addProjectV2ItemById.item.id}`);
