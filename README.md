@@ -112,4 +112,4 @@ All data are synthetic. The labs illustrate the method and are not intended for 
 
 ---
 
-MIT License · © 2026 Denis A. Andrikov
+MIT License · © 2026 Denis A. Andrikov · ORCID [0000-0003-0359-0897](https://orcid.org/0000-0003-0359-0897)
