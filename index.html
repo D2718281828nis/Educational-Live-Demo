@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="en" data-lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interactive Labs · Graph-EVT</title>
+<meta name="description" content="Bilingual (EN/RU) hub of the interactive labs that accompany the dissertation “Methods and tools for studying extreme events of complex systems based on graph neural networks”: the when–where method, propagation of a synthetic event over a graph, the Kuramoto explorer and reservoir computing.">
+<link rel="stylesheet" href="css/site.css">
+<script>
+  // Language and theme before first paint: ?lang= > saved choice > browser language.
+  (function () {
+    var lang = null, theme = null;
+    try { lang = new URLSearchParams(location.search).get("lang"); } catch (e) {}
+    try { lang = lang || localStorage.getItem("eld-lang"); theme = localStorage.getItem("eld-theme"); } catch (e) {}
+    if (lang !== "ru" && lang !== "en") lang = (navigator.language || "").toLowerCase().indexOf("ru") === 0 ? "ru" : "en";
+    document.documentElement.setAttribute("data-lang", lang);
+    document.documentElement.setAttribute("lang", lang);
+    if (theme === "light" || theme === "dark") document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+</head>
+<body>
+
+<nav class="topbar" aria-label="Sections">
+  <a class="brand" href="#top"><span lang="en">Interactive Labs</span><span lang="ru">Интерактивные лаборатории</span></a>
+  <div class="toc">
+    <a href="#s1"><b>1</b><span lang="en">Dissertation</span><span lang="ru">Диссертация</span></a>
+    <a href="#s2"><b>2</b><span lang="en">When — where</span><span lang="ru">Когда — где</span></a>
+    <a href="#s3"><b>3</b><span lang="en">Labs</span><span lang="ru">Лаборатории</span></a>
+    <a href="#s4"><b>4</b><span lang="en">Role in the thesis</span><span lang="ru">Место в диссертации</span></a>
+    <a href="#s5"><b>5</b><span lang="en">Repositories</span><span lang="ru">Репозитории</span></a>
+  </div>
+  <div class="nav-tools">
+    <div class="seg small" role="group" aria-label="Language / Язык">
+      <button type="button" data-set-lang="en">EN</button><button type="button" data-set-lang="ru">RU</button>
+    </div>
+    <button type="button" class="icon-btn" id="theme-toggle" aria-label="Theme / Тема"><span aria-hidden="true">◐</span></button>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <p class="eyebrow"><span lang="en">Dissertation companion · Graph-EVT</span><span lang="ru">Сопровождение диссертации · Graph-EVT</span></p>
+  <h1>
+    <span lang="en">Interactive labs: when an extreme event happened and where it started</span>
+    <span lang="ru">Интерактивные лаборатории: когда произошло экстремальное событие и где оно началось</span>
+  </h1>
+  <p class="lede" lang="en">
+    This page gathers the browser-based labs that accompany the dissertation. They show the
+    <strong>“when — where”</strong> method on synthetic data: extreme value theory finds <em>when</em>
+    an observation became extreme, a dependence graph describes how the event can spread, and a graph
+    model ranks the nodes by the probability of being <em>where</em> it started. Every lab runs in the
+    browser, needs no installation and works in English and Russian.
+  </p>
+  <p class="lede" lang="ru">
+    Здесь собраны браузерные лаборатории, сопровождающие диссертацию. Они показывают метод
+    <strong>«когда — где»</strong> на синтетических данных: теория экстремальных значений находит,
+    <em>когда</em> наблюдение стало экстремальным, граф зависимостей описывает, как событие может
+    распространяться, а графовая модель ранжирует узлы по вероятности быть тем местом, <em>где</em> оно
+    началось. Все лаборатории работают в браузере, не требуют установки и доступны на русском и английском.
+  </p>
+
+  <div class="thesis-card">
+    <div>
+      <div class="title">
+        <span lang="en">Methods and tools for studying extreme events of complex systems based on graph neural networks
+          <span class="orig">Методы и средства исследования экстремальных событий сложных систем на основе графовых нейронных сетей</span></span>
+        <span lang="ru">Методы и средства исследования экстремальных событий сложных систем на основе графовых нейронных сетей</span>
+      </div>
+      <dl>
+        <dt><span lang="en">Author</span><span lang="ru">Автор</span></dt>
+        <dd><span lang="en">Denis A. Andrikov</span><span lang="ru">Андриков Денис Анатольевич</span></dd>
+        <dt><span lang="en">Degree</span><span lang="ru">Степень</span></dt>
+        <dd><span lang="en">Doctor of Sciences (doctoral dissertation)</span><span lang="ru">диссертация на соискание учёной степени доктора наук</span></dd>
+        <dt><span lang="en">Specialty</span><span lang="ru">Специальность</span></dt>
+        <dd><span lang="en">2.3.5 — Mathematical and software support of computing systems, complexes and computer networks</span>
+          <span lang="ru">2.3.5 — «Математическое и программное обеспечение вычислительных систем, комплексов и компьютерных сетей»</span></dd>
+        <dt><span lang="en">This repository</span><span lang="ru">Этот репозиторий</span></dt>
+        <dd><span lang="en">artifact No. 5 “Interactive labs”, type <b>direct</b></span><span lang="ru">артефакт № 5 «Интерактивные лаборатории», тип <b>прямой</b></span></dd>
+      </dl>
+    </div>
+    <div class="cta">
+      <a class="btn primary" href="#s3"><span lang="en">Open the labs ↓</span><span lang="ru">К лабораториям ↓</span></a>
+      <a class="btn" href="#s2"><span lang="en">Try the propagation demo</span><span lang="ru">Демо распространения</span></a>
+      <a class="btn" href="https://ai-is-out-there.github.io/#library"><span lang="en">Catalog of all labs ↗</span><span lang="ru">Каталог лабораторий ↗</span></a>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ============================================================== 1 DISSERTATION -->
+<section id="s1">
+  <header class="sec-head">
+    <span class="num">1</span>
+    <div>
+      <h2><span lang="en">The dissertation in brief</span><span lang="ru">Диссертация кратко</span></h2>
+      <p lang="en">Methods for extreme (rare critical) states of complex systems usually solve separate, unconnected tasks:
+        detect the moment for one modality, build a graph for one architecture, train a graph neural network without
+        a formal guard against data leakage, merge modalities by hand. The dissertation addresses the absence of a
+        <strong>single methodology for analysing extreme states of complex systems on graph representations</strong> —
+        verifiable, transferable between modalities and formally justified.</p>
+      <p lang="ru">Существующие методы анализа экстремальных (редких критических) состояний сложных систем решают частные,
+        методологически не связанные задачи: детекцию момента под одну модальность, построение графа под одну архитектуру,
+        обучение графовой нейронной сети без формализованной защиты от утечки данных, ручную интеграцию модальностей.
+        Научная проблема диссертации — <strong>отсутствие единой методологии анализа экстремальных состояний сложных систем
+        на графовых представлениях</strong>, верифицируемой, переносимой между модальностями и формально обоснованной.</p>
+    </div>
+  </header>
+
+  <div class="grid-4">
+    <article class="card">
+      <span class="tag"><span lang="en">Thesis 1 · shown in the labs</span><span lang="ru">Положение 1 · показано в лабораториях</span></span>
+      <h3><span lang="en">The “when — where” method</span><span lang="ru">Метод «когда — где»</span></h3>
+      <p lang="en">The moment is estimated without labels by an EVT threshold (POT/GPD) learned on the background only; the source
+        is a probability distribution over graph nodes. Source identifiability is proved, and localization accuracy is
+        measured on a synthetic benchmark with a known source before any real system.</p>
+      <p lang="ru">Момент оценивается без разметки по порогу теории экстремальных значений (POT/GPD), обученному только на фоне;
+        источник — распределением вероятностей по узлам графа. Условие идентифицируемости источника доказано, а точность
+        локализации измеряется на синтетическом эталоне с известным источником до применения к реальной системе.</p>
+    </article>
+    <article class="card">
+      <span class="tag"><span lang="en">Thesis 2</span><span lang="ru">Положение 2</span></span>
+      <h3><span lang="en">One graph-building framework</span><span lang="ru">Единый каркас построения графов</span></h3>
+      <p lang="en">The edge-forming method and the distance metric are parameters of a common interface, not modality-specific code:
+        the same functions build structural, functional and kNN graphs as alternative, testable hypotheses.</p>
+      <p lang="ru">Метод формирования рёбер и метрика расстояния — параметры общего интерфейса, а не код под модальность:
+        одни функции строят структурный, функциональный и kNN-граф как альтернативные проверяемые гипотезы.</p>
+    </article>
+    <article class="card">
+      <span class="tag"><span lang="en">Thesis 3</span><span lang="ru">Положение 3</span></span>
+      <h3><span lang="en">Sample-independence protocol</span><span lang="ru">Протокол независимости выборок</span></h3>
+      <p lang="en">When a GNN is trained, the unit of independence is a physically connected group of nodes (electrode shaft, engine,
+        market sector). Splitting nodes without grouping is proved to overstate quality.</p>
+      <p lang="ru">При обучении графовой нейронной сети единица независимости — физически связанная группа узлов (электродный ствол,
+        двигатель, сектор рынка). Доказано, что разбиение узлов без группировки завышает качество.</p>
+    </article>
+    <article class="card">
+      <span class="tag"><span lang="en">Thesis 4</span><span lang="ru">Положение 4</span></span>
+      <h3><span lang="en">Cross-modal object model</span><span lang="ru">Кросс-модальная объектная модель</span></h3>
+      <p lang="en">Time series and images are integrated into a three-layer (structural, functional, dynamic) model of the source;
+        estimates of different layers are kept side by side with their agreement matrix instead of being merged.</p>
+      <p lang="ru">Временной ряд и изображение интегрируются в трёхслойную (структурную, функциональную, динамическую) модель
+        источника; оценки слоёв не сводятся к одной, а сохраняются вместе с матрицей их согласия.</p>
+    </article>
+  </div>
+
+  <div class="systems" aria-label="Systems">
+    <span class="pill"><span lang="en">Tested by one code base on three complex systems:</span><span lang="ru">Проверено единым кодом на трёх сложных системах:</span></span>
+    <span class="pill">🧠 <span lang="en">human brain — stereo-EEG</span><span lang="ru">головной мозг — стерео-ЭЭГ</span></span>
+    <span class="pill">✈️ <span lang="en">aircraft engine — NASA C-MAPSS</span><span lang="ru">авиационный двигатель — NASA C-MAPSS</span></span>
+    <span class="pill">📈 <span lang="en">stock market — S&amp;P 500</span><span lang="ru">фондовый рынок — S&amp;P 500</span></span>
+  </div>
+</section>
+
+<!-- ============================================================== 2 WHEN-WHERE -->
+<section id="s2">
+  <header class="sec-head">
+    <span class="num">2</span>
+    <div>
+      <h2><span lang="en">When — where: an event spreading over a graph</span><span lang="ru">Когда — где: событие распространяется по графу</span></h2>
+      <p lang="en">An event starts at moment <i>t</i>* in element <i>s</i>* and spreads through the system. Two answers are needed and
+        checked independently: the moment <span class="hat">t</span> (“when”) and a probability distribution of the source (“where”).</p>
+      <p lang="ru">В момент <i>t</i>* в элементе <i>s</i>* зарождается событие и распространяется по системе. Нужны два ответа,
+        проверяемые независимо: момент <span class="hat">t</span> («когда») и распределение вероятностей источника («где»).</p>
+    </div>
+  </header>
+
+  <div class="eq-grid">
+    <div class="eq-block">
+      <span class="lbl"><span lang="en">when</span><span lang="ru">когда</span></span>
+      z<sub>t,j</sub> = |X<sub>t,j</sub> − m<sub>j</sub>| / max(<span lang="en">1.4826</span><span lang="ru">1,4826</span>·MAD<sub>j</sub>, ε), &nbsp;
+      I<sub>t</sub> = (1/k) Σ<sub>j∈T<sub>k</sub>(t)</sub> z<sub>t,j</sub>
+    </div>
+    <div class="eq-block">
+      <span class="lbl"><span lang="en">where</span><span lang="ru">где</span></span>
+      ŝ = arg max<sub>j</sub> P(y = j | F, E), &nbsp; P<sub>j</sub> = e<sup>ℓ<sub>j</sub></sup> / Σ<sub>k</sub> e<sup>ℓ<sub>k</sub></sup>
+    </div>
+  </div>
+  <p lang="en" class="lede" style="font-size:15px">The alarm <span class="hat">t</span> is the start of the first run of <i>r</i> exceedances of a POT/GPD threshold
+    fitted on the background. The graph <i>G</i> = (<i>V</i>, <i>E</i>) is a testable hypothesis of propagation paths, not a causal claim.
+    With a single channel (<i>p</i> = 1) the source is not identifiable, so “where” becomes “in which time window”.</p>
+  <p lang="ru" class="lede" style="font-size:15px">Тревога <span class="hat">t</span> — начало первой серии из <i>r</i> превышений порога POT/GPD, обученного по фону.
+    Граф <i>G</i> = (<i>V</i>, <i>E</i>) — проверяемая гипотеза о путях распространения, а не утверждение о причинности.
+    При одном канале (<i>p</i> = 1) источник не идентифицируем, и вопрос «где» переходит в вопрос «в каком окне времени».</p>
+
+  <div class="widget">
+    <div class="card">
+      <h3><span lang="en">Ring of 12 channels</span><span lang="ru">Кольцо из 12 каналов</span></h3>
+      <svg id="ring" viewBox="0 0 320 320" role="img" aria-labelledby="ring-desc">
+        <desc id="ring-desc">Twelve channels on a ring; the pulse starts in channel 00 and reaches the others with a delay of 5 samples per ring step.</desc>
+      </svg>
+      <div class="controls">
+        <button type="button" class="btn small" id="play"><span lang="en">▶ Play</span><span lang="ru">▶ Пуск</span></button>
+        <input type="range" id="t-slider" min="900" max="1060" step="1" value="949" aria-label="t">
+      </div>
+      <div class="readout" id="readout" aria-live="polite"></div>
+      <div class="jumps">
+        <button type="button" class="btn small" data-jump="932">t* = 932</button>
+        <button type="button" class="btn small" data-jump="949"><span lang="en">alarm r = 1</span><span lang="ru">тревога r = 1</span></button>
+        <button type="button" class="btn small" data-jump="959"><span lang="en">alarm r = 2</span><span lang="ru">тревога r = 2</span></button>
+      </div>
+    </div>
+    <div class="card">
+      <h3><span lang="en">Pulse envelope by ring distance from the source</span><span lang="ru">Огибающая импульса по расстоянию от источника на кольце</span></h3>
+      <div class="legend" id="env-legend"></div>
+      <div class="chart-wrap">
+        <svg id="env-chart" viewBox="0 0 640 300" role="img" aria-label="Envelope chart"></svg>
+        <div class="tooltip" id="env-tip" hidden></div>
+      </div>
+      <p class="lang-note"><span lang="en">Hover the chart to read all seven curves; click to move the time cursor.</span>
+        <span lang="ru">Наведите курсор, чтобы прочитать все семь кривых; щелчок переносит курсор времени.</span></p>
+      <details class="table-view">
+        <summary><span lang="en">Table view</span><span lang="ru">Таблица</span></summary>
+        <div class="table-scroll"><table id="env-table"></table></div>
+      </details>
+    </div>
+  </div>
+
+  <div class="callout">
+    <span lang="en">This demo draws the <b>ground truth</b> of the synthetic benchmark of § 7.1.2 exactly as it is constructed: the pulse is
+      injected into <code>channel_00</code> at sample 932, lasts 75 samples and reaches the other channels along the ring with a delay of
+      5 samples and an attenuation of 0.65 per ring step. Only the sin² envelope is drawn; the real pulse is a fragment of Hurst-coloured
+      noise (<i>H</i> = 0.75) scaled to 2σ on top of coupled Kuramoto oscillators — explore the actual signal in the Kuramoto explorer.
+      The two alarm moments are results reported in the dissertation.</span>
+    <span lang="ru">Демо рисует <b>эталон</b> синтетического примера § 7.1.2 ровно так, как он построен: импульс впрыснут в <code>channel_00</code>
+      с 932-го отсчёта, длится 75 отсчётов и приходит в остальные каналы по кольцу с задержкой 5 отсчётов и ослаблением в 0,65 раза на каждый
+      шаг кольца. Показана только огибающая sin²; сам импульс — фрагмент шума с показателем Хёрста <i>H</i> = 0,75, масштабированный до 2σ
+      поверх связанных осцилляторов Курамото, — его можно исследовать в обозревателе Курамото. Два момента тревоги — результаты,
+      приведённые в диссертации.</span>
+  </div>
+
+  <div class="facts">
+    <div class="fact"><div class="v">949 <small>(+17)</small></div>
+      <div class="k"><span lang="en">EVT alarm with r = 1, inside the event window 932–1036</span><span lang="ru">тревога EVT при r = 1, внутри окна события 932–1036</span></div></div>
+    <div class="fact"><div class="v"><span lang="en">0.47</span><span lang="ru">0,47</span></div>
+      <div class="k"><span lang="en">probability of the true source <code>channel_00</code>, ranked first; second is ring neighbour <code>channel_11</code></span>
+        <span lang="ru">вероятность истинного источника <code>channel_00</code> — первое место; второе — сосед по кольцу <code>channel_11</code></span></div></div>
+    <div class="fact"><div class="v">959 <small>(+27)</small></div>
+      <div class="k"><span lang="en">alarm with r = 2: the pulse has already reached the neighbours and <code>channel_01</code> is named the source</span>
+        <span lang="ru">тревога при r = 2: импульс уже дошёл до соседей, источником назван <code>channel_01</code></span></div></div>
+    <div class="fact"><div class="v"><span lang="en">7.5 %</span><span lang="ru">7,5 %</span></div>
+      <div class="k"><span lang="en">amplitude reaching the farthest channel <code>channel_06</code>, 30 samples after the source</span>
+        <span lang="ru">амплитуда, доходящая до самого удалённого канала <code>channel_06</code> через 30 отсчётов</span></div></div>
+  </div>
+  <p class="lang-note" style="margin-top:10px"><span lang="en">Lesson: the persistence rule <i>r</i> barely changes “when” but decides “where” — the longer the
+    alarm waits for confirmation, the further the front spreads.</span>
+    <span lang="ru">Вывод: правило устойчивости <i>r</i> почти не меняет ответ «когда», но определяет ответ «где» — чем дольше тревога ждёт подтверждения,
+    тем дальше успевает уйти фронт.</span></p>
+</section>
+
+<!-- ============================================================== 3 LABS -->
+<section id="s3">
+  <header class="sec-head">
+    <span class="num">3</span>
+    <div>
+      <h2><span lang="en">The labs</span><span lang="ru">Лаборатории</span></h2>
+      <p lang="en">Each lab is a static page on GitHub Pages: open it, move the sliders, every number is recomputed in the browser.</p>
+      <p lang="ru">Каждая лаборатория — статическая страница на GitHub Pages: откройте, двигайте слайдеры — все числа пересчитываются в браузере.</p>
+    </div>
+  </header>
+
+  <div class="grid-3">
+    <article class="card lab">
+      <div class="shot" aria-hidden="true">
+        <svg viewBox="0 0 300 116" preserveAspectRatio="none">
+          <line x1="0" y1="44" x2="300" y2="44" style="stroke:var(--series-2);stroke-width:1.5;stroke-dasharray:4 4"/>
+          <polyline fill="none" style="stroke:var(--series-1);stroke-width:2" points="0,86 15,80 30,88 45,78 60,84 75,90 90,79 105,85 120,82 135,88 150,80 165,84 180,72 190,40 200,22 210,48 222,30 235,62 250,76 265,84 280,80 300,86"/>
+          <line x1="188" y1="10" x2="188" y2="106" style="stroke:var(--ink-2);stroke-width:1"/>
+        </svg>
+      </div>
+      <span class="tag"><span lang="en">EN · RU</span><span lang="ru">RU · EN</span></span>
+      <h3><span lang="en">Graph-EVT: interactive guide</span><span lang="ru">Graph-EVT: интерактивное руководство</span></h3>
+      <ul lang="en">
+        <li>additive signal: periodic + noise + Hurst-coloured burst</li>
+        <li>1-D vs n-D: what a graph node is in each case</li>
+        <li>POT/GPD alarm, source ranking, GNN vs GAT</li>
+        <li>the Graph-EVT agent pipeline and orchestration</li>
+      </ul>
+      <ul lang="ru">
+        <li>аддитивный сигнал: периодика + шум + всплеск по Хёрсту</li>
+        <li>1-D и n-D: что такое узел графа в каждом случае</li>
+        <li>тревога POT/GPD, ранжирование источника, GNN и GAT</li>
+        <li>конвейер агента Graph-EVT и оркестрация</li>
+      </ul>
+      <div class="meta"><b><span lang="en">In the dissertation:</span><span lang="ru">В диссертации:</span></b> § 7.1.2, § 2.1, § 2.10; <span lang="en">Thesis 1</span><span lang="ru">Положение 1</span></div>
+      <div class="links">
+        <a class="btn primary small" lang="en" href="https://d2718281828nis.github.io/EVT-educational-demo/index?lang=en">Open lab ↗</a>
+        <a class="btn primary small" lang="ru" href="https://d2718281828nis.github.io/EVT-educational-demo/index?lang=ru">Открыть ↗</a>
+        <a class="btn small" href="https://github.com/D2718281828nis/EVT-educational-demo"><span lang="en">Source</span><span lang="ru">Код</span></a>
+      </div>
+    </article>
+
+    <article class="card lab">
+      <div class="shot" aria-hidden="true">
+        <svg viewBox="0 0 300 116">
+          <circle cx="150" cy="58" r="40" fill="none" style="stroke:var(--axis);stroke-width:2"/>
+          <g id="kura-dots"></g>
+        </svg>
+      </div>
+      <span class="tag"><span lang="en">EN interface</span><span lang="ru">интерфейс на английском</span></span>
+      <h3><span lang="en">Kuramoto propagation explorer</span><span lang="ru">Обозреватель Курамото</span></h3>
+      <ul lang="en">
+        <li>tune 12 coupled Kuramoto oscillators (ω, φ, coupling K)</li>
+        <li>inject a Hurst-coloured burst into <code>channel_00</code></li>
+        <li>watch it spread; phase coherence <i>r</i>(<i>t</i>)</li>
+        <li>presets reproduce the benchmark of § 7.1.2</li>
+      </ul>
+      <ul lang="ru">
+        <li>12 связанных осцилляторов Курамото (ω, φ, связь K)</li>
+        <li>впрыск всплеска с показателем Хёрста в <code>channel_00</code></li>
+        <li>распространение по каналам и параметр порядка <i>r</i>(<i>t</i>)</li>
+        <li>пресеты воспроизводят эталон § 7.1.2</li>
+      </ul>
+      <div class="meta"><b><span lang="en">In the dissertation:</span><span lang="ru">В диссертации:</span></b> § 7.1.2, § 2.12; <span lang="en">Thesis 1, positive control</span><span lang="ru">Положение 1, положительный контроль</span></div>
+      <div class="links">
+        <a class="btn primary small" href="https://d2718281828nis.github.io/EVT-educational-demo/kuramoto/"><span lang="en">Open lab ↗</span><span lang="ru">Открыть ↗</span></a>
+        <a class="btn small" href="https://github.com/D2718281828nis/EVT-educational-demo/tree/main/site/kuramoto"><span lang="en">Source</span><span lang="ru">Код</span></a>
+      </div>
+    </article>
+
+    <article class="card lab">
+      <div class="shot" aria-hidden="true">
+        <svg viewBox="0 0 300 116">
+          <g style="stroke:var(--axis);stroke-width:1.2">
+            <line x1="40" y1="58" x2="120" y2="30"/><line x1="40" y1="58" x2="120" y2="86"/><line x1="40" y1="58" x2="150" y2="58"/>
+            <line x1="120" y1="30" x2="180" y2="40"/><line x1="120" y1="86" x2="180" y2="76"/><line x1="150" y1="58" x2="180" y2="40"/>
+            <line x1="180" y1="40" x2="180" y2="76"/><line x1="150" y1="58" x2="120" y2="30"/><line x1="180" y1="76" x2="150" y2="58"/>
+          </g>
+          <g style="stroke:var(--series-2);stroke-width:2"><line x1="180" y1="40" x2="260" y2="58"/><line x1="180" y1="76" x2="260" y2="58"/><line x1="150" y1="58" x2="260" y2="58"/></g>
+          <g style="fill:var(--series-1)"><circle cx="120" cy="30" r="7"/><circle cx="120" cy="86" r="7"/><circle cx="150" cy="58" r="7"/><circle cx="180" cy="40" r="7"/><circle cx="180" cy="76" r="7"/></g>
+          <circle cx="40" cy="58" r="7" style="fill:var(--ink-2)"/><circle cx="260" cy="58" r="8" style="fill:var(--series-2)"/>
+        </svg>
+      </div>
+      <span class="tag"><span lang="en">EN · RU</span><span lang="ru">RU · EN</span></span>
+      <h3><span lang="en">Reservoir computing explainer</span><span lang="ru">Резервуарные вычисления наглядно</span></h3>
+      <ul lang="en">
+        <li>feed-forward network vs a fixed random recurrent reservoir</li>
+        <li>leak rate α, spectral radius ρ, ridge readout</li>
+        <li>echo state networks and NG-RC trained in the browser</li>
+        <li>link to control theory: the reservoir as (A, B, C, D)</li>
+      </ul>
+      <ul lang="ru">
+        <li>сеть прямого распространения и фиксированный случайный резервуар</li>
+        <li>коэффициент утечки α, спектральный радиус ρ, гребневая регрессия выхода</li>
+        <li>сети эхо-состояний и NG-RC обучаются прямо в браузере</li>
+        <li>связь с ТАУ: резервуар как модель (A, B, C, D)</li>
+      </ul>
+      <div class="meta"><b><span lang="en">In the dissertation:</span><span lang="ru">В диссертации:</span></b> § 2.17, § 3.12; <span lang="en">model-based detection</span><span lang="ru">модельно-ориентированная детекция</span></div>
+      <div class="links">
+        <a class="btn primary small" lang="en" href="https://d2718281828nis.github.io/ML-Reservoir_Computing/">Open lab ↗</a>
+        <a class="btn primary small" lang="ru" href="https://d2718281828nis.github.io/ML-Reservoir_Computing/ru/">Открыть ↗</a>
+        <a class="btn small" href="https://github.com/D2718281828nis/ML-Reservoir_Computing"><span lang="en">Source</span><span lang="ru">Код</span></a>
+      </div>
+    </article>
+  </div>
+
+  <div class="callout">
+    <span lang="en"><b>Catalog.</b> All labs, including those outside the dissertation, are listed in the library at
+      <a href="https://ai-is-out-there.github.io/#library">ai-is-out-there.github.io/#library</a>.</span>
+    <span lang="ru"><b>Каталог.</b> Все лаборатории, включая не относящиеся к диссертации, собраны в библиотеке
+      <a href="https://ai-is-out-there.github.io/#library">ai-is-out-there.github.io/#library</a>.</span>
+  </div>
+</section>
+
+<!-- ============================================================== 4 ROLE -->
+<section id="s4">
+  <header class="sec-head">
+    <span class="num">4</span>
+    <div>
+      <h2><span lang="en">Role in the dissertation</span><span lang="ru">Место в диссертации</span></h2>
+      <p lang="en">The labs are one of the dissertation’s software artifacts. This is how the artifact table of the dissertation describes them.</p>
+      <p lang="ru">Лаборатории — один из программных артефактов диссертации. Так их описывает таблица артефактов диссертации.</p>
+    </div>
+  </header>
+
+  <div class="card table-scroll">
+    <table class="role">
+      <tbody>
+        <tr><td><span lang="en">Artifact</span><span lang="ru">Артефакт</span></td>
+          <td><span lang="en">No. 5 — Interactive labs</span><span lang="ru">№ 5 — Интерактивные лаборатории</span></td></tr>
+        <tr><td><span lang="en">Type</span><span lang="ru">Тип</span></td>
+          <td><b><span lang="en">Direct</span><span lang="ru">Прямой</span></b></td></tr>
+        <tr><td><span lang="en">Location</span><span lang="ru">Расположение</span></td>
+          <td>GitHub Pages:
+            <a href="https://d2718281828nis.github.io/EVT-educational-demo/index"><span lang="en">Graph-EVT guide</span><span lang="ru">Graph-EVT: руководство</span></a>,
+            <a href="https://d2718281828nis.github.io/EVT-educational-demo/kuramoto/"><span lang="en">Kuramoto explorer</span><span lang="ru">обозреватель Курамото</span></a>,
+            <a href="https://d2718281828nis.github.io/ML-Reservoir_Computing/ru/"><span lang="en">reservoir computing</span><span lang="ru">резервуарные вычисления</span></a>;
+            <span lang="en">catalog:</span><span lang="ru">каталог:</span> <a href="https://ai-is-out-there.github.io/#library">ai-is-out-there.github.io/#library</a></td></tr>
+        <tr><td><span lang="en">Used in</span><span lang="ru">Где используется</span></td>
+          <td><span lang="en">§ 7.1.2; practical significance; item 7 of the specialty passport</span>
+            <span lang="ru">§ 7.1.2; практическая значимость; п. 7 паспорта специальности</span></td></tr>
+        <tr><td><span lang="en">Purpose</span><span lang="ru">Зачем</span></td>
+          <td><span lang="en">Visual demonstration of the “when — where” method and of a synthetic event spreading over a graph; supports item 7 of the
+            specialty passport and is the basis for an act of implementation in the educational process.</span>
+            <span lang="ru">Наглядная визуализация метода «когда — где» и распространения синтетического события по графу; подтверждение п. 7 паспорта
+            специальности и основание для акта внедрения в учебный процесс.</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid-3" style="margin-top:14px">
+    <article class="card">
+      <h3><span lang="en">§ 7.1.2 · positive control</span><span lang="ru">§ 7.1.2 · положительный контроль</span></h3>
+      <p lang="en">Real systems cannot tell how accurate the answer “where” is: the true source is unknown or given only by an external hypothesis.
+        The pipeline is therefore first run on synthetic benchmarks with a known moment and source. The labs make these benchmarks visible
+        and let anyone change their parameters.</p>
+      <p lang="ru">На реальных системах точность ответа «где» не измерить: истинный источник неизвестен или задан лишь внешней гипотезой.
+        Поэтому конвейер сначала проверяется на синтетических эталонах с известными моментом и источником. Лаборатории делают эти
+        эталоны наглядными и позволяют менять их параметры.</p>
+    </article>
+    <article class="card">
+      <h3><span lang="en">Practical significance</span><span lang="ru">Практическая значимость</span></h3>
+      <p lang="en">Open software with reproducible results — the Graph-EVT-agent library, the applied repository of the three examples of chapter 7
+        and the teaching repository with the “when — where” setting — is part of the practical significance. The labs are its
+        no-install, in-browser face for students and reviewers.</p>
+      <p lang="ru">Открытые программные средства с воспроизводимыми результатами — библиотека Graph-EVT-agent, прикладной репозиторий трёх
+        примеров главы 7 и учебный репозиторий с постановкой «когда — где» — входят в практическую значимость. Лаборатории — их
+        браузерная форма без установки для студентов и рецензентов.</p>
+    </article>
+    <article class="card">
+      <h3><span lang="en">Specialty passport 2.3.5, item 7</span><span lang="ru">Паспорт специальности 2.3.5, п. 7</span></h3>
+      <p lang="en">Item 7 covers models, methods, algorithms and software for human–machine interfaces, computer graphics and visualization.
+        The labs are interactive visualization software for the method of the dissertation.</p>
+      <p lang="ru">Пункт 7 охватывает модели, методы, алгоритмы и программные средства человеко-машинных интерфейсов, компьютерной графики
+        и визуализации. Лаборатории — программное средство интерактивной визуализации метода диссертации.</p>
+    </article>
+  </div>
+  <blockquote lang="ru">п. 7 «Модели, методы, архитектуры, алгоритмы, форматы, протоколы и программные средства человеко-машинных интерфейсов,
+    компьютерной графики, визуализации, обработки изображений и видеоданных, систем виртуальной реальности, многомодального взаимодействия
+    в социокиберфизических системах»</blockquote>
+  <blockquote lang="en">Item 7: “Models, methods, architectures, algorithms, formats, protocols and software of human–machine interfaces,
+    computer graphics, visualization, image and video processing, virtual reality systems, multimodal interaction in socio-cyber-physical
+    systems” (translated from the Russian passport).</blockquote>
+</section>
+
+<!-- ============================================================== 5 REPOSITORIES -->
+<section id="s5">
+  <header class="sec-head">
+    <span class="num">5</span>
+    <div>
+      <h2><span lang="en">Related repositories</span><span lang="ru">Связанные репозитории</span></h2>
+      <p lang="en">The labs are built on the author’s open code. Commits are the ones cited in the dissertation.</p>
+      <p lang="ru">Лаборатории построены на открытом коде автора. Указаны коммиты, на которые ссылается диссертация.</p>
+    </div>
+  </header>
+  <div class="card table-scroll">
+    <table>
+      <thead><tr>
+        <th><span lang="en">Repository</span><span lang="ru">Репозиторий</span></th>
+        <th><span lang="en">Commit</span><span lang="ru">Коммит</span></th>
+        <th><span lang="en">What it gives the labs</span><span lang="ru">Что даёт лабораториям</span></th>
+      </tr></thead>
+      <tbody>
+        <tr><td><a href="https://github.com/D2718281828nis/Graph-EVT-agent">Graph-EVT-agent</a></td><td class="mono">465b231</td>
+          <td><span lang="en">the library: EVT detection (“when”), graph building and source ranking (“where”); ported to JavaScript in the guide</span>
+            <span lang="ru">библиотека: детекция по ТЭЗ («когда»), построение графа и ранжирование источника («где»); портирована на JavaScript в руководстве</span></td></tr>
+        <tr><td><a href="https://github.com/D2718281828nis/EVT-educational-demo">EVT-educational-demo</a></td><td class="mono">7c3f9cb</td>
+          <td><span lang="en">synthetic benchmarks with a known moment and source, 19 notebooks; hosts the guide and the Kuramoto explorer</span>
+            <span lang="ru">синтетические эталоны с известными моментом и источником, 19 ноутбуков; на нём размещены руководство и обозреватель Курамото</span></td></tr>
+        <tr><td><a href="https://github.com/D2718281828nis/Extreme-Value-Theory-New-Approach">Extreme-Value-Theory-New-Approach</a></td><td class="mono">546ed9d</td>
+          <td><span lang="en">public code and reference results of the three examples of chapter 7</span>
+            <span lang="ru">публичный код и эталонные результаты трёх примеров главы 7</span></td></tr>
+        <tr><td><a href="https://github.com/D2718281828nis/ML-Reservoir_Computing">ML-Reservoir_Computing</a></td><td class="mono">—</td>
+          <td><span lang="en">the echo state network equation of § 2.17 with reproducible comparisons; hosts the reservoir explainer</span>
+            <span lang="ru">уравнение эхо-сети § 2.17 с воспроизводимыми сравнениями; на нём размещён разбор резервуарных вычислений</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p><span lang="en">All data in the labs are synthetic. The labs illustrate the method and are not intended for engineering, financial or clinical decisions.</span>
+    <span lang="ru">Все данные в лабораториях синтетические. Лаборатории иллюстрируют метод и не предназначены для инженерных, финансовых или клинических решений.</span></p>
+  <p>© 2026 <span lang="en">Denis A. Andrikov</span><span lang="ru">Д. А. Андриков</span> · MIT ·
+    <a href="https://github.com/D2718281828nis/Educational-Live-Demo"><span lang="en">source of this page</span><span lang="ru">исходный код страницы</span></a></p>
+</footer>
+
+<script src="js/site.js"></script>
+</body>
+</html>
