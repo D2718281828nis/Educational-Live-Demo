@@ -200,8 +200,9 @@
     o.freqs = C.FREQS.slice();
     return o;
   }
-  function defaultSpec() { return { q: 0.95, gamma: 0.999, r: 3, sigmaK: 3, sigmaR: 1 }; }
-  var state = { o: defaults(), spec: defaultSpec(), anim: 0 };
+  function defaultSpec() { var g = {}; for (var k in C.GRAPH) g[k] = C.GRAPH[k]; return { q: 0.95, gamma: 0.999, r: 3, sigmaK: 3, sigmaR: 1, graph: g }; }
+  function copySpec() { var sp = {}; for (var k in state.spec) sp[k] = state.spec[k]; sp.graph = {}; for (k in state.spec.graph) sp.graph[k] = state.spec.graph[k]; return sp; }
+  var state = { o: defaults(), spec: defaultSpec(), anim: 0, xwin: "full" };
   var R = null;     // current result
   var mc = null;    // last Monte Carlo summary
 
@@ -322,8 +323,8 @@
     dfa: new Plot("od-dfa", { height: 170 }),
     per: new Plot("od-x-per", { height: 70, group: "x" }),
     noise: new Plot("od-x-noise", { height: 70, group: "x" }),
-    frac: new Plot("od-x-frac", { height: 140 }),
-    sum: new Plot("od-x-sum", { height: 160, group: "x" }),
+    frac: new Plot("od-x-frac", { height: 140, group: "x" }),
+    sum: new Plot("od-x-sum", { height: 320, group: "x" }),
     z: new Plot("od-z", { height: 200 }),
     gpd: new Plot("od-gpd", { height: 200 }),
     pgram: new Plot("od-pgram", { height: 210 }),
@@ -447,7 +448,8 @@
   }
 
   function renderStep3() {
-    var s = R.sig, n = s.n, Tb = state.o.background;
+    var s = R.sig, n = s.n, Tb = state.o.background, zoom = state.xwin === "zoom";
+    var x0 = zoom ? state.o.onset - 30 : 0, x1 = zoom ? Math.min(n - 1, R.eventEnd + 30) : n - 1; // one window for all four panels
     var tip = function (x) {
       if (x < 0 || x >= n) return null;
       return { title: "t = " + x, rows: [
@@ -456,22 +458,20 @@
         { label: L("fractal", "фрактал"), value: fmt(s.fractal[x]) },
         { label: "x(t)", value: fmt(s.values[x]) }] };
     };
-    var vb = [{ x: Tb, label: "T_b", color: "var(--muted)", dash: "3 3" }];
-    P.per.update({ x0: 0, x1: n - 1, hideX: true, series: [{ y: s.periodic, color: "var(--ink-2)", width: 0.8 }], bands: eventBand(), vlines: vb, tip: tip });
-    P.noise.update({ x0: 0, x1: n - 1, hideX: true, series: [{ y: s.stochastic, color: "var(--muted)", width: 0.8 }], bands: eventBand(), vlines: vb, tip: tip });
-    P.sum.update({ x0: 0, x1: n - 1, xLabel: L("sample t at E", "отсчёт t в E"), series: [{ y: s.values, color: "var(--ink)", width: 0.8 }], bands: eventBand(),
-      vlines: vb.concat([{ x: state.o.onset, label: "t*", dash: "4 3" }]), tip: tip });
-    var x0 = state.o.onset - 10, x1 = R.eventEnd + 10;
+    var vb = [{ x: Tb, label: "T_b", color: "var(--muted)", dash: "3 3" }, { x: state.o.onset, label: "t*", dash: "4 3" }];
+    var w = zoom ? 1.1 : 0.8;
+    P.per.update({ x0: x0, x1: x1, hideX: true, series: [{ y: s.periodic, color: "var(--ink-2)", width: w }], bands: eventBand(), vlines: vb, tip: tip });
+    P.noise.update({ x0: x0, x1: x1, hideX: true, series: [{ y: s.stochastic, color: "var(--muted)", width: w }], bands: eventBand(), vlines: vb, tip: tip });
     $("od-x-legend").innerHTML = NAMES.map(function (nm, j) {
-      var a = s.arrivals[j];
-      return '<span class="key"><span class="swatch" style="background:' + NODE_COLOR[j] + '"></span>' + nm + " · t* + " + a.delay + "</span>";
+      return '<span class="key"><span class="swatch" style="background:' + NODE_COLOR[j] + '"></span>' + nm + " · t* + " + s.arrivals[j].delay + "</span>";
     }).join("");
     P.frac.update({
-      x0: x0, x1: x1, xLabel: L("zoom on the event, sample t", "увеличение события, отсчёт t"),
-      series: s.event.map(function (e, j) { return { y: e, color: NODE_COLOR[j], width: 1.1, opacity: 0.9 }; }),
-      vlines: s.arrivals.map(function (a) { return { x: state.o.onset + a.delay, label: NAMES[a.node], color: NODE_COLOR[a.node], dash: "2 3" }; }),
+      x0: x0, x1: x1, hideX: true,
+      series: s.event.map(function (e, j) { return { y: e, color: NODE_COLOR[j], width: w, opacity: 0.9 }; }),
+      vlines: zoom ? s.arrivals.map(function (a) { return { x: state.o.onset + a.delay, label: NAMES[a.node], color: NODE_COLOR[a.node], dash: "2 3" }; }) : vb,
       tip: function (x) { return { title: "t = " + x, rows: s.event.map(function (e, j) { return { label: NAMES[j], value: fmt(e[x]), color: NODE_COLOR[j] }; }) }; }
     });
+    P.sum.update({ x0: x0, x1: x1, xLabel: L("sample t at E", "отсчёт t в E"), series: [{ y: s.values, color: "var(--ink)", width: w }], bands: eventBand(), vlines: vb, tip: tip });
   }
 
   function arlText(v) {
@@ -491,8 +491,8 @@
         (st.ratio < 4 ? " < 4" : " ≥ 4") + " → " + (st.stationary ? "стационарен" : "нестационарен")), st.stationary ? "ok" : "warn"],
       ["detect_evt", ev.alarm >= 0 ? L("1-D alarm τ_r = " + ev.alarm + ": an extreme event happened", "одномерная тревога τ_r = " + ev.alarm + ": экстремальное событие произошло")
         : L("no alarm → stop: <code>no_evt_detected</code>", "тревоги нет → остановка: <code>no_evt_detected</code>"), ev.alarm >= 0 ? "ok" : "warn"],
-      ["rank_source", L("p = 1 → <code>single_channel_cannot_localize</code> (step 5) → structural analysis (steps 6–8) → n-D route (steps 9–10)",
-        "p = 1 → <code>single_channel_cannot_localize</code> (шаг 5) → структурный анализ (шаги 6–8) → n-D-маршрут (шаги 9–10)"), "next"]
+      ["rank_source", L("p = 1: O = {E} leaves all " + R.gate1.length + " node pairs unresolved (Theorem 2.18.1) → <code>single_channel_cannot_localize</code> → structural analysis (steps 5–7) → n-D route (steps 8–9)",
+        "p = 1: при O = {E} не разрешены все " + R.gate1.length + " пар узлов (теорема 2.18.1) → <code>single_channel_cannot_localize</code> → структурный анализ (шаги 5–7) → n-D-маршрут (шаги 8–9)"), "next"]
     ];
     $("od-route").innerHTML = items.map(function (it) {
       return '<li class="' + it[2] + '"><span class="od-mark">' + (it[2] === "ok" ? "✓" : it[2] === "warn" ? "!" : "→") + "</span><span><code>" + it[0] + "</code> " + it[1] + "</span></li>";
@@ -528,29 +528,6 @@
   }
   function facts(id, list) {
     $(id).innerHTML = list.map(function (f) { return '<div class="fact"><div class="v">' + f[0] + '</div><div class="k">' + f[1] + "</div></div>"; }).join("");
-  }
-
-  function renderStep5() {
-    var bad1 = {}, badN = {}, key = function (p) { return p[0] + "-" + p[1]; };
-    R.gate1.forEach(function (p) { bad1[key(p)] = true; });
-    R.gateN.forEach(function (p) { badN[key(p)] = true; });
-    var head = ru() ? ["Пара u – v", "O = {E}", "O = {" + nodeList(R.ids) + "}"] : ["Pair u – v", "O = {E}", "O = {" + nodeList(R.ids) + "}"];
-    var rows = "";
-    for (var u = 0; u < 5; u++) for (var v = u + 1; v < 5; v++) {
-      var k = u + "-" + v;
-      rows += "<tr><td><b>" + NAMES[u] + "</b> – <b>" + NAMES[v] + "</b></td><td>" + (bad1[k] ? L("✗ unresolved", "✗ не разрешена") : L("✓ resolved", "✓ разрешена")) +
-        "</td><td>" + (badN[k] ? L("✗ unresolved", "✗ не разрешена") : L("✓ resolved", "✓ разрешена")) + "</td></tr>";
-    }
-    $("od-gate").innerHTML = "<thead><tr><th>" + head.join("</th><th>") + "</th></tr></thead><tbody>" + rows + "</tbody>";
-    var srcSeen = R.ids.indexOf(state.o.source) >= 0;
-    var ok = !R.gateN.length;
-    $("od-gate-verdict").className = "od-verdict " + (ok && srcSeen ? "good" : "bad");
-    $("od-gate-verdict").innerHTML = L("One channel: " + R.gate1.length + " of 10 pairs unresolved — not identifiable. Identified nodes: " +
-      (ok ? "every pair resolved — identifiable." : R.gateN.length + " pair(s) unresolved.") +
-      (srcSeen ? "" : " The source " + NAMES[state.o.source] + " is not observed: the earliest observed node is the nearest to the source, not the source (M2)."),
-      "Один канал: не разрешены " + R.gate1.length + " пар из 10 — не идентифицируем. Найденные узлы: " +
-      (ok ? "все пары разрешены — идентифицируем." : "не разрешены пары: " + R.gateN.length + ".") +
-      (srcSeen ? "" : " Источник " + NAMES[state.o.source] + " не наблюдается: самый ранний наблюдаемый узел — ближайший к источнику, а не источник (М2)."));
   }
 
   function renderStep6() {
@@ -600,29 +577,50 @@
     });
   }
 
+  function edgeKey(e) { return Math.min(e.i, e.j) + "-" + Math.max(e.i, e.j); }
   function renderStep8() {
     var faded = NAMES.map(function (_, i) { return R.ids.indexOf(i) < 0; });
-    drawGraph($("od-sgraph"), { edges: R.sg.edges.map(function (e) { return { i: e.i, j: e.j }; }), faded: faded,
-      sub: function (i) { return faded[i] ? L("not found", "не найден") : ""; } });
-    var p = R.ids.length, dep = R.fg.dependence, structKey = {};
-    R.sg.edges.forEach(function (e) { structKey[Math.min(e.i, e.j) + "-" + Math.max(e.i, e.j)] = true; });
+    var sub = function (i) { return faded[i] ? L("not found", "не найден") : ""; };
+    drawGraph($("od-sgraph"), { edges: R.sg.edges.map(function (e) { return { i: e.i, j: e.j }; }), faded: faded, sub: sub });
+    var p = R.ids.length, dep = R.fg.dependence, structKey = {}, estKey = {};
+    R.sg.edges.forEach(function (e) { structKey[edgeKey(e)] = true; });
     var fe = R.fgEdges.map(function (e) {
+      estKey[edgeKey(e)] = true;
       var a = R.ids.indexOf(e.i), b = R.ids.indexOf(e.j);
-      return { i: e.i, j: e.j, label: "|r| " + fmt(dep[a * p + b], 2), extra: !structKey[Math.min(e.i, e.j) + "-" + Math.max(e.i, e.j)] };
+      return { i: e.i, j: e.j, label: fmt(dep[a * p + b], 2), extra: !structKey[edgeKey(e)] };
     });
-    drawGraph($("od-fgraph"), { edges: fe, faded: faded, sub: function (i) { return faded[i] ? L("not found", "не найден") : ""; } });
-    var c = R.fgCmp;
-    $("od-graph-readout").innerHTML = L("Structural: <b>" + R.sg.edges.length + "</b> edges · functional: <b>" + R.fgEdges.length + "</b> edges · common " + c.common.length +
-      ", only functional " + c.extra.length + ", only structural " + c.missing.length + " · Jaccard J = <b>" + fmt(c.jaccard) + "</b>. " +
-      (R.fgEdges.length ? "" : "The AR innovations of smooth envelopes are nearly independent, so this hypothesis is the empty graph here."),
-      "Структурный: <b>" + R.sg.edges.length + "</b> рёбер · функциональный: <b>" + R.fgEdges.length + "</b> · общих " + c.common.length +
-      ", только в функциональном " + c.extra.length + ", только в структурном " + c.missing.length + " · Жаккар J = <b>" + fmt(c.jaccard) + "</b>. " +
-      (R.fgEdges.length ? "" : "AR-инновации гладких огибающих почти независимы, поэтому здесь эта гипотеза — пустой граф."));
+    R.sg.edges.forEach(function (e) { if (!estKey[edgeKey(e)]) fe.push({ i: e.i, j: e.j, off: true }); });
+    drawGraph($("od-fgraph"), { edges: fe, faded: faded, sub: sub });
+    var c = R.fgCmp, g = state.spec.graph;
+    var prec = R.fgEdges.length ? c.common.length / R.fgEdges.length : 0, rec = R.sg.edges.length ? c.common.length / R.sg.edges.length : 0;
+    $("od-graph-readout").innerHTML = L("Method <b>" + g.method + "</b> on a record of " + g.archive + " samples: <b>" + R.fgEdges.length + "</b> edges, " + c.common.length +
+      " also in the structure, " + c.extra.length + " extra, " + c.missing.length + " missed · precision " + fmt(prec) + ", recall " + fmt(rec) + ", Jaccard J = <b>" + fmt(c.jaccard) + "</b>" +
+      " (a random graph with 6 of 10 edges: J ≈ 0.43)",
+      "Метод <b>" + g.method + "</b> на записи из " + g.archive + " отсчётов: <b>" + R.fgEdges.length + "</b> рёбер, из них в структуре " + c.common.length +
+      ", лишних " + c.extra.length + ", пропущено " + c.missing.length + " · точность " + fmt(prec) + ", полнота " + fmt(rec) + ", Жаккар J = <b>" + fmt(c.jaccard) + "</b>" +
+      " (случайный граф с 6 рёбрами из 10: J ≈ 0,43)");
     var html = "<thead><tr><th></th>" + R.ids.map(function (i) { return '<th class="num">' + NAMES[i] + "</th>"; }).join("") + "</tr></thead><tbody>";
     R.ids.forEach(function (i, a) {
-      html += "<tr><td><b>" + NAMES[i] + "</b></td>" + R.ids.map(function (j, b) { return '<td class="num">' + (a === b ? "–" : fmt(dep[a * p + b], 2)) + "</td>"; }).join("") + "</tr>";
+      html += "<tr><td><b>" + NAMES[i] + "</b></td>" + R.ids.map(function (j, b) {
+        var on = a !== b && R.fg.adjacency[a * p + b];
+        return '<td class="num' + (on ? " od-on" : "") + '">' + (a === b ? "–" : fmt(dep[a * p + b], g.method === "granger" ? 3 : 2)) + "</td>";
+      }).join("") + "</tr>";
     });
     $("od-dep").innerHTML = html + "</tbody>";
+  }
+  // every method on the same identification record, current rule and parameters (deferred: granger takes a few ms per run)
+  function renderMethods() {
+    var head = ru() ? ["Метод", "рёбер", "J", "точность", "полнота"] : ["Method", "edges", "J", "precision", "recall"];
+    var rows = ["ar", "corr", "partial", "xcorr", "pwxcorr", "granger"].map(function (m) {
+      var sp = copySpec(); sp.graph.method = m;
+      var fg = C.learnGraph(state.o, R.nodes, (function () { var x = {}; for (var k in R.spec) x[k] = R.spec[k]; x.graph = sp.graph; return x; })());
+      var est = [], p = R.ids.length;
+      for (var i = 0; i < p; i++) for (var j = i + 1; j < p; j++) if (fg.adjacency[i * p + j]) est.push({ i: R.ids[i], j: R.ids[j] });
+      var c = C.compareEdges(est, R.sg.edges);
+      return "<tr" + (m === state.spec.graph.method ? ' class="od-cur"' : "") + "><td><b>" + m + '</b></td><td class="num">' + est.length + '</td><td class="num">' + fmt(c.jaccard) +
+        '</td><td class="num">' + fmt(est.length ? c.common.length / est.length : 0) + '</td><td class="num">' + fmt(R.sg.edges.length ? c.common.length / R.sg.edges.length : 0) + "</td></tr>";
+    });
+    $("od-gcmp").innerHTML = "<thead><tr>" + head.map(function (h, i) { return "<th" + (i ? ' class="num"' : "") + ">" + h + "</th>"; }).join("") + "</tr></thead><tbody>" + rows.join("") + "</tbody>";
   }
 
   function renderStep9() {
@@ -716,7 +714,8 @@
   function renderGrid() {
     var rows = [], ok = 0, n = 0;
     [0.9, 0.95].forEach(function (q) { [0.99, 0.999].forEach(function (g) { [1, 3].forEach(function (r) {
-      var x = C.pipeline(state.o, { q: q, gamma: g, r: r, sigmaK: state.spec.sigmaK, sigmaR: state.spec.sigmaR }), good = x.rank && x.source === state.o.source;
+      var sp = copySpec(); sp.q = q; sp.gamma = g; sp.r = r;
+      var x = C.pipeline(state.o, sp), good = x.rank && x.source === state.o.source;
       n++; if (good) ok++;
       rows.push([fmt(q), fmt(g, 3).replace(/0+$/, ""), r, x.ev1.alarm >= 0 ? x.ev1.alarm : "–", x.tHat != null ? x.tHat : "–", x.rank ? NAMES[x.source] : "–",
         x.rank ? pct(x.rank.probabilities[x.rank.source]) : "–", good ? "✓" : "✗"]);
@@ -729,7 +728,7 @@
 
   var mcToken = 0;
   function runMC() {
-    var token = ++mcToken, jobs = [], o = state.o, spec = {}; for (var sk in state.spec) spec[sk] = state.spec[sk];
+    var token = ++mcToken, jobs = [], o = state.o, spec = copySpec();
     for (var sd = 1; sd <= 20; sd++) for (var s = 0; s < 4; s++) jobs.push({ seed: 1000 + sd, source: s });
     var acc = { st: [], fu: [], em: [], fit: [], cross: [], raw: [], free: { chain: 0, s3: 0, cross: 0, n: 0 } }, i = 0, key = settingsKey();
     $("od-mc-run").disabled = true;
@@ -776,7 +775,7 @@
     var fc = F.chain + "/" + F.n;
     var html = "<thead><tr>" + head.map(function (h, i) { return "<th" + (i ? ' class="num"' : "") + ">" + h + "</th>"; }).join("") + "</tr></thead><tbody>" +
       row(L("Chain, rank_source + structural graph", "Конвейер, rank_source + структурный граф"), a.st, fc) +
-      row(L("Chain, rank_source + functional graph", "Конвейер, rank_source + функциональный граф"), a.fu, fc) +
+      row(L("Chain, rank_source + functional graph", "Конвейер, rank_source + функциональный граф") + " (" + state.spec.graph.method + ")", a.fu, fc) +
       row(L("Chain, rank_source + empty graph", "Конвейер, rank_source + пустой граф"), a.em, fc) +
       row(L("Chain, arrival fit (St. 2.18.3)", "Конвейер, подгонка приходов (утв. 2.18.3)"), a.fit, fc) +
       row(L("kσ per channel, first to cross", "kσ по каналам, первый пересёкший") + " (k = " + fmt(state.spec.sigmaK, 1) + ", r = " + state.spec.sigmaR + ")", a.cross, F.cross + "/" + F.n) +
@@ -828,26 +827,26 @@
 
   // ------------------------------------------------------------ coverage table
   var COVER = [
-    ["M1", ["ARL₀, run rule, clusters of exceedances", "ARL₀, правило серии, кластеры превышений"], "4, 9, 11", 1],
-    ["M2", ["identifiability: doubly resolving set", "идентифицируемость: дважды разрешающее множество"], "5, 10", 1],
+    ["M1", ["ARL₀, run rule, clusters of exceedances", "ARL₀, правило серии, кластеры превышений"], "4, 8, 10", 1],
+    ["M2", ["identifiability: one channel is not enough", "идентифицируемость: одного канала мало"], "4, 5, 9", 1],
     ["M3", ["inflation without grouping", "завышение без группировки"], "—", 0, ["no model is trained here: nothing to split", "здесь нет обучения: нечего разбивать"]],
-    ["M4", ["value of the graph Δ_G", "ценность графа Δ_G"], "8, 12", 1],
-    ["M5", ["estimates kept side by side", "оценки сохраняются рядом"], "10", 1],
-    ["M6", ["numerical fidelity of the text", "числовая верность текста"], "13", 1],
+    ["M4", ["value of the graph Δ_G", "ценность графа Δ_G"], "7, 11", 1],
+    ["M5", ["estimates kept side by side", "оценки сохраняются рядом"], "9", 1],
+    ["M6", ["numerical fidelity of the text", "числовая верность текста"], "12", 1],
     ["M7", ["episode labelling", "разметка эпизодов"], "—", 0, ["one event per series", "одно событие на ряд"]],
-    ["M8", ["graph perturbations", "возмущения графа"], "—", 0, ["three graph hypotheses are compared instead (8, 12)", "вместо них сравниваются три гипотезы графа (8, 12)"]],
-    ["M9", ["robustness to the specification", "устойчивость к спецификации"], "12", 1],
-    ["H0", ["input, rhythms, wavelet envelopes, DFA", "вход, ритмы, вейвлет-огибающие, DFA"], "2, 4, 6, 7", 1],
-    ["H1", ["when: POT/GPD, 1-D and n-D", "когда: POT/GPD, 1-D и n-D"], "4, 9", 1],
-    ["H2", ["graph hypotheses: structural, functional", "гипотезы графа: структурная, функциональная"], "6, 8", 1],
-    ["H3", ["where: rank_source, arrival fit", "где: rank_source, подгонка приходов"], "10", 1],
-    ["H4", ["verification", "верификация"], "12", 1],
+    ["M8", ["graph perturbations", "возмущения графа"], "7", 1, ["methods, parameters and record length change the estimated graph", "методы, параметры и длина записи меняют оценённый граф"]],
+    ["M9", ["robustness to the specification", "устойчивость к спецификации"], "11", 1],
+    ["H0", ["input, rhythms, wavelet envelopes, DFA", "вход, ритмы, вейвлет-огибающие, DFA"], "2, 4, 5, 6", 1],
+    ["H1", ["when: POT/GPD, 1-D and n-D", "когда: POT/GPD, 1-D и n-D"], "4, 8", 1],
+    ["H2", ["graph hypotheses: structural, functional (6 methods)", "гипотезы графа: структурная, функциональная (6 методов)"], "5, 7", 1],
+    ["H3", ["where: rank_source, arrival fit", "где: rank_source, подгонка приходов"], "9", 1],
+    ["H4", ["verification", "верификация"], "11", 1],
     ["H5", ["integration of layers", "интеграция слоёв"], "—", 0, ["one modality", "одна модальность"]],
-    ["H6", ["positive control", "положительный контроль"], "1, 12", 1],
+    ["H6", ["positive control", "положительный контроль"], "1, 11", 1],
     ["H7", ["orchestrator: route 1-D → structural → n-D", "оркестратор: маршрут 1-D → структура → n-D"], "4", 1],
     ["H8", ["episode labelling", "разметка эпизодов"], "—", 0, ["one event per series", "одно событие на ряд"]],
-    ["H9", ["reviewer text", "текст рецензента"], "13", 1, ["template text, no LLM", "шаблонный текст, без LLM"]],
-    ["H10", ["reproducibility, manifest", "воспроизводимость, manifest"], "13", 1]
+    ["H9", ["reviewer text", "текст рецензента"], "12", 1, ["template text, no LLM", "шаблонный текст, без LLM"]],
+    ["H10", ["reproducibility, manifest", "воспроизводимость, manifest"], "12", 1]
   ];
   function renderCoverage() {
     var head = ru() ? ["", "Что", "Шаг", "Примечание"] : ["", "What", "Step", "Note"];
@@ -857,6 +856,17 @@
   }
 
   // ------------------------------------------------------------ controls
+  var GSLIDERS = { threshold: 2, maxLag: 0, archive: 0, exAmp: 2, exRate: 2 };
+  var GSEGS = [["od-gm", "method", String], ["od-grule", "rule", String], ["od-gk", "k", Number], ["od-gstep", "lagStep", Number], ["od-gorder", "order", Number]];
+  Object.keys(GSLIDERS).forEach(function (k) {
+    $("od-g-" + k).addEventListener("input", function () { state.spec.graph[k] = Number(this.value); $("od-gv-" + k).textContent = fmt(state.spec.graph[k], GSLIDERS[k]); schedule(); });
+  });
+  GSEGS.forEach(function (g) {
+    document.querySelectorAll("#" + g[0] + " [data-v]").forEach(function (b) { b.addEventListener("click", function () { state.spec.graph[g[1]] = g[2](b.getAttribute("data-v")); refresh(); }); });
+  });
+  $("od-gprune").addEventListener("change", function () { state.spec.graph.prune = this.checked; refresh(); });
+  $("od-gsurr").addEventListener("change", function () { state.spec.graph.surrogates = this.checked; refresh(); });
+  document.querySelectorAll("#od-xwin [data-v]").forEach(function (b) { b.addEventListener("click", function () { state.xwin = b.getAttribute("data-v"); syncControls(); renderStep3(); }); });
   var SLIDERS = ["onset", "duration", "hurst", "magnitude"];
   function sliderText(k, v) { return k === "hurst" ? fmt(v) : k === "magnitude" ? fmt(v, 1) : String(v); }
   function syncControls() {
@@ -870,6 +880,11 @@
     press("#od-source [data-src]", "data-src", o.source);
     press("#od-envelope [data-env]", "data-env", o.envelope);
     press("#od-hidden [data-v]", "data-v", o.hidden);
+    press("#od-xwin [data-v]", "data-v", state.xwin);
+    var g = state.spec.graph;
+    Object.keys(GSLIDERS).forEach(function (k) { $("od-g-" + k).value = g[k]; $("od-gv-" + k).textContent = fmt(g[k], GSLIDERS[k]); });
+    GSEGS.forEach(function (s2) { press("#" + s2[0] + " [data-v]", "data-v", g[s2[1]]); });
+    $("od-gprune").checked = !!g.prune; $("od-gsurr").checked = !!g.surrogates;
     [["od-q", "q"], ["od-gamma", "gamma"], ["od-r", "r"], ["od-sk", "sigmaK"], ["od-sr", "sigmaR"]].forEach(function (p) {
       document.querySelectorAll("#" + p[0] + " [data-v]").forEach(function (b) { b.setAttribute("aria-pressed", String(Number(b.getAttribute("data-v")) === state.spec[p[1]])); });
     });
@@ -892,10 +907,10 @@
   function schedule() { clearTimeout(timer); timer = setTimeout(refresh, 60); }
   function refresh() { syncControls(); compute(); renderAll(); }
   function renderAll() {
-    renderStep1(); renderStep2(); renderStep3(); renderStep4(); renderStep5(); renderStep6(); renderStep7(); renderStep8(); renderStep9();
+    renderStep1(); renderStep2(); renderStep3(); renderStep4(); renderStep6(); renderStep7(); renderStep8(); renderStep9();
     renderStep10(); renderStep11(); renderARL(); renderNodeLanes(); renderMC(); renderStep13(); renderCoverage();
     clearTimeout(renderAll.grid);
-    renderAll.grid = setTimeout(renderGrid, 40);
+    renderAll.grid = setTimeout(function () { renderMethods(); renderGrid(); }, 40);
   }
 
   // Language switch (site.js dispatches eld:lang) and resize redraw the same result.

@@ -47,6 +47,9 @@ only point at the sensor; structural, functional and empty graphs give the same 
 Interactive extras: a frequency slider per node with each node’s own signal around the event, fixed axes in the input
 step, and an ARL₀ figure for the kσ rule (α ≈ 0.0027 at 3σ → ARL₀ ≈ 370; with r exceedances in a row ARL₀ = μ_r(α)),
 whose k and r also drive the 3σ baseline.
+The functional graph is learned from a separate identification record (length and excitation are parameters) by one of six
+methods with parameters: ar, corr, partial, xcorr, prewhitened xcorr, conditional Granger. Pairwise measures stay near
+J ≈ 0.6 even without noise; conditional Granger recovers the structure (J ≈ 0.94 on average with the defaults).
 
 ### Role in the dissertation
 
@@ -125,6 +128,10 @@ All data are synthetic. The labs illustrate the method and are not intended for 
 Интерактивные дополнения: слайдер частоты каждого узла с собственным сигналом узла около события, фиксированные оси
 на шаге входа и рисунок ARL₀ для правила kσ (при 3σ α ≈ 0,0027 → ARL₀ ≈ 370; при r превышениях подряд ARL₀ = μ_r(α));
 его k и r управляют и базовым правилом 3σ.
+Функциональный граф оценивается по отдельной идентификационной записи (длина и возбуждение — параметры) одним из шести
+методов с параметрами: ar, corr, partial, xcorr, выбеленный xcorr, условная причинность по Грейнджеру. Попарные меры
+остаются около J ≈ 0,6 даже без шума; условная причинность по Грейнджеру восстанавливает структуру (в среднем J ≈ 0,94
+при настройках по умолчанию).
 
 ### Место в диссертации
 

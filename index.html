@@ -325,8 +325,8 @@
     </div>
     <div class="panel-label" style="margin-top:12px"><span lang="en">Frequency of each node’s rhythm (object dictionary)</span><span lang="ru">Частота ритма каждого узла (словарь объекта)</span></div>
     <div class="od-freqs" id="od-freqs"></div>
-    <p class="lang-note" lang="en">Rhythms closer than about 0.06 leak into each other’s envelopes (step 7); closer than 0.012 they merge into one spectral peak and a node is lost (step 6).</p>
-    <p class="lang-note" lang="ru">Ритмы ближе примерно 0,06 протекают в огибающие друг друга (шаг 7); ближе 0,012 они сливаются в один спектральный пик, и узел теряется (шаг 6).</p>
+    <p class="lang-note" lang="en">Rhythms closer than about 0.06 leak into each other’s envelopes (step 6); closer than 0.012 they merge into one spectral peak and a node is lost (step 5).</p>
+    <p class="lang-note" lang="ru">Ритмы ближе примерно 0,06 протекают в огибающие друг друга (шаг 6); ближе 0,012 они сливаются в один спектральный пик, и узел теряется (шаг 5).</p>
     <div class="panel-label"><span lang="en">Each node’s own signal around the event: rhythm + event (not observed — only their sum at E is)</span><span lang="ru">Собственный сигнал каждого узла около события: ритм + событие (не наблюдается — наблюдается только их сумма в E)</span></div>
     <div id="od-node-lanes"></div>
   </li>
@@ -361,9 +361,11 @@
     <p lang="ru">Периодика + стохастика + фрактал, как в руководстве. Периодика — пять ритмов узлов; m<sub>j</sub> — малые спонтанные всплески, идущие по тому
       же графу (обычный фон). Фрактал — событие, приходящее в узел j через d<sub>j</sub> с коэффициентом G<sub>j</sub>. Фон [0, T<sub>b</sub>) = [0, 900)
       заведомо нормален; серая полоса — истинное событие.</p>
+    <div class="od-spec"><span><span lang="en">Time window of all four panels</span><span lang="ru">Окно времени всех четырёх панелей</span>
+      <span class="seg small" id="od-xwin"><button type="button" data-v="full"><span lang="en">whole series</span><span lang="ru">весь ряд</span></button><button type="button" data-v="zoom"><span lang="en">zoom on the event</span><span lang="ru">увеличение события</span></button></span></span></div>
     <div class="panel-label"><span lang="en">Periodic: the sum of the node rhythms</span><span lang="ru">Периодика: сумма ритмов узлов</span></div><div id="od-x-per"></div>
     <div class="panel-label"><span lang="en">Stochastic</span><span lang="ru">Стохастика</span></div><div id="od-x-noise"></div>
-    <div class="panel-label"><span lang="en">Fractal: the event in each node’s rhythm (zoom)</span><span lang="ru">Фрактал: событие в ритме каждого узла (увеличение)</span></div>
+    <div class="panel-label"><span lang="en">Fractal: the event in each node’s rhythm</span><span lang="ru">Фрактал: событие в ритме каждого узла</span></div>
     <div class="legend" id="od-x-legend"></div><div id="od-x-frac"></div>
     <div class="panel-label strong"><span lang="en">Observed x(t) at E — the only input</span><span lang="ru">Наблюдаемый x(t) в E — единственный вход</span></div><div id="od-x-sum"></div>
   </li>
@@ -394,24 +396,6 @@
   <!-- 5 -->
   <li class="od-step">
     <div class="od-step-head"><span class="od-n">5</span><div>
-      <h3><span lang="en">Identifiability gate: why one channel is not enough</span><span lang="ru">Ворота идентифицируемости: почему одного канала мало</span></h3>
-      <span class="od-tags">M2 · <span lang="en">Theorem</span><span lang="ru">теорема</span> 2.18.1 · <span lang="en">Def.</span><span lang="ru">опр.</span> 2.18.2</span>
-    </div></div>
-    <p lang="en">The source is identifiable from arrival times only if the observed set O <b>doubly resolves</b> V: for every pair u ≠ v some o₁, o₂ ∈ O give
-      d(u, o₁) − d(u, o₂) ≠ d(v, o₁) − d(v, o₂). With O = {E} the difference is always zero — every pair is unresolved and Graph-EVT-agent stops with
-      <code>single_channel_cannot_localize</code>. If the structural analysis gives one channel per node, O grows to the identified nodes and the gate is re-checked.</p>
-    <p lang="ru">Источник идентифицируем по временам прихода, только если наблюдаемое множество O <b>дважды разрешает</b> V: для любой пары u ≠ v найдутся o₁, o₂ ∈ O
-      с d(u, o₁) − d(u, o₂) ≠ d(v, o₁) − d(v, o₂). При O = {E} разность всегда равна нулю — ни одна пара не разрешена, и Graph-EVT-agent останавливается
-      с причиной <code>single_channel_cannot_localize</code>. Если структурный анализ даёт по каналу на узел, O расширяется до найденных узлов, и ворота проверяются заново.</p>
-    <div class="od-spec"><span><span lang="en">Hide the rhythm of node</span><span lang="ru">Скрыть ритм узла</span>
-      <span class="seg small" id="od-hidden"><button type="button" data-v="-1">—</button><button type="button" data-v="0">A</button><button type="button" data-v="1">B</button><button type="button" data-v="2">C</button><button type="button" data-v="3">D</button><button type="button" data-v="4">E</button></span></span></div>
-    <div class="table-scroll"><table id="od-gate"></table></div>
-    <p class="od-verdict" id="od-gate-verdict"></p>
-  </li>
-
-  <!-- 6 -->
-  <li class="od-step">
-    <div class="od-step-head"><span class="od-n">6</span><div>
       <h3><span lang="en">Structural analysis · nodes: spectral peaks of the background</span><span lang="ru">Структурный анализ · узлы: спектральные пики фона</span></h3>
       <span class="od-tags">H0 · H2</span>
     </div></div>
@@ -419,15 +403,18 @@
       frequency in the object dictionary (within ±0.012). Side lobes of the same rhythm are merged into the strongest peak.</p>
     <p lang="ru">Периодограмма фона показывает по пику на ритм. Пик выше 30 медианных мощностей — узел; имя ему даёт ближайшая частота словаря объекта
       (в пределах ±0,012). Боковые лепестки одного ритма сливаются с самым сильным пиком.</p>
+    <div class="od-spec"><span><span lang="en">Hide the rhythm of node</span><span lang="ru">Скрыть ритм узла</span>
+      <span class="seg small" id="od-hidden"><button type="button" data-v="-1">—</button><button type="button" data-v="0">A</button><button type="button" data-v="1">B</button><button type="button" data-v="2">C</button><button type="button" data-v="3">D</button><button type="button" data-v="4">E</button></span></span>
+      <span class="lang-note"><span lang="en">a hidden node is not observed; if it is the source, the nearest observed node is named (M2)</span><span lang="ru">скрытый узел не наблюдается; если это источник, называется ближайший наблюдаемый узел (М2)</span></span></div>
     <div class="od-two wide-left">
       <div><div class="panel-label"><span lang="en">Periodogram of x(t) on [0, T<sub>b</sub>)</span><span lang="ru">Периодограмма x(t) на [0, T<sub>b</sub>)</span></div><div id="od-pgram"></div></div>
       <div><div class="table-scroll"><table id="od-peaks"></table></div></div>
     </div>
   </li>
 
-  <!-- 7 -->
+  <!-- 6 -->
   <li class="od-step">
-    <div class="od-step-head"><span class="od-n">7</span><div>
+    <div class="od-step-head"><span class="od-n">6</span><div>
       <h3><span lang="en">Structural analysis · n-D series: one envelope per node</span><span lang="ru">Структурный анализ · n-D-ряд: огибающая на узел</span></h3>
       <span class="od-tags">H0 · <span lang="en">Morlet wavelet</span><span lang="ru">вейвлет Морле</span></span>
     </div></div>
@@ -438,27 +425,62 @@
     <div id="od-lanes"></div>
   </li>
 
+  <!-- 7 -->
+  <li class="od-step">
+    <div class="od-step-head"><span class="od-n">7</span><div>
+      <h3><span lang="en">Structural analysis · edges: finding the structure</span><span lang="ru">Структурный анализ · рёбра: поиск структуры</span></h3>
+      <span class="od-tags">H2 · M4 · <span lang="en">Thesis 2</span><span lang="ru">Положение 2</span></span>
+    </div></div>
+    <p lang="en">The <b>structural</b> graph is the physical adjacency from the object dictionary. The <b>functional</b> graph is estimated from data: an
+      identification record of the same system (no event, the rhythms excited by spontaneous bursts, as in commissioning) is turned into the same five
+      envelopes, and a dependence measure between channels gives the edges. The two graphs are compared, not merged.</p>
+    <p lang="ru"><b>Структурный</b> граф — физическая смежность из словаря объекта. <b>Функциональный</b> граф оценивается по данным: идентификационная
+      запись той же системы (без события, ритмы возбуждаются спонтанными всплесками, как при пусконаладке) превращается в те же пять огибающих,
+      а мера зависимости между каналами даёт рёбра. Графы сравниваются, а не сливаются.</p>
+    <div class="table-scroll"><table class="od-methods">
+      <tbody>
+        <tr><td><b>ar</b></td><td lang="en">|corr| of AR(p) innovations — <code>build_baseline_graph</code> of Graph-EVT-agent</td><td lang="ru">|corr| AR(p)-инноваций — <code>build_baseline_graph</code> Graph-EVT-agent</td></tr>
+        <tr><td><b>corr</b></td><td lang="en">|corr| of the envelopes at lag 0</td><td lang="ru">|corr| огибающих при нулевом сдвиге</td></tr>
+        <tr><td><b>partial</b></td><td lang="en">|partial corr| from the inverse correlation matrix: removes what other channels explain at lag 0</td><td lang="ru">|частная корреляция| по обратной корреляционной матрице: убирает то, что объясняют другие каналы при нулевом сдвиге</td></tr>
+        <tr><td><b>xcorr</b></td><td lang="en">max over |lag| ≤ L of corr(x<sub>i</sub>(t), x<sub>j</sub>(t + lag)): bursts reach a neighbour after τ</td><td lang="ru">max по |сдвиг| ≤ L от corr(x<sub>i</sub>(t), x<sub>j</sub>(t + сдвиг)): всплеск доходит до соседа через τ</td></tr>
+        <tr><td><b>pwxcorr</b></td><td lang="en">the same on AR(p) innovations (prewhitening, Box–Jenkins): sharper peaks</td><td lang="ru">то же по AR(p)-инновациям (выбеливание, Бокс — Дженкинс): пики острее</td></tr>
+        <tr><td><b>granger</b></td><td lang="en">conditional Granger: ln(RSS without channel i / RSS with all channels), lags step…L of every channel. A two-step path i → j → m is explained by j’s past, so only direct links stay strong</td><td lang="ru">условная причинность по Грейнджеру: ln(RSS без канала i / RSS со всеми каналами), сдвиги шаг…L всех каналов. Двухшаговый путь i → j → m объясняется прошлым j, поэтому сильными остаются только прямые связи</td></tr>
+      </tbody></table></div>
+    <div class="od-gctl">
+      <div class="od-ctl"><span class="od-ctl-label"><span lang="en">Method</span><span lang="ru">Метод</span></span>
+        <div class="seg small" id="od-gm"><button type="button" data-v="ar">ar</button><button type="button" data-v="corr">corr</button><button type="button" data-v="partial">partial</button><button type="button" data-v="xcorr">xcorr</button><button type="button" data-v="pwxcorr">pwxcorr</button><button type="button" data-v="granger">granger</button></div></div>
+      <div class="od-ctl"><span class="od-ctl-label"><span lang="en">Edge rule</span><span lang="ru">Правило рёбер</span></span>
+        <div class="seg small" id="od-grule"><button type="button" data-v="threshold"><span lang="en">D ≥ threshold</span><span lang="ru">D ≥ порог</span></button><button type="button" data-v="topk"><span lang="en">top-k per node</span><span lang="ru">k сильнейших на узел</span></button></div></div>
+      <label class="od-ctl"><span class="od-ctl-label"><span lang="en">Threshold</span><span lang="ru">Порог</span> <b id="od-gv-threshold"></b></span><input type="range" id="od-g-threshold" min="0" max="0.8" step="0.01"></label>
+      <div class="od-ctl"><span class="od-ctl-label">k</span><div class="seg small" id="od-gk"><button type="button" data-v="1">1</button><button type="button" data-v="2">2</button><button type="button" data-v="3">3</button></div></div>
+      <label class="od-ctl"><span class="od-ctl-label"><span lang="en">Max lag L</span><span lang="ru">Макс. сдвиг L</span> <b id="od-gv-maxLag"></b></span><input type="range" id="od-g-maxLag" min="8" max="80" step="4"></label>
+      <div class="od-ctl"><span class="od-ctl-label"><span lang="en">Lag step (granger)</span><span lang="ru">Шаг сдвига (granger)</span></span><div class="seg small" id="od-gstep"><button type="button" data-v="4">4</button><button type="button" data-v="8">8</button><button type="button" data-v="16">16</button></div></div>
+      <div class="od-ctl"><span class="od-ctl-label"><span lang="en">AR order p</span><span lang="ru">Порядок AR p</span></span><div class="seg small" id="od-gorder"><button type="button" data-v="1">1</button><button type="button" data-v="2">2</button><button type="button" data-v="4">4</button></div></div>
+      <div class="od-ctl"><span class="od-ctl-label"><span lang="en">Options</span><span lang="ru">Опции</span></span>
+        <label class="od-check-l"><input type="checkbox" id="od-gprune"> <span lang="en">prune two-step paths (xcorr)</span><span lang="ru">убрать двухшаговые пути (xcorr)</span></label>
+        <label class="od-check-l"><input type="checkbox" id="od-gsurr"> <span lang="en">surrogate test, 95 %</span><span lang="ru">тест суррогатами, 95 %</span></label></div>
+      <label class="od-ctl"><span class="od-ctl-label"><span lang="en">Identification record</span><span lang="ru">Идентификационная запись</span> <b id="od-gv-archive"></b></span><input type="range" id="od-g-archive" min="600" max="4800" step="300"></label>
+      <label class="od-ctl"><span class="od-ctl-label"><span lang="en">Excitation amplitude</span><span lang="ru">Амплитуда возбуждения</span> <b id="od-gv-exAmp"></b></span><input type="range" id="od-g-exAmp" min="0.1" max="1" step="0.05"></label>
+      <label class="od-ctl"><span class="od-ctl-label"><span lang="en">Excitation rate</span><span lang="ru">Частота возбуждения</span> <b id="od-gv-exRate"></b></span><input type="range" id="od-g-exRate" min="0.02" max="0.2" step="0.01"></label>
+    </div>
+    <div class="od-two">
+      <div><div class="panel-label"><span lang="en">Structural graph (dictionary)</span><span lang="ru">Структурный граф (словарь)</span></div><svg id="od-sgraph" class="od-graph" viewBox="0 0 360 250" role="img" aria-label="Structural graph"></svg></div>
+      <div><div class="panel-label"><span lang="en">Functional graph (estimated): solid — also in the structure, dashed — extra, faint — missed</span><span lang="ru">Функциональный граф (оценка): сплошные — есть и в структуре, пунктир — лишние, бледные — пропущенные</span></div><svg id="od-fgraph" class="od-graph" viewBox="0 0 360 250" role="img" aria-label="Functional graph"></svg></div>
+    </div>
+    <div class="readout" id="od-graph-readout"></div>
+    <div class="od-two">
+      <div><div class="panel-label"><span lang="en">Dependence D of the chosen method</span><span lang="ru">Зависимость D выбранного метода</span></div><div class="table-scroll"><table id="od-dep"></table></div></div>
+      <div><div class="panel-label"><span lang="en">All methods on this record (current rule and parameters)</span><span lang="ru">Все методы на этой записи (текущие правило и параметры)</span></div><div class="table-scroll"><table id="od-gcmp"></table></div></div>
+    </div>
+    <p class="lang-note" lang="en">Pairwise measures cannot tell a direct link from a two-step path: every burst reaches every node. Conditional Granger can, if the
+      record is long enough and well excited. The event record keeps its normal, weaker background: strong bursts there would teach the structure but mask the event.</p>
+    <p class="lang-note" lang="ru">Попарные меры не отличают прямую связь от двухшагового пути: каждый всплеск доходит до каждого узла. Условная причинность по Грейнджеру
+      отличает, если запись достаточно длинна и хорошо возбуждена. Запись с событием сохраняет обычный, более слабый фон: сильные всплески там научили бы структуре, но замаскировали бы событие.</p>
+  </li>
+
   <!-- 8 -->
   <li class="od-step">
     <div class="od-step-head"><span class="od-n">8</span><div>
-      <h3><span lang="en">Structural analysis · edges: two graph hypotheses</span><span lang="ru">Структурный анализ · рёбра: две гипотезы графа</span></h3>
-      <span class="od-tags">H2 · <span lang="en">Thesis 2</span><span lang="ru">Положение 2</span></span>
-    </div></div>
-    <p lang="en"><b>Structural</b>: physical adjacency of the identified nodes from the object dictionary. <b>Functional</b>: what Graph-EVT-agent’s
-      <code>build_baseline_graph</code> (method “ar”) finds on the n-D background — |corr| of AR(2) innovations ≥ 0.35. They are compared, not merged.</p>
-    <p lang="ru"><b>Структурная</b>: физическая смежность найденных узлов из словаря объекта. <b>Функциональная</b>: то, что находит
-      <code>build_baseline_graph</code> Graph-EVT-agent (метод «ar») на n-D-фоне, — |corr| AR(2)-инноваций ≥ 0,35. Гипотезы сравниваются, а не сливаются.</p>
-    <div class="od-two">
-      <div><div class="panel-label"><span lang="en">Structural graph</span><span lang="ru">Структурный граф</span></div><svg id="od-sgraph" class="od-graph" viewBox="0 0 360 250" role="img" aria-label="Structural graph"></svg></div>
-      <div><div class="panel-label"><span lang="en">Functional graph (build_baseline_graph, “ar”)</span><span lang="ru">Функциональный граф (build_baseline_graph, «ar»)</span></div><svg id="od-fgraph" class="od-graph" viewBox="0 0 360 250" role="img" aria-label="Functional graph"></svg></div>
-    </div>
-    <div class="readout" id="od-graph-readout"></div>
-    <details class="table-view"><summary><span lang="en">AR-innovation |corr| matrix</span><span lang="ru">Матрица |corr| AR-инноваций</span></summary><div class="table-scroll"><table id="od-dep"></table></div></details>
-  </li>
-
-  <!-- 9 -->
-  <li class="od-step">
-    <div class="od-step-head"><span class="od-n">9</span><div>
       <h3><span lang="en">Stage 2 · n-D Graph-EVT-agent: <code>detect</code></span><span lang="ru">Этап 2 · n-D Graph-EVT-agent: <code>detect</code></span></h3>
       <span class="od-tags">H1 · M1</span>
     </div></div>
@@ -472,9 +494,9 @@
     <div class="facts" id="od-nd-facts"></div>
   </li>
 
-  <!-- 10 -->
+  <!-- 9 -->
   <li class="od-step">
-    <div class="od-step-head"><span class="od-n">10</span><div>
+    <div class="od-step-head"><span class="od-n">9</span><div>
       <h3><span lang="en">n-D Graph-EVT-agent: <code>rank_source</code> — the answer</span><span lang="ru">n-D Graph-EVT-agent: <code>rank_source</code> — ответ</span></h3>
       <span class="od-tags">H3 · M2 · M5 · <span lang="en">St.</span><span lang="ru">утв.</span> 2.18.3</span>
     </div></div>
@@ -492,9 +514,9 @@
     <details class="table-view" open><summary><span lang="en">Features of rank_source</span><span lang="ru">Признаки rank_source</span></summary><div class="table-scroll"><table id="od-feats"></table></div></details>
   </li>
 
-  <!-- 11 -->
+  <!-- 10 -->
   <li class="od-step">
-    <div class="od-step-head"><span class="od-n">11</span><div>
+    <div class="od-step-head"><span class="od-n">10</span><div>
       <h3><span lang="en">Comparison with ordinary methods: the 3σ rule</span><span lang="ru">Сравнение с обычными методами: правило 3σ</span></h3>
       <span class="od-tags"><span lang="en">baseline</span><span lang="ru">базовый метод</span></span>
     </div></div>
@@ -523,9 +545,9 @@
     <div class="table-scroll"><table id="od-cmp"></table></div>
   </li>
 
-  <!-- 12 -->
+  <!-- 11 -->
   <li class="od-step">
-    <div class="od-step-head"><span class="od-n">12</span><div>
+    <div class="od-step-head"><span class="od-n">11</span><div>
       <h3><span lang="en">Verification: many noise draws, three graphs, eight specifications</span><span lang="ru">Верификация: много реализаций шума, три графа, восемь спецификаций</span></h3>
       <span class="od-tags">H4 · M4 · M9 · <span lang="en">St.</span><span lang="ru">утв.</span> 2.18.8</span>
     </div></div>
@@ -540,9 +562,9 @@
     <div class="table-scroll"><table id="od-grid"></table></div>
   </li>
 
-  <!-- 13 -->
+  <!-- 12 -->
   <li class="od-step">
-    <div class="od-step-head"><span class="od-n">13</span><div>
+    <div class="od-step-head"><span class="od-n">12</span><div>
       <h3><span lang="en">Report, number check and manifest</span><span lang="ru">Отчёт, сверка чисел и manifest</span></h3>
       <span class="od-tags">H9 · M6 · H10</span>
     </div></div>
