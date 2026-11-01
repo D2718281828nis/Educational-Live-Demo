@@ -535,8 +535,11 @@
   /**
    * Conditional Granger strength: for target m, ln(RSS without channel i / RSS with all channels), lags lagStep…maxLag of
    * every channel (own past included). A two-step path i → j → m is explained by j's past, so only direct links stay strong.
+   * Port of graph_evt_agent.graph._granger_strength: channels are standardised first (ridge acts on a common scale) and
+   * strengths are clipped at 0 (tests/port_check.js compares with the Python output).
    */
   function grangerMatrix(X, maxLag, lagStep, ridge) {
+    X = X.map(function (x) { var m = mean(x), s = std(x) || 1e-12; return Array.prototype.map.call(x, function (v) { return (v - m) / Math.max(s, 1e-12); }); });
     var p = X.length, n = X[0].length, lags = [];
     for (var l = lagStep; l <= maxLag; l += lagStep) lags.push(l);
     var T0 = maxLag, cols = [];
@@ -551,7 +554,7 @@
         if (i === m) continue;
         var red = [];
         for (c = 0; c < p; c++) if (c !== i) red = red.concat(cols[c]);
-        D[i][m] = Math.log(lagRSS(y, red, ridge) / full);
+        D[i][m] = Math.max(0, Math.log(lagRSS(y, red, ridge) / Math.max(full, 1e-300)));
       }
     }
     for (i = 0; i < p; i++) for (m = i + 1; m < p; m++) D[i][m] = D[m][i] = Math.max(D[i][m], D[m][i]);
