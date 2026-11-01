@@ -25,7 +25,7 @@
   <a class="brand" href="#top"><span lang="en">Interactive Labs</span><span lang="ru">Интерактивные лаборатории</span></a>
   <div class="toc">
     <a href="#s1"><b>1</b><span lang="en">Dissertation</span><span lang="ru">Диссертация</span></a>
-    <a href="#s2"><b>2</b><span lang="en">When — where</span><span lang="ru">Когда — где</span></a>
+    <a href="#s2"><b>2</b><span lang="en">Task · methods</span><span lang="ru">Постановка · методы</span></a>
     <a href="#s3"><b>3</b><span lang="en">One sensor</span><span lang="ru">Один датчик</span></a>
     <a href="#s4"><b>4</b><span lang="en">Labs</span><span lang="ru">Лаборатории</span></a>
     <a href="#s5"><b>5</b><span lang="en">Role in the thesis</span><span lang="ru">Место в диссертации</span></a>
@@ -78,7 +78,7 @@
     </div>
     <div class="cta">
       <a class="btn primary" href="#s4"><span lang="en">Open the labs ↓</span><span lang="ru">К лабораториям ↓</span></a>
-      <a class="btn" href="#s2"><span lang="en">Try the propagation demo</span><span lang="ru">Демо распространения</span></a>
+      <a class="btn" href="#s2"><span lang="en">Task, methods, harness</span><span lang="ru">Постановка, методы, средства</span></a>
       <a class="btn" href="#s3"><span lang="en">From one sensor to when — where</span><span lang="ru">От одного датчика к «когда — где»</span></a>
       <a class="btn" href="https://ai-is-out-there.github.io/#library"><span lang="en">Catalog of all labs ↗</span><span lang="ru">Каталог лабораторий ↗</span></a>
     </div>
@@ -151,100 +151,158 @@
   </div>
 </section>
 
-<!-- ============================================================== 2 WHEN-WHERE -->
+<!-- ============================================================== 2 TASK · METHODS · HARNESS -->
 <section id="s2">
   <header class="sec-head">
     <span class="num">2</span>
     <div>
-      <h2><span lang="en">When — where: an event spreading over a graph</span><span lang="ru">Когда — где: событие распространяется по графу</span></h2>
-      <p lang="en">An event starts at moment <i>t</i>* in element <i>s</i>* and spreads through the system. Two answers are needed and
-        checked independently: the moment <span class="hat">t</span> (“when”) and a probability distribution of the source (“where”).</p>
-      <p lang="ru">В момент <i>t</i>* в элементе <i>s</i>* зарождается событие и распространяется по системе. Нужны два ответа,
-        проверяемые независимо: момент <span class="hat">t</span> («когда») и распределение вероятностей источника («где»).</p>
+      <h2><span lang="en">The “when — where” problem: task, methods, harness</span><span lang="ru">Задача «когда — где»: постановка, методы, средства</span></h2>
+      <p lang="en">A short map of the method before the worked example. Section 3 applies all of it, step by step, to one synthetic series.</p>
+      <p lang="ru">Короткая карта метода перед разобранным примером. Раздел 3 применяет её шаг за шагом к одному синтетическому ряду.</p>
     </div>
   </header>
 
+  <h3 class="rv-sub"><span class="rv-n">2.1</span><span lang="en">Task formulation</span><span lang="ru">Постановка задачи</span></h3>
+  <div class="rv-task">
+    <svg class="rv-task-fig" viewBox="0 0 420 244" role="img" aria-label="An event starts at node s* at time t* and spreads over the graph; the observed nodes O give the series X">
+      <g class="rv-e"><line x1="60" y1="120" x2="150" y2="55"/><line x1="60" y1="120" x2="150" y2="185"/><line x1="150" y1="55" x2="150" y2="185"/><line x1="150" y1="55" x2="250" y2="75"/><line x1="150" y1="185" x2="240" y2="185"/><line x1="240" y1="185" x2="250" y2="75"/></g>
+      <g class="rv-front"><circle cx="150" cy="55" r="34"/><circle cx="150" cy="55" r="62"/></g>
+      <circle cx="60" cy="120" r="13" class="rv-v"/><circle cx="150" cy="55" r="15" class="rv-src"/><circle cx="150" cy="185" r="13" class="rv-v"/><circle cx="240" cy="185" r="13" class="rv-v"/>
+      <rect x="236" y="61" width="28" height="28" rx="6" class="rv-obs"/>
+      <text x="150" y="59" class="rv-t w">s*</text><text x="250" y="75" class="rv-t">O</text>
+      <text x="150" y="20" class="rv-t">t*</text>
+      <path d="M266 75 C 300 75, 300 75, 318 75" class="rv-arrow"/>
+      <polyline points="322,90 332,88 342,91 352,86 362,89 368,60 374,100 380,70 386,95 392,84 402,89 412,87" class="rv-sig"/>
+      <text x="366" y="118" class="rv-t s"><tspan lang="en">observed X</tspan><tspan lang="ru">наблюдение X</tspan></text>
+      <line x1="322" y1="140" x2="412" y2="140" class="rv-axis"/><line x1="362" y1="132" x2="362" y2="148" class="rv-tick"/>
+      <text x="362" y="164" class="rv-t s">t̂ — <tspan lang="en">when</tspan><tspan lang="ru">когда</tspan></text>
+      <g transform="translate(330,178)"><rect x="0" y="22" width="10" height="8" class="rv-bar"/><rect x="14" y="2" width="10" height="28" class="rv-bar hi"/><rect x="28" y="16" width="10" height="14" class="rv-bar"/><rect x="42" y="24" width="10" height="6" class="rv-bar"/><rect x="56" y="26" width="10" height="4" class="rv-bar"/></g>
+      <text x="368" y="232" class="rv-t s">P(ŝ = v) — <tspan lang="en">where</tspan><tspan lang="ru">где</tspan></text>
+    </svg>
+    <div class="rv-task-txt">
+      <p lang="en"><b>Given</b> a system graph G = (V, E) with path metric d, a series X<sub>t</sub> from the observed nodes O ⊆ V (p = |O| channels),
+        a background [1, T<sub>b</sub>) known to be normal and a hypothesis about the graph. An extreme event starts at t* in s* ∈ V and spreads over G.</p>
+      <p lang="ru"><b>Дано:</b> граф системы G = (V, E) с метрикой путей d, ряд X<sub>t</sub> наблюдаемых узлов O ⊆ V (p = |O| каналов),
+        заведомо нормальный фон [1, T<sub>b</sub>) и гипотеза о графе. Экстремальное событие зарождается в момент t* в узле s* ∈ V и распространяется по G.</p>
+      <p lang="en"><b>Find</b> the moment t̂ (“when”) and a distribution P(ŝ = v) over the nodes (“where”), each with its own check.</p>
+      <p lang="ru"><b>Найти</b> момент t̂ («когда») и распределение P(ŝ = v) по узлам («где»), каждое со своей проверкой.</p>
+      <div class="rv-rules">
+        <div><b lang="en">Rule 1</b><b lang="ru">Правило 1</b> <span lang="en">everything is tuned on the background only; after it — application only</span><span lang="ru">всё настраивается только на фоне; после фона — только применение</span></div>
+        <div><b lang="en">Rule 2</b><b lang="ru">Правило 2</b> <span lang="en">the graph is a testable hypothesis, not a causal claim</span><span lang="ru">граф — проверяемая гипотеза, а не утверждение о причинности</span></div>
+        <div><b lang="en">Rule 3</b><b lang="ru">Правило 3</b> <span lang="en">accuracy is measured first on a benchmark with known t*, s*</span><span lang="ru">точность сначала измеряется на эталоне с известными t*, s*</span></div>
+      </div>
+    </div>
+  </div>
   <div class="eq-grid">
-    <div class="eq-block">
-      <span class="lbl"><span lang="en">when</span><span lang="ru">когда</span></span>
-      z<sub>t,j</sub> = |X<sub>t,j</sub> − m<sub>j</sub>| / max(<span lang="en">1.4826</span><span lang="ru">1,4826</span>·MAD<sub>j</sub>, ε), &nbsp;
-      I<sub>t</sub> = (1/k) Σ<sub>j∈T<sub>k</sub>(t)</sub> z<sub>t,j</sub>
-    </div>
-    <div class="eq-block">
-      <span class="lbl"><span lang="en">where</span><span lang="ru">где</span></span>
-      ŝ = arg max<sub>j</sub> P(y = j | F, E), &nbsp; P<sub>j</sub> = e<sup>ℓ<sub>j</sub></sup> / Σ<sub>k</sub> e<sup>ℓ<sub>k</sub></sup>
-    </div>
-  </div>
-  <p lang="en" class="lede" style="font-size:15px">The alarm <span class="hat">t</span> is the start of the first run of <i>r</i> exceedances of a POT/GPD threshold
-    fitted on the background. The graph <i>G</i> = (<i>V</i>, <i>E</i>) is a testable hypothesis of propagation paths, not a causal claim.
-    With a single channel (<i>p</i> = 1) the source is not identifiable, so “where” becomes “in which time window”.</p>
-  <p lang="ru" class="lede" style="font-size:15px">Тревога <span class="hat">t</span> — начало первой серии из <i>r</i> превышений порога POT/GPD, обученного по фону.
-    Граф <i>G</i> = (<i>V</i>, <i>E</i>) — проверяемая гипотеза о путях распространения, а не утверждение о причинности.
-    При одном канале (<i>p</i> = 1) источник не идентифицируем, и вопрос «где» переходит в вопрос «в каком окне времени».</p>
-
-  <div class="widget">
-    <div class="card">
-      <h3><span lang="en">Ring of 12 channels</span><span lang="ru">Кольцо из 12 каналов</span></h3>
-      <svg id="ring" viewBox="0 0 320 320" role="img" aria-labelledby="ring-desc">
-        <desc id="ring-desc">Twelve channels on a ring; the pulse starts in channel 00 and reaches the others with a delay of 5 samples per ring step.</desc>
-      </svg>
-      <div class="controls">
-        <button type="button" class="btn small" id="play"><span lang="en">▶ Play</span><span lang="ru">▶ Пуск</span></button>
-        <input type="range" id="t-slider" min="900" max="1060" step="1" value="949" aria-label="t">
-      </div>
-      <div class="readout" id="readout" aria-live="polite"></div>
-      <div class="jumps">
-        <button type="button" class="btn small" data-jump="932">t* = 932</button>
-        <button type="button" class="btn small" data-jump="949"><span lang="en">alarm r = 1</span><span lang="ru">тревога r = 1</span></button>
-        <button type="button" class="btn small" data-jump="959"><span lang="en">alarm r = 2</span><span lang="ru">тревога r = 2</span></button>
-      </div>
-    </div>
-    <div class="card">
-      <h3><span lang="en">Pulse envelope by ring distance from the source</span><span lang="ru">Огибающая импульса по расстоянию от источника на кольце</span></h3>
-      <div class="legend" id="env-legend"></div>
-      <div class="chart-wrap">
-        <svg id="env-chart" viewBox="0 0 640 300" role="img" aria-label="Envelope chart"></svg>
-        <div class="tooltip" id="env-tip" hidden></div>
-      </div>
-      <p class="lang-note"><span lang="en">Hover the chart to read all seven curves; click to move the time cursor.</span>
-        <span lang="ru">Наведите курсор, чтобы прочитать все семь кривых; щелчок переносит курсор времени.</span></p>
-      <details class="table-view">
-        <summary><span lang="en">Table view</span><span lang="ru">Таблица</span></summary>
-        <div class="table-scroll"><table id="env-table"></table></div>
-      </details>
-    </div>
+    <div class="eq-block"><span class="lbl"><span lang="en">when</span><span lang="ru">когда</span></span>
+      z<sub>t,j</sub> = |X<sub>t,j</sub> − m<sub>j</sub>| / (1.4826·MAD<sub>j</sub>), &nbsp; I<sub>t</sub> = top-k mean<sub>j</sub> z<sub>t,j</sub>, &nbsp; t̂ = <span lang="en">start of the first run of r exceedances of</span><span lang="ru">начало первой серии из r превышений</span> q<sub>EVT</sub> (POT/GPD)</div>
+    <div class="eq-block"><span class="lbl"><span lang="en">where</span><span lang="ru">где</span></span>
+      P(ŝ = j) = softmax<sub>j</sub>(peak<sub>j</sub> + √E<sub>j</sub> + 0.15·nbr<sub>j</sub> − 0.5·lat<sub>j</sub>), &nbsp; ŝ = arg min<sub>v</sub> ‖P(a − d<sub>v</sub>/c)‖²</div>
   </div>
 
-  <div class="callout">
-    <span lang="en">This demo draws the <b>ground truth</b> of the synthetic benchmark of § 7.1.2 exactly as it is constructed: the pulse is
-      injected into <code>channel_00</code> at sample 932, lasts 75 samples and reaches the other channels along the ring with a delay of
-      5 samples and an attenuation of 0.65 per ring step. Only the sin² envelope is drawn; the real pulse is a fragment of Hurst-coloured
-      noise (<i>H</i> = 0.75) scaled to 2σ on top of coupled Kuramoto oscillators — explore the actual signal in the Kuramoto explorer.
-      The two alarm moments are results reported in the dissertation.</span>
-    <span lang="ru">Демо рисует <b>эталон</b> синтетического примера § 7.1.2 ровно так, как он построен: импульс впрыснут в <code>channel_00</code>
-      с 932-го отсчёта, длится 75 отсчётов и приходит в остальные каналы по кольцу с задержкой 5 отсчётов и ослаблением в 0,65 раза на каждый
-      шаг кольца. Показана только огибающая sin²; сам импульс — фрагмент шума с показателем Хёрста <i>H</i> = 0,75, масштабированный до 2σ
-      поверх связанных осцилляторов Курамото, — его можно исследовать в обозревателе Курамото. Два момента тревоги — результаты,
-      приведённые в диссертации.</span>
+  <h3 class="rv-sub"><span class="rv-n">2.2</span><span lang="en">Methods M1–M9</span><span lang="ru">Методы М1–М9</span></h3>
+  <p class="rv-lede" lang="en">M1–M5 are statements proved in § 2.18 of the dissertation; M6–M9 are proposed methods with code in the companion repositories.</p>
+  <p class="rv-lede" lang="ru">М1–М5 — утверждения, доказанные в § 2.18 диссертации; М6–М9 — предлагаемые методы с программной опорой в репозиториях.</p>
+  <div class="rv-methods">
+      <article class="rv-card">
+        <div class="rv-top"><span class="rv-code">M1</span><span class="rv-st proved"><span lang="en">proved, § 2.18</span><span lang="ru">доказано, § 2.18</span></span></div>
+        <h4><span lang="en">False-alarm length and alarm delay</span><span lang="ru">Длина фона до ложной тревоги и смещение тревоги</span></h4>
+        <div class="rv-f">ARL₀ = μ<sub>r</sub>(1 − γ) = Σ<sub>j≤r</sub> (1 − γ)<sup>−j</sup></div>
+        <p><span lang="en">How rarely a stable process raises a false alarm, and how late a run of r exceedances confirms a real one.</span><span lang="ru">Как редко стабильный процесс даёт ложную тревогу и насколько поздно серия из r превышений подтверждает настоящую.</span></p>
+        <div class="rv-where"><span lang="en">shown in § 3, steps 4, 8, 10</span><span lang="ru">показано в § 3, шаги 4, 8, 10</span></div>
+      </article>
+      <article class="rv-card">
+        <div class="rv-top"><span class="rv-code">M2</span><span class="rv-st proved"><span lang="en">proved, § 2.18</span><span lang="ru">доказано, § 2.18</span></span></div>
+        <h4><span lang="en">Identifiability of the source</span><span lang="ru">Идентифицируемость источника</span></h4>
+        <div class="rv-f"><span lang="en">O doubly resolves V ⇔ s* is unique</span><span lang="ru">O дважды разрешает V ⇔ s* единственен</span></div>
+        <p><span lang="en">From arrival times the source is unique only if the observed set doubly resolves the graph. One sensor never does.</span><span lang="ru">По временам прихода источник единственен, только если наблюдаемое множество дважды разрешает граф. Один датчик — никогда.</span></p>
+        <div class="rv-where"><span lang="en">shown in § 3, steps 4, 5, 9</span><span lang="ru">показано в § 3, шаги 4, 5, 9</span></div>
+      </article>
+      <article class="rv-card rv-dim">
+        <div class="rv-top"><span class="rv-code">M3</span><span class="rv-st proved"><span lang="en">proved, § 2.18</span><span lang="ru">доказано, § 2.18</span></span></div>
+        <h4><span lang="en">Inflation without grouping</span><span lang="ru">Завышение без группировки</span></h4>
+        <div class="rv-f">Δ = (1 − K<sup>−(m−1)</sup>)(h − a₀)</div>
+        <p><span lang="en">Splitting nodes of one physical group between train and test overstates quality by Δ.</span><span lang="ru">Разбиение узлов одной физической группы между обучением и проверкой завышает качество на Δ.</span></p>
+        <div class="rv-where"><span lang="en">not shown in § 3</span><span lang="ru">в § 3 не показано</span></div>
+      </article>
+      <article class="rv-card">
+        <div class="rv-top"><span class="rv-code">M4</span><span class="rv-st proved"><span lang="en">proved, § 2.18</span><span lang="ru">доказано, § 2.18</span></span></div>
+        <h4><span lang="en">Value of the graph</span><span lang="ru">Ценность графа</span></h4>
+        <div class="rv-f">Δ<sub>G</sub> = M(f(X, A)) − M(f(X, ∅))</div>
+        <p><span lang="en">The graph counts only if it beats the empty graph on every seed and by the Nadeau–Bengio test.</span><span lang="ru">Граф ценен, только если превосходит пустой граф на каждой затравке и по критерию Надо — Бенжио.</span></p>
+        <div class="rv-where"><span lang="en">shown in § 3, steps 7, 11</span><span lang="ru">показано в § 3, шаги 7, 11</span></div>
+      </article>
+      <article class="rv-card">
+        <div class="rv-top"><span class="rv-code">M5</span><span class="rv-st proved"><span lang="en">proved, § 2.18</span><span lang="ru">доказано, § 2.18</span></span></div>
+        <h4><span lang="en">Estimates are not merged</span><span lang="ru">Оценки не сводятся</span></h4>
+        <div class="rv-f">P(Ŝ<sub>i</sub> = Ŝ<sub>j</sub>) = ½ + 2(a<sub>i</sub> − ½)(a<sub>j</sub> − ½)</div>
+        <p><span lang="en">Independent estimates are merged only when they agree often enough; otherwise they are kept side by side.</span><span lang="ru">Независимые оценки сливаются, только если достаточно часто согласны; иначе сохраняются рядом.</span></p>
+        <div class="rv-where"><span lang="en">shown in § 3, step 9</span><span lang="ru">показано в § 3, шаг 9</span></div>
+      </article>
+      <article class="rv-card">
+        <div class="rv-top"><span class="rv-code">M6</span><span class="rv-st proposed"><span lang="en">proposed</span><span lang="ru">предложено</span></span></div>
+        <h4><span lang="en">Numerical fidelity of the text</span><span lang="ru">Числовая верность текста</span></h4>
+        <div class="rv-f">∀a ∈ N(text) ∃e ∈ N(result): |a − e| ≤ ε</div>
+        <p><span lang="en">A report may only repeat numbers that the computation produced.</span><span lang="ru">Отчёт может повторять только числа, полученные расчётом.</span></p>
+        <div class="rv-where"><span lang="en">shown in § 3, step 12</span><span lang="ru">показано в § 3, шаг 12</span></div>
+      </article>
+      <article class="rv-card rv-dim">
+        <div class="rv-top"><span class="rv-code">M7</span><span class="rv-st proposed"><span lang="en">proposed</span><span lang="ru">предложено</span></span></div>
+        <h4><span lang="en">Episode labelling</span><span lang="ru">Разметка эпизодов</span></h4>
+        <div class="rv-f">manual · pseudo · abstained</div>
+        <p><span lang="en">All episodes of a long record are labelled; pseudo-labels pre-train, quality is measured on manual labels only.</span><span lang="ru">Размечаются все эпизоды длинной записи; псевдометки — для предобучения, качество — только по ручной разметке.</span></p>
+        <div class="rv-where"><span lang="en">not shown in § 3</span><span lang="ru">в § 3 не показано</span></div>
+      </article>
+      <article class="rv-card">
+        <div class="rv-top"><span class="rv-code">M8</span><span class="rv-st proposed"><span lang="en">proposed</span><span lang="ru">предложено</span></span></div>
+        <h4><span lang="en">Graph under perturbation</span><span lang="ru">Граф под возмущением</span></h4>
+        <div class="rv-f">M(G<sub>p</sub>), M(G̃ ~ CM(deg G))</div>
+        <p><span lang="en">Change the graph (edges, method, data) and watch whether the answer changes: structure versus density.</span><span lang="ru">Измените граф (рёбра, метод, данные) и проследите, меняется ли ответ: структура против плотности.</span></p>
+        <div class="rv-where"><span lang="en">shown in § 3, step 7</span><span lang="ru">показано в § 3, шаг 7</span></div>
+      </article>
+      <article class="rv-card">
+        <div class="rv-top"><span class="rv-code">M9</span><span class="rv-st proposed"><span lang="en">proposed</span><span lang="ru">предложено</span></span></div>
+        <h4><span lang="en">Robustness to the specification</span><span lang="ru">Устойчивость к спецификации</span></h4>
+        <div class="rv-f">ℛ(c) = |Θ|<sup>−1</sup> Σ<sub>θ∈Θ</sub> 𝟙[c holds at θ]</div>
+        <p><span lang="en">A conclusion is reported with the share of pre-set specifications under which it holds.</span><span lang="ru">Вывод сообщается вместе с долей заранее заданных спецификаций, при которых он верен.</span></p>
+        <div class="rv-where"><span lang="en">shown in § 3, step 11</span><span lang="ru">показано в § 3, шаг 11</span></div>
+      </article>
   </div>
 
-  <div class="facts">
-    <div class="fact"><div class="v">949 <small>(+17)</small></div>
-      <div class="k"><span lang="en">EVT alarm with r = 1, inside the event window 932–1036</span><span lang="ru">тревога EVT при r = 1, внутри окна события 932–1036</span></div></div>
-    <div class="fact"><div class="v"><span lang="en">0.47</span><span lang="ru">0,47</span></div>
-      <div class="k"><span lang="en">probability of the true source <code>channel_00</code>, ranked first; second is ring neighbour <code>channel_11</code></span>
-        <span lang="ru">вероятность истинного источника <code>channel_00</code> — первое место; второе — сосед по кольцу <code>channel_11</code></span></div></div>
-    <div class="fact"><div class="v">959 <small>(+27)</small></div>
-      <div class="k"><span lang="en">alarm with r = 2: the pulse has already reached the neighbours and <code>channel_01</code> is named the source</span>
-        <span lang="ru">тревога при r = 2: импульс уже дошёл до соседей, источником назван <code>channel_01</code></span></div></div>
-    <div class="fact"><div class="v"><span lang="en">7.5 %</span><span lang="ru">7,5 %</span></div>
-      <div class="k"><span lang="en">amplitude reaching the farthest channel <code>channel_06</code>, 30 samples after the source</span>
-        <span lang="ru">амплитуда, доходящая до самого удалённого канала <code>channel_06</code> через 30 отсчётов</span></div></div>
+  <h3 class="rv-sub"><span class="rv-n">2.3</span><span lang="en">Harness H0–H10</span><span lang="ru">Средства: конвейер H0–H10</span></h3>
+  <p class="rv-lede" lang="en">Every handler maps the background and the object dictionary to a <b>hypothesis</b>, a <b>check</b> and a <b>manifest</b>:
+    h<sub>θ</sub>: (X<sub>1:T<sub>b</sub></sub>, dictionary) ↦ (𝓗, check, manifest), with θ fixed before the run.</p>
+  <p class="rv-lede" lang="ru">Каждый обработчик переводит фон и словарь объекта в <b>гипотезу</b>, <b>проверку</b> и <b>manifest</b>:
+    h<sub>θ</sub>: (X<sub>1:T<sub>b</sub></sub>, словарь) ↦ (𝓗, проверка, manifest), параметры θ фиксируются до расчёта.</p>
+  <div class="rv-harness">
+    <div class="rv-h rv-band"><span class="rv-code">H7</span><span class="rv-hn"><span lang="en">orchestrator: plan → act → observe</span><span lang="ru">оркестратор: план → действие → наблюдение</span></span><span class="rv-hs">§3 · 4</span></div>
+    <div class="rv-chain">
+      <div class="rv-h "><span class="rv-code">H0</span><span class="rv-hn"><span lang="en">input & representation</span><span lang="ru">вход и представление</span></span><span class="rv-hs">§3 · 2, 4–6</span></div>
+      <div class="rv-h "><span class="rv-code">H1</span><span class="rv-hn"><span lang="en">when: POT/GPD + r</span><span lang="ru">когда: POT/GPD + r</span></span><span class="rv-hs">§3 · 4, 8</span></div>
+      <div class="rv-h "><span class="rv-code">H2</span><span class="rv-hn"><span lang="en">graph hypotheses</span><span lang="ru">гипотезы графа</span></span><span class="rv-hs">§3 · 5, 7</span></div>
+      <div class="rv-h "><span class="rv-code">H3</span><span class="rv-hn"><span lang="en">where: ranking</span><span lang="ru">где: ранжирование</span></span><span class="rv-hs">§3 · 9</span></div>
+      <div class="rv-h "><span class="rv-code">H4</span><span class="rv-hn"><span lang="en">verification</span><span lang="ru">верификация</span></span><span class="rv-hs">§3 · 11</span></div>
+      <div class="rv-h "><span class="rv-code">H5</span><span class="rv-hn"><span lang="en">integration of layers</span><span lang="ru">интеграция слоёв</span></span><span class="rv-hs">—</span></div>
+      <div class="rv-h "><span class="rv-code">H9</span><span class="rv-hn"><span lang="en">reviewers, report</span><span lang="ru">рецензенты, отчёт</span></span><span class="rv-hs">§3 · 12</span></div>
+      <div class="rv-h "><span class="rv-code">H10</span><span class="rv-hn"><span lang="en">reproducibility, manifest</span><span lang="ru">воспроизводимость, manifest</span></span><span class="rv-hs">§3 · 12</span></div>
+    </div>
+    <div class="rv-side">
+      <div class="rv-h rv-band"><span class="rv-code">H6</span><span class="rv-hn"><span lang="en">positive control: benchmarks with known t*, s* check H1–H4</span><span lang="ru">положительный контроль: эталоны с известными t*, s* проверяют H1–H4</span></span><span class="rv-hs">§3 · 1, 11</span></div>
+      <div class="rv-h rv-band"><span class="rv-code">H8</span><span class="rv-hn"><span lang="en">episode labelling → H3</span><span lang="ru">разметка эпизодов → H3</span></span><span class="rv-hs">—</span></div>
+    </div>
   </div>
-  <p class="lang-note" style="margin-top:10px"><span lang="en">Lesson: the persistence rule <i>r</i> barely changes “when” but decides “where” — the longer the
-    alarm waits for confirmation, the further the front spreads.</span>
-    <span lang="ru">Вывод: правило устойчивости <i>r</i> почти не меняет ответ «когда», но определяет ответ «где» — чем дольше тревога ждёт подтверждения,
-    тем дальше успевает уйти фронт.</span></p>
+
+  <h3 class="rv-sub"><span class="rv-n">2.4</span><span lang="en">The route of section 3: one sensor (p = 1)</span><span lang="ru">Маршрут раздела 3: один датчик (p = 1)</span></h3>
+  <ol class="rv-route">
+    <li><b>x(t)</b><span lang="en">one series at E</span><span lang="ru">один ряд в E</span></li>
+    <li><b>H1 · M1</b><span lang="en">1-D EVT: is there an event?</span><span lang="ru">1-D EVT: есть ли событие?</span></li>
+    <li><b>M2</b><span lang="en">one sensor cannot localize</span><span lang="ru">один датчик не локализует</span></li>
+    <li><b>H0 · H2</b><span lang="en">structural analysis: nodes, n-D series, edges</span><span lang="ru">структурный анализ: узлы, n-D-ряд, рёбра</span></li>
+    <li><b>H1 · H3</b><span lang="en">n-D Graph-EVT-agent: detect → rank_source</span><span lang="ru">n-D Graph-EVT-agent: detect → rank_source</span></li>
+    <li><b>H4 · M4 · M9</b><span lang="en">verification</span><span lang="ru">верификация</span></li>
+    <li class="rv-ans"><b>t̂, ŝ</b><span lang="en">when and where</span><span lang="ru">когда и где</span></li>
+  </ol>
+  <p class="rv-lede"><a class="btn small primary" href="#s3"><span lang="en">Go to the worked example ↓</span><span lang="ru">К разобранному примеру ↓</span></a></p>
 </section>
 
 <!-- ============================================================== 3 ONE SENSOR (1-D → STRUCTURAL ANALYSIS → n-D) -->

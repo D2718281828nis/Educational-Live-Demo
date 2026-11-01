@@ -26,9 +26,8 @@ installation.
 | [Reservoir computing explainer](https://d2718281828nis.github.io/ML-Reservoir_Computing/) ([RU](https://d2718281828nis.github.io/ML-Reservoir_Computing/ru/)) | feed-forward network vs echo state network and NG-RC, trained in the browser; link to control theory | § 2.17, § 3.12 | EN · RU |
 | Catalog: [ai-is-out-there.github.io/#library](https://ai-is-out-there.github.io/#library) | all labs, including those outside the dissertation | — | — |
 
-The page itself adds a small live demo: the ground truth of the synthetic benchmark of § 7.1.2 (pulse injected into
-`channel_00` at sample 932, 75 samples long, delay 5 samples and attenuation 0.65 per ring step), with the EVT alarm
-moments reported in the dissertation (r = 1 → sample 949, r = 2 → sample 959).
+The page itself gives a short visual review of the “when — where” task, the methods M1–M9 and the harness H0–H10
+(section 2), followed by a worked synthetic example (section 3).
 
 **One sensor, five nodes** (section 3 of the page): from a single observed series to the answer “when — where”.
 A Hurst-coloured burst of duration *D* starts at one of nodes A–D and reaches every node along the fastest path of the
@@ -75,7 +74,7 @@ J ≈ 0.6 even without noise; conditional Granger recovers the structure (J ≈ 
 index.html        bilingual page (EN/RU switch, ?lang=en|ru)
 ru/index.html     Russian entry point → ../?lang=ru
 css/site.css      styles, light and dark themes
-js/site.js        language/theme switches and the ring-propagation demo
+js/site.js        language/theme switches and the Kuramoto card thumbnail
 js/onedim-core.js numerics of section 3 (generator, 1-D EVT, structural analysis, n-D Graph-EVT-agent port); runs in Node too
 js/onedim.js      section 3: charts and controls
 .github/workflows/pages.yml   deploys the site to GitHub Pages
@@ -107,9 +106,8 @@ All data are synthetic. The labs illustrate the method and are not intended for 
 | [Резервуарные вычисления](https://d2718281828nis.github.io/ML-Reservoir_Computing/ru/) | сеть прямого распространения против сети эхо-состояний и NG-RC, обучение в браузере; связь с ТАУ | § 2.17, § 3.12 | RU · EN |
 | Каталог: [ai-is-out-there.github.io/#library](https://ai-is-out-there.github.io/#library) | все лаборатории, включая не относящиеся к диссертации | — | — |
 
-На самой странице есть небольшое живое демо: эталон синтетического примера § 7.1.2 (импульс впрыснут в `channel_00`
-с 932-го отсчёта, длится 75 отсчётов, задержка 5 отсчётов и ослабление в 0,65 раза на каждый шаг кольца) и моменты
-тревоги EVT, приведённые в диссертации (r = 1 → 949-й отсчёт, r = 2 → 959-й).
+На самой странице — короткий наглядный обзор задачи «когда — где», методов М1–М9 и средств H0–H10 (раздел 2)
+и разобранный синтетический пример (раздел 3).
 
 **Один датчик, пять узлов** (раздел 3 страницы): от одного наблюдаемого ряда к ответу «когда — где». Всплеск по Хёрсту
 длительностью *D* зарождается в одном из узлов A–D и приходит в каждый узел по самому быстрому пути графа (на ребре
