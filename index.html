@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Interactive Labs · Graph-EVT</title>
-<meta name="description" content="Bilingual (EN/RU) hub of the interactive labs that accompany the dissertation “Methods and tools for studying extreme events of complex systems based on graph neural networks”: the when–where method, propagation of a synthetic event over a graph, the Kuramoto explorer and reservoir computing.">
+<meta name="description" content="Bilingual (EN/RU) hub of the interactive labs that accompany the dissertation “Methods and tools for studying extreme events of complex systems based on graph neural networks”: the when–where method, propagation of a synthetic event over a graph, the harness step by step on one sensor, the Kuramoto explorer and reservoir computing.">
 <link rel="stylesheet" href="css/site.css">
 <script>
   // Language and theme before first paint: ?lang= > saved choice > browser language.
@@ -26,9 +26,10 @@
   <div class="toc">
     <a href="#s1"><b>1</b><span lang="en">Dissertation</span><span lang="ru">Диссертация</span></a>
     <a href="#s2"><b>2</b><span lang="en">When — where</span><span lang="ru">Когда — где</span></a>
-    <a href="#s3"><b>3</b><span lang="en">Labs</span><span lang="ru">Лаборатории</span></a>
-    <a href="#s4"><b>4</b><span lang="en">Role in the thesis</span><span lang="ru">Место в диссертации</span></a>
-    <a href="#s5"><b>5</b><span lang="en">Repositories</span><span lang="ru">Репозитории</span></a>
+    <a href="#s3"><b>3</b><span lang="en">One sensor</span><span lang="ru">Один датчик</span></a>
+    <a href="#s4"><b>4</b><span lang="en">Labs</span><span lang="ru">Лаборатории</span></a>
+    <a href="#s5"><b>5</b><span lang="en">Role in the thesis</span><span lang="ru">Место в диссертации</span></a>
+    <a href="#s6"><b>6</b><span lang="en">Repositories</span><span lang="ru">Репозитории</span></a>
   </div>
   <div class="nav-tools">
     <div class="seg small" role="group" aria-label="Language / Язык">
@@ -76,8 +77,9 @@
       </dl>
     </div>
     <div class="cta">
-      <a class="btn primary" href="#s3"><span lang="en">Open the labs ↓</span><span lang="ru">К лабораториям ↓</span></a>
+      <a class="btn primary" href="#s4"><span lang="en">Open the labs ↓</span><span lang="ru">К лабораториям ↓</span></a>
       <a class="btn" href="#s2"><span lang="en">Try the propagation demo</span><span lang="ru">Демо распространения</span></a>
+      <a class="btn" href="#s3"><span lang="en">From one sensor to when — where</span><span lang="ru">От одного датчика к «когда — где»</span></a>
       <a class="btn" href="https://ai-is-out-there.github.io/#library"><span lang="en">Catalog of all labs ↗</span><span lang="ru">Каталог лабораторий ↗</span></a>
     </div>
   </div>
@@ -245,10 +247,303 @@
     тем дальше успевает уйти фронт.</span></p>
 </section>
 
-<!-- ============================================================== 3 LABS -->
+<!-- ============================================================== 3 ONE SENSOR (1-D → STRUCTURAL ANALYSIS → n-D) -->
 <section id="s3">
   <header class="sec-head">
     <span class="num">3</span>
+    <div>
+      <h2><span lang="en">One sensor, five nodes: from a 1-D series to “when — where”</span><span lang="ru">Один датчик, пять узлов: от одномерного ряда к ответу «когда — где»</span></h2>
+      <p lang="en">An extreme event starts in one of the nodes A–D and spreads along the graph. Only node E is measured: one series (<i>p</i> = 1).
+        By Theorem 2.18.1 one sensor cannot tell the source, so the harness goes in two stages: <b>1-D EVT</b> decides that an extreme event
+        happened; a <b>structural analysis</b> of the background turns the series into nodes, edges and an <b>n-D series</b>; the <b>n-D path of
+        Graph-EVT-agent</b> answers when and where. An ordinary 3σ rule runs alongside. Everything is recomputed in the browser.</p>
+      <p lang="ru">Экстремальное событие зарождается в одном из узлов A–D и распространяется по графу. Измеряется только узел E — один ряд (<i>p</i> = 1).
+        По теореме 2.18.1 один датчик не различает источник, поэтому конвейер работает в два этапа: <b>одномерная EVT</b> устанавливает, что произошло
+        экстремальное событие; <b>структурный анализ</b> фона превращает ряд в узлы, рёбра и <b>многомерный ряд</b>; <b>n-D-ветвь Graph-EVT-agent</b>
+        отвечает, когда и где. Рядом работает обычное правило 3σ. Всё пересчитывается в браузере.</p>
+    </div>
+  </header>
+
+  <div class="card od-controls" id="od-controls">
+    <div class="od-ctl">
+      <span class="od-ctl-label"><span lang="en">True source s*</span><span lang="ru">Истинный источник s*</span></span>
+      <div class="seg" role="group" aria-label="source" id="od-source">
+        <button type="button" data-src="0">A</button><button type="button" data-src="1">B</button><button type="button" data-src="2">C</button><button type="button" data-src="3">D</button>
+      </div>
+    </div>
+    <label class="od-ctl"><span class="od-ctl-label"><span lang="en">Onset t*</span><span lang="ru">Начало t*</span> <b id="od-v-onset"></b></span>
+      <input type="range" id="od-onset" min="960" max="1200" step="10"></label>
+    <label class="od-ctl"><span class="od-ctl-label"><span lang="en">Duration D</span><span lang="ru">Длительность D</span> <b id="od-v-duration"></b></span>
+      <input type="range" id="od-duration" min="60" max="180" step="10"></label>
+    <label class="od-ctl"><span class="od-ctl-label"><span lang="en">Hurst H</span><span lang="ru">Хёрст H</span> <b id="od-v-hurst"></b></span>
+      <input type="range" id="od-hurst" min="0.3" max="0.95" step="0.05"></label>
+    <label class="od-ctl"><span class="od-ctl-label"><span lang="en">Magnitude M</span><span lang="ru">Амплитуда M</span> <b id="od-v-magnitude"></b></span>
+      <input type="range" id="od-magnitude" min="2" max="8" step="0.5"></label>
+    <div class="od-ctl">
+      <span class="od-ctl-label"><span lang="en">Envelope g</span><span lang="ru">Огибающая g</span></span>
+      <div class="seg" role="group" aria-label="envelope" id="od-envelope">
+        <button type="button" data-env="sin2">sin²</button><button type="button" data-env="exp">exp</button>
+      </div>
+    </div>
+    <div class="od-ctl">
+      <span class="od-ctl-label"><span lang="en">Noise seed</span><span lang="ru">Затравка шума</span> <b id="od-v-seed"></b></span>
+      <div class="od-row">
+        <button type="button" class="btn small" id="od-reseed"><span lang="en">New noise</span><span lang="ru">Новый шум</span></button>
+        <button type="button" class="btn small" id="od-reset"><span lang="en">Reset</span><span lang="ru">Сброс</span></button>
+      </div>
+    </div>
+  </div>
+
+  <ol class="od-steps">
+
+  <!-- 1 -->
+  <li class="od-step" id="od-step1">
+    <div class="od-step-head"><span class="od-n">1</span><div>
+      <h3><span lang="en">The system and the task</span><span lang="ru">Система и постановка</span></h3>
+      <span class="od-tags">H6 · <span lang="en">positive control</span><span lang="ru">положительный контроль</span> · <span lang="en">Def.</span><span lang="ru">опр.</span> 2.18.1</span>
+    </div></div>
+    <p lang="en">Every node has its own rhythm with frequency f (like the characteristic frequencies of a machine’s parts). The sensor at E hears all
+      rhythms at once. The event swells the rhythm of the source node and reaches each other node along the fastest path: an edge delays it by τ samples
+      and scales it by w. Click a node to make it the source; press play to watch the front.</p>
+    <p lang="ru">У каждого узла свой ритм с частотой f (как характерные частоты узлов машины). Датчик в E слышит все ритмы сразу. Событие усиливает ритм
+      узла-источника и приходит в остальные узлы по самому быстрому пути: ребро задерживает его на τ отсчётов и умножает на w. Щёлкните узел,
+      чтобы сделать его источником; «Пуск» показывает движение фронта.</p>
+    <div class="od-two">
+      <div>
+        <svg id="od-graph" class="od-graph" viewBox="0 0 360 250" role="img" aria-label="Graph of five nodes"></svg>
+        <div class="controls">
+          <button type="button" class="btn small" id="od-play"><span lang="en">▶ Play</span><span lang="ru">▶ Пуск</span></button>
+          <input type="range" id="od-anim" min="0" max="1" step="1" value="0" aria-label="t">
+        </div>
+        <div class="readout" id="od-anim-readout"></div>
+      </div>
+      <div>
+        <div class="table-scroll"><table id="od-paths"></table></div>
+        <p class="lang-note" lang="en">First arrival of the event at each node: delay Στ and gain Πw along the fastest path.</p>
+        <p class="lang-note" lang="ru">Первый приход события в каждый узел: задержка Στ и коэффициент Πw по самому быстрому пути.</p>
+      </div>
+    </div>
+  </li>
+
+  <!-- 2 -->
+  <li class="od-step">
+    <div class="od-step-head"><span class="od-n">2</span><div>
+      <h3><span lang="en">Input at the source: a Hurst-coloured burst of duration D</span><span lang="ru">Вход в источнике: всплеск по Хёрсту длительностью D</span></h3>
+      <span class="od-tags">H0 · DFA</span>
+    </div></div>
+    <p lang="en">b(t) = M · g(t − t*) · η<sup>H</sup>(t − t*) on [t*, t* + D). DFA recovers H as the slope α of F(s) ∝ s<sup>α</sup> (long draw of the same noise,
+      as in the guide). A node cannot change its amplitude faster than a few of its own cycles, so η<sup>H</sup> is smoothed before it modulates the rhythm.</p>
+    <p lang="ru">b(t) = M · g(t − t*) · η<sup>H</sup>(t − t*) на [t*, t* + D). DFA восстанавливает H как наклон α функции F(s) ∝ s<sup>α</sup> (длинная реализация того же
+      шума, как в руководстве). Узел не может менять амплитуду быстрее нескольких своих периодов, поэтому η<sup>H</sup> сглаживается перед модуляцией ритма.</p>
+    <div class="od-two">
+      <div><div class="panel-label"><span lang="en">Burst b(t) at the source</span><span lang="ru">Всплеск b(t) в источнике</span></div><div id="od-burst"></div></div>
+      <div><div class="panel-label"><span lang="en">DFA: F(s), log-log</span><span lang="ru">DFA: F(s), log-log</span></div><div id="od-dfa"></div>
+        <div class="readout" id="od-dfa-readout"></div></div>
+    </div>
+  </li>
+
+  <!-- 3 -->
+  <li class="od-step">
+    <div class="od-step-head"><span class="od-n">3</span><div>
+      <h3><span lang="en">What the sensor records: the additive series at E</span><span lang="ru">Что записывает датчик: аддитивный ряд в E</span></h3>
+      <span class="od-tags"><span lang="en">generator of the guide, section 1</span><span lang="ru">генератор руководства, раздел 1</span></span>
+    </div></div>
+    <div class="eq-block">x(t) = Σ<sub>j</sub> A<sub>j</sub>(1 + m<sub>j</sub>(t)) sin(2πf<sub>j</sub>t + φ<sub>j</sub>) + σ·ε<sub>t</sub> + Σ<sub>j</sub> G<sub>j</sub> · b(t − t* − d<sub>j</sub>) · sin(2πf<sub>j</sub>t + φ<sub>j</sub>)</div>
+    <p lang="en">Periodic + stochastic + fractal, as in the guide. The periodic part is the five node rhythms; m<sub>j</sub> are small spontaneous bursts that
+      travel through the same graph (the ordinary background). The fractal part is the event, arriving at node j after d<sub>j</sub> with gain G<sub>j</sub>.
+      Background [0, T<sub>b</sub>) = [0, 900) is known to be normal; the grey band is the true event.</p>
+    <p lang="ru">Периодика + стохастика + фрактал, как в руководстве. Периодика — пять ритмов узлов; m<sub>j</sub> — малые спонтанные всплески, идущие по тому
+      же графу (обычный фон). Фрактал — событие, приходящее в узел j через d<sub>j</sub> с коэффициентом G<sub>j</sub>. Фон [0, T<sub>b</sub>) = [0, 900)
+      заведомо нормален; серая полоса — истинное событие.</p>
+    <div class="panel-label"><span lang="en">Periodic: the sum of the node rhythms</span><span lang="ru">Периодика: сумма ритмов узлов</span></div><div id="od-x-per"></div>
+    <div class="panel-label"><span lang="en">Stochastic</span><span lang="ru">Стохастика</span></div><div id="od-x-noise"></div>
+    <div class="panel-label"><span lang="en">Fractal: the event in each node’s rhythm (zoom)</span><span lang="ru">Фрактал: событие в ритме каждого узла (увеличение)</span></div>
+    <div class="legend" id="od-x-legend"></div><div id="od-x-frac"></div>
+    <div class="panel-label strong"><span lang="en">Observed x(t) at E — the only input</span><span lang="ru">Наблюдаемый x(t) в E — единственный вход</span></div><div id="od-x-sum"></div>
+  </li>
+
+  <!-- 4 -->
+  <li class="od-step">
+    <div class="od-step-head"><span class="od-n">4</span><div>
+      <h3><span lang="en">Stage 1 · 1-D EVT: did an extreme event happen?</span><span lang="ru">Этап 1 · одномерная EVT: было ли экстремальное событие?</span></h3>
+      <span class="od-tags">H7 · H0 · H1 · M1</span>
+    </div></div>
+    <p lang="en">The planner sees one channel. The rhythms found on the background are fitted and subtracted, the residual is standardised by median and MAD
+      of the background, the tail above u is fitted by a GPD, and the alarm is the end of the first run of r exceedances of q<sub>EVT</sub>.</p>
+    <p lang="ru">Планировщик видит один канал. Найденные на фоне ритмы подгоняются и вычитаются, остаток стандартизуется медианой и MAD фона, хвост над u
+      аппроксимируется ОРП, тревога — конец первой серии из r превышений q<sub>EVT</sub>.</p>
+    <ul class="od-route" id="od-route"></ul>
+    <div class="od-spec">
+      <span>q <span class="seg small" id="od-q"><button type="button" data-v="0.9">0.90</button><button type="button" data-v="0.95">0.95</button></span></span>
+      <span>γ <span class="seg small" id="od-gamma"><button type="button" data-v="0.99">0.99</button><button type="button" data-v="0.999">0.999</button></span></span>
+      <span>r <span class="seg small" id="od-r"><button type="button" data-v="1">1</button><button type="button" data-v="2">2</button><button type="button" data-v="3">3</button></span></span>
+    </div>
+    <div class="od-two wide-left">
+      <div><div class="panel-label"><span lang="en">Robust z(t) of the 1-D residual with u and q<sub>EVT</sub></span><span lang="ru">Робастная z(t) одномерного остатка с u и q<sub>EVT</sub></span></div><div id="od-z"></div></div>
+      <div><div class="panel-label"><span lang="en">GPD fit of background excesses</span><span lang="ru">ОРП по превышениям фона</span></div><div id="od-gpd"></div></div>
+    </div>
+    <div class="facts" id="od-when-facts"></div>
+  </li>
+
+  <!-- 5 -->
+  <li class="od-step">
+    <div class="od-step-head"><span class="od-n">5</span><div>
+      <h3><span lang="en">Identifiability gate: why one channel is not enough</span><span lang="ru">Ворота идентифицируемости: почему одного канала мало</span></h3>
+      <span class="od-tags">M2 · <span lang="en">Theorem</span><span lang="ru">теорема</span> 2.18.1 · <span lang="en">Def.</span><span lang="ru">опр.</span> 2.18.2</span>
+    </div></div>
+    <p lang="en">The source is identifiable from arrival times only if the observed set O <b>doubly resolves</b> V: for every pair u ≠ v some o₁, o₂ ∈ O give
+      d(u, o₁) − d(u, o₂) ≠ d(v, o₁) − d(v, o₂). With O = {E} the difference is always zero — every pair is unresolved and Graph-EVT-agent stops with
+      <code>single_channel_cannot_localize</code>. If the structural analysis gives one channel per node, O grows to the identified nodes and the gate is re-checked.</p>
+    <p lang="ru">Источник идентифицируем по временам прихода, только если наблюдаемое множество O <b>дважды разрешает</b> V: для любой пары u ≠ v найдутся o₁, o₂ ∈ O
+      с d(u, o₁) − d(u, o₂) ≠ d(v, o₁) − d(v, o₂). При O = {E} разность всегда равна нулю — ни одна пара не разрешена, и Graph-EVT-agent останавливается
+      с причиной <code>single_channel_cannot_localize</code>. Если структурный анализ даёт по каналу на узел, O расширяется до найденных узлов, и ворота проверяются заново.</p>
+    <div class="od-spec"><span><span lang="en">Hide the rhythm of node</span><span lang="ru">Скрыть ритм узла</span>
+      <span class="seg small" id="od-hidden"><button type="button" data-v="-1">—</button><button type="button" data-v="0">A</button><button type="button" data-v="1">B</button><button type="button" data-v="2">C</button><button type="button" data-v="3">D</button><button type="button" data-v="4">E</button></span></span></div>
+    <div class="table-scroll"><table id="od-gate"></table></div>
+    <p class="od-verdict" id="od-gate-verdict"></p>
+  </li>
+
+  <!-- 6 -->
+  <li class="od-step">
+    <div class="od-step-head"><span class="od-n">6</span><div>
+      <h3><span lang="en">Structural analysis · nodes: spectral peaks of the background</span><span lang="ru">Структурный анализ · узлы: спектральные пики фона</span></h3>
+      <span class="od-tags">H0 · H2</span>
+    </div></div>
+    <p lang="en">The periodogram of the background shows one peak per rhythm. A peak above 30 × the median power is a node; it is named by the nearest
+      frequency in the object dictionary (within ±0.012). Side lobes of the same rhythm are merged into the strongest peak.</p>
+    <p lang="ru">Периодограмма фона показывает по пику на ритм. Пик выше 30 медианных мощностей — узел; имя ему даёт ближайшая частота словаря объекта
+      (в пределах ±0,012). Боковые лепестки одного ритма сливаются с самым сильным пиком.</p>
+    <div class="od-two wide-left">
+      <div><div class="panel-label"><span lang="en">Periodogram of x(t) on [0, T<sub>b</sub>)</span><span lang="ru">Периодограмма x(t) на [0, T<sub>b</sub>)</span></div><div id="od-pgram"></div></div>
+      <div><div class="table-scroll"><table id="od-peaks"></table></div></div>
+    </div>
+  </li>
+
+  <!-- 7 -->
+  <li class="od-step">
+    <div class="od-step-head"><span class="od-n">7</span><div>
+      <h3><span lang="en">Structural analysis · n-D series: one envelope per node</span><span lang="ru">Структурный анализ · n-D-ряд: огибающая на узел</span></h3>
+      <span class="od-tags">H0 · <span lang="en">Morlet wavelet</span><span lang="ru">вейвлет Морле</span></span>
+    </div></div>
+    <p lang="en">For each node the Morlet wavelet at its frequency (Gaussian width σ<sub>t</sub> = 8 samples) gives the envelope |W<sub>j</sub>(t)|: how loud that node’s
+      rhythm is at time t. The one sensor becomes five channels. Dashed lines: true arrival of the event at each node.</p>
+    <p lang="ru">Для каждого узла вейвлет Морле на его частоте (ширина гауссианы σ<sub>t</sub> = 8 отсчётов) даёт огибающую |W<sub>j</sub>(t)| — насколько громок
+      ритм узла в момент t. Один датчик превращается в пять каналов. Пунктир — истинный приход события в каждый узел.</p>
+    <div id="od-lanes"></div>
+  </li>
+
+  <!-- 8 -->
+  <li class="od-step">
+    <div class="od-step-head"><span class="od-n">8</span><div>
+      <h3><span lang="en">Structural analysis · edges: two graph hypotheses</span><span lang="ru">Структурный анализ · рёбра: две гипотезы графа</span></h3>
+      <span class="od-tags">H2 · <span lang="en">Thesis 2</span><span lang="ru">Положение 2</span></span>
+    </div></div>
+    <p lang="en"><b>Structural</b>: physical adjacency of the identified nodes from the object dictionary. <b>Functional</b>: what Graph-EVT-agent’s
+      <code>build_baseline_graph</code> (method “ar”) finds on the n-D background — |corr| of AR(2) innovations ≥ 0.35. They are compared, not merged.</p>
+    <p lang="ru"><b>Структурная</b>: физическая смежность найденных узлов из словаря объекта. <b>Функциональная</b>: то, что находит
+      <code>build_baseline_graph</code> Graph-EVT-agent (метод «ar») на n-D-фоне, — |corr| AR(2)-инноваций ≥ 0,35. Гипотезы сравниваются, а не сливаются.</p>
+    <div class="od-two">
+      <div><div class="panel-label"><span lang="en">Structural graph</span><span lang="ru">Структурный граф</span></div><svg id="od-sgraph" class="od-graph" viewBox="0 0 360 250" role="img" aria-label="Structural graph"></svg></div>
+      <div><div class="panel-label"><span lang="en">Functional graph (build_baseline_graph, “ar”)</span><span lang="ru">Функциональный граф (build_baseline_graph, «ar»)</span></div><svg id="od-fgraph" class="od-graph" viewBox="0 0 360 250" role="img" aria-label="Functional graph"></svg></div>
+    </div>
+    <div class="readout" id="od-graph-readout"></div>
+    <details class="table-view"><summary><span lang="en">AR-innovation |corr| matrix</span><span lang="ru">Матрица |corr| AR-инноваций</span></summary><div class="table-scroll"><table id="od-dep"></table></div></details>
+  </li>
+
+  <!-- 9 -->
+  <li class="od-step">
+    <div class="od-step-head"><span class="od-n">9</span><div>
+      <h3><span lang="en">Stage 2 · n-D Graph-EVT-agent: <code>detect</code></span><span lang="ru">Этап 2 · n-D Graph-EVT-agent: <code>detect</code></span></h3>
+      <span class="od-tags">H1 · M1</span>
+    </div></div>
+    <p lang="en">Robust z per channel, indicator I<sub>t</sub> = mean of the top-k z (k = 1), POT/GPD on the background, then the first persistent run.
+      Envelope samples are not independent, so the run is one correlation time of the envelope (2σ<sub>t</sub> = 16 samples), not 3 samples. The search is
+      limited to the window around the 1-D alarm: stage 2 starts only when stage 1 has fired.</p>
+    <p lang="ru">Робастная z по каналу, индикатор I<sub>t</sub> — среднее k наибольших z (k = 1), POT/GPD по фону, затем первая устойчивая серия.
+      Отсчёты огибающей не независимы, поэтому серия — одно время корреляции огибающей (2σ<sub>t</sub> = 16 отсчётов), а не 3 отсчёта. Поиск ограничен
+      окном вокруг одномерной тревоги: этап 2 запускается, только если сработал этап 1.</p>
+    <div id="od-ind"></div>
+    <div class="facts" id="od-nd-facts"></div>
+  </li>
+
+  <!-- 10 -->
+  <li class="od-step">
+    <div class="od-step-head"><span class="od-n">10</span><div>
+      <h3><span lang="en">n-D Graph-EVT-agent: <code>rank_source</code> — the answer</span><span lang="ru">n-D Graph-EVT-agent: <code>rank_source</code> — ответ</span></h3>
+      <span class="od-tags">H3 · M2 · M5 · <span lang="en">St.</span><span lang="ru">утв.</span> 2.18.3</span>
+    </div></div>
+    <p lang="en">In the 40 samples after t̂, each channel gets peak, energy and latency of its z, its degree and the mean peak of its neighbours in the structural
+      graph; P(s) = softmax(peak + √energy + 0.15·neighbour − 0.5·latency). A second, independent estimate uses only the onset of each channel and the
+      graph metric d (statement 2.18.3). The two are kept side by side (M5).</p>
+    <p lang="ru">В 40 отсчётах после t̂ каждый канал получает пик, энергию и латентность своей z, степень и средний пик соседей в структурном графе;
+      P(s) = softmax(пик + √энергия + 0,15·соседи − 0,5·латентность). Вторая, независимая оценка использует только начало каждого канала и метрику графа d
+      (утверждение 2.18.3). Обе оценки сохраняются рядом (М5).</p>
+    <div class="od-answer" id="od-answer"></div>
+    <div class="od-two">
+      <div><div class="panel-label"><span lang="en">P(s), rank_source with the structural graph</span><span lang="ru">P(s), rank_source со структурным графом</span></div><div id="od-bars" class="od-bars"></div></div>
+      <div><div class="panel-label"><span lang="en">Statement 2.18.3: ‖P(a − d<sub>v</sub>)‖² per candidate (lower is better)</span><span lang="ru">Утверждение 2.18.3: ‖P(a − d<sub>v</sub>)‖² по кандидатам (меньше — лучше)</span></div><div id="od-fit" class="od-bars"></div></div>
+    </div>
+    <details class="table-view" open><summary><span lang="en">Features of rank_source</span><span lang="ru">Признаки rank_source</span></summary><div class="table-scroll"><table id="od-feats"></table></div></details>
+  </li>
+
+  <!-- 11 -->
+  <li class="od-step">
+    <div class="od-step-head"><span class="od-n">11</span><div>
+      <h3><span lang="en">Comparison with ordinary methods: the 3σ rule</span><span lang="ru">Сравнение с обычными методами: правило 3σ</span></h3>
+      <span class="od-tags"><span lang="en">baseline</span><span lang="ru">базовый метод</span></span>
+    </div></div>
+    <p lang="en">3σ on the raw series: alarm at the first |x − x̄| &gt; 3s with mean and standard deviation of the background; it knows no graph, so its only
+      “where” is the sensor E. 3σ per channel after the structural analysis: the first channel to cross is called the source. The same seed without the
+      event checks false alarms.</p>
+    <p lang="ru">3σ по сырому ряду: тревога при первом |x − x̄| &gt; 3s по среднему и стандартному отклонению фона; графа правило не знает, поэтому
+      единственное «где» — датчик E. 3σ по каналам после структурного анализа: источником называется канал, первым пересёкший порог. Та же затравка
+      без события проверяет ложные тревоги.</p>
+    <div id="od-cmp-chart"></div>
+    <div class="table-scroll"><table id="od-cmp"></table></div>
+  </li>
+
+  <!-- 12 -->
+  <li class="od-step">
+    <div class="od-step-head"><span class="od-n">12</span><div>
+      <h3><span lang="en">Verification: many noise draws, three graphs, eight specifications</span><span lang="ru">Верификация: много реализаций шума, три графа, восемь спецификаций</span></h3>
+      <span class="od-tags">H4 · M4 · M9 · <span lang="en">St.</span><span lang="ru">утв.</span> 2.18.8</span>
+    </div></div>
+    <p lang="en">The positive control is repeated for 20 seeds × 4 sources with the current settings. Value of the graph (M4):
+      Δ<sub>G</sub> = Top-1(structural) − Top-1(empty). Wilson 95 % intervals. The specification grid re-runs the current series for 8 settings (q, γ, r) of stage 1.</p>
+    <p lang="ru">Положительный контроль повторяется для 20 затравок × 4 источников при текущих настройках. Ценность графа (М4):
+      Δ<sub>G</sub> = Top-1(структурный) − Top-1(пустой). Интервалы Уилсона, 95 %. Сетка спецификаций повторяет текущий ряд при 8 настройках (q, γ, r) этапа 1.</p>
+    <div class="controls"><button type="button" class="btn small primary" id="od-mc-run"><span lang="en">Run 80 trials</span><span lang="ru">Запустить 80 опытов</span></button>
+      <div class="od-progress" aria-hidden="true"><div id="od-mc-bar"></div></div><span class="readout" id="od-mc-status"></span></div>
+    <div class="table-scroll"><table id="od-mc"></table></div>
+    <div class="panel-label" style="margin-top:14px"><span lang="en">Specification grid Θ on the current series (M9)</span><span lang="ru">Сетка спецификаций Θ на текущем ряде (М9)</span></div>
+    <div class="table-scroll"><table id="od-grid"></table></div>
+  </li>
+
+  <!-- 13 -->
+  <li class="od-step">
+    <div class="od-step-head"><span class="od-n">13</span><div>
+      <h3><span lang="en">Report, number check and manifest</span><span lang="ru">Отчёт, сверка чисел и manifest</span></h3>
+      <span class="od-tags">H9 · M6 · H10</span>
+    </div></div>
+    <p lang="en">The text is generated after the numbers and may not change them: every number in it is checked against the result object (M6).
+      The manifest holds what is needed to repeat the run.</p>
+    <p lang="ru">Текст строится после расчёта и не может менять чисел: каждое число в нём сверяется с объектом результата (М6).
+      Manifest содержит всё для повтора расчёта.</p>
+    <div class="callout" id="od-report"></div>
+    <details class="table-view"><summary><span lang="en">Manifest (JSON)</span><span lang="ru">Manifest (JSON)</span></summary><pre class="od-pre" id="od-manifest"></pre></details>
+  </li>
+  </ol>
+
+  <div class="card table-scroll" style="margin-top:14px">
+    <h3><span lang="en">Coverage: which method and handler is shown where</span><span lang="ru">Покрытие: где показан каждый метод и обработчик</span></h3>
+    <table id="od-coverage"></table>
+  </div>
+</section>
+
+<!-- ============================================================== 4 LABS -->
+<section id="s4">
+  <header class="sec-head">
+    <span class="num">4</span>
     <div>
       <h2><span lang="en">The labs</span><span lang="ru">Лаборатории</span></h2>
       <p lang="en">Each lab is a static page on GitHub Pages: open it, move the sliders, every number is recomputed in the browser.</p>
@@ -359,10 +654,10 @@
   </div>
 </section>
 
-<!-- ============================================================== 4 ROLE -->
-<section id="s4">
+<!-- ============================================================== 5 ROLE -->
+<section id="s5">
   <header class="sec-head">
-    <span class="num">4</span>
+    <span class="num">5</span>
     <div>
       <h2><span lang="en">Role in the dissertation</span><span lang="ru">Место в диссертации</span></h2>
       <p lang="en">The labs are one of the dissertation’s software artifacts. This is how the artifact table of the dissertation describes them.</p>
@@ -430,10 +725,10 @@
     systems” (translated from the Russian passport).</blockquote>
 </section>
 
-<!-- ============================================================== 5 REPOSITORIES -->
-<section id="s5">
+<!-- ============================================================== 6 REPOSITORIES -->
+<section id="s6">
   <header class="sec-head">
-    <span class="num">5</span>
+    <span class="num">6</span>
     <div>
       <h2><span lang="en">Related repositories</span><span lang="ru">Связанные репозитории</span></h2>
       <p lang="en">The labs are built on the author’s open code. Commits are the ones cited in the dissertation.</p>
@@ -475,6 +770,8 @@
     <a href="https://github.com/D2718281828nis/Educational-Live-Demo"><span lang="en">source of this page</span><span lang="ru">исходный код страницы</span></a></p>
 </footer>
 
+<script src="js/onedim-core.js"></script>
+<script src="js/onedim.js"></script>
 <script src="js/site.js"></script>
 </body>
 </html>

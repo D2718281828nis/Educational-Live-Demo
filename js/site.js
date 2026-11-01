@@ -29,6 +29,7 @@
       } catch (e) {}
     }
     listeners.forEach(function (fn) { fn(); });
+    document.dispatchEvent(new CustomEvent("eld:lang", { detail: next }));
   }
   document.querySelectorAll("[data-set-lang]").forEach(function (b) {
     b.addEventListener("click", function () { setLang(b.getAttribute("data-set-lang"), true); });
