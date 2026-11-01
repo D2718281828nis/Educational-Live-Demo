@@ -44,6 +44,9 @@ with Wilson intervals, three graph hypotheses (Δ_G) and a specification grid, a
 With the defaults (20 seeds × 4 sources): true source in 77 of 80 runs, Wilson [0.90; 0.99], onset error median
 +16 samples, no alarm in 20 event-free series; the 3σ rule alarms in 16 of 20 event-free series and on the raw series can
 only point at the sensor; structural, functional and empty graphs give the same answer (Δ_G ≈ 0).
+Interactive extras: a frequency slider per node with each node’s own signal around the event, fixed axes in the input
+step, and an ARL₀ figure for the kσ rule (α ≈ 0.0027 at 3σ → ARL₀ ≈ 370; with r exceedances in a row ARL₀ = μ_r(α)),
+whose k and r also drive the 3σ baseline.
 
 ### Role in the dissertation
 
@@ -119,6 +122,9 @@ All data are synthetic. The labs illustrate the method and are not intended for 
 (20 затравок × 4 источника): истинный источник найден в 77 из 80 опытов, Уилсон [0,90; 0,99], медиана ошибки начала
 +16 отсчётов, ни одной тревоги в 20 рядах без события; правило 3σ даёт тревогу в 16 из 20 рядов без события и по сырому
 ряду указывает только на датчик; структурный, функциональный и пустой графы дают один ответ (Δ_G ≈ 0).
+Интерактивные дополнения: слайдер частоты каждого узла с собственным сигналом узла около события, фиксированные оси
+на шаге входа и рисунок ARL₀ для правила kσ (при 3σ α ≈ 0,0027 → ARL₀ ≈ 370; при r превышениях подряд ARL₀ = μ_r(α));
+его k и r управляют и базовым правилом 3σ.
 
 ### Место в диссертации
 

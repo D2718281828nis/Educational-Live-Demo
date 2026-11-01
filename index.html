@@ -323,6 +323,12 @@
         <p class="lang-note" lang="ru">Первый приход события в каждый узел: задержка Στ и коэффициент Πw по самому быстрому пути.</p>
       </div>
     </div>
+    <div class="panel-label" style="margin-top:12px"><span lang="en">Frequency of each node’s rhythm (object dictionary)</span><span lang="ru">Частота ритма каждого узла (словарь объекта)</span></div>
+    <div class="od-freqs" id="od-freqs"></div>
+    <p class="lang-note" lang="en">Rhythms closer than about 0.06 leak into each other’s envelopes (step 7); closer than 0.012 they merge into one spectral peak and a node is lost (step 6).</p>
+    <p class="lang-note" lang="ru">Ритмы ближе примерно 0,06 протекают в огибающие друг друга (шаг 7); ближе 0,012 они сливаются в один спектральный пик, и узел теряется (шаг 6).</p>
+    <div class="panel-label"><span lang="en">Each node’s own signal around the event: rhythm + event (not observed — only their sum at E is)</span><span lang="ru">Собственный сигнал каждого узла около события: ритм + событие (не наблюдается — наблюдается только их сумма в E)</span></div>
+    <div id="od-node-lanes"></div>
   </li>
 
   <!-- 2 -->
@@ -498,6 +504,21 @@
     <p lang="ru">3σ по сырому ряду: тревога при первом |x − x̄| &gt; 3s по среднему и стандартному отклонению фона; графа правило не знает, поэтому
       единственное «где» — датчик E. 3σ по каналам после структурного анализа: источником называется канал, первым пересёкший порог. Та же затравка
       без события проверяет ложные тревоги.</p>
+    <div class="callout" lang="ru">Если контрольная граница настроена на «3 сигмы» (где α ≈ 0,0027), то ARL<sub>0</sub> = 1/0,0027 ≈ 370. Это значит, что при стабильном
+      процессе система будет выдавать ложную тревогу в среднем один раз на 370 наблюдений. Если тревогу поднимать только после r превышений подряд,
+      ARL<sub>0</sub> = μ<sub>r</sub>(α) = α<sup>−1</sup> + … + α<sup>−r</sup> (М1).</div>
+    <div class="callout" lang="en">If the control limit is set at “3 sigma” (α ≈ 0.0027), then ARL<sub>0</sub> = 1/0.0027 ≈ 370: a stable process raises a false alarm on
+      average once in 370 observations. If the alarm waits for r exceedances in a row, ARL<sub>0</sub> = μ<sub>r</sub>(α) = α<sup>−1</sup> + … + α<sup>−r</sup> (M1).</div>
+    <div class="od-spec">
+      <span><span lang="en">boundary k·σ, k =</span><span lang="ru">граница k·σ, k =</span> <span class="seg small" id="od-sk"><button type="button" data-v="2">2</button><button type="button" data-v="2.5">2.5</button><button type="button" data-v="3">3</button><button type="button" data-v="3.5">3.5</button><button type="button" data-v="4">4</button></span></span>
+      <span><span lang="en">r — exceedances in a row before the alarm</span><span lang="ru">r — превышений подряд до тревоги</span> <span class="seg small" id="od-sr"><button type="button" data-v="1">1</button><button type="button" data-v="2">2</button><button type="button" data-v="3">3</button><button type="button" data-v="5">5</button></span></span>
+    </div>
+    <div class="od-two wide-left">
+      <div><div class="panel-label"><span lang="en">A stable process N(0, 1), 3000 observations, with the ±kσ boundary: dots are exceedances, lines are alarms</span><span lang="ru">Стабильный процесс N(0, 1), 3000 наблюдений, с границей ±kσ: точки — превышения, линии — тревоги</span></div><div id="od-arl-sim"></div></div>
+      <div><div class="panel-label"><span lang="en">ARL<sub>0</sub> = μ<sub>r</sub>(α(k)), log scale</span><span lang="ru">ARL<sub>0</sub> = μ<sub>r</sub>(α(k)), логарифмическая шкала</span></div><div class="legend" id="od-arl-legend"></div><div id="od-arl-curve"></div></div>
+    </div>
+    <div class="facts" id="od-arl-facts"></div>
+    <div class="panel-label" style="margin-top:14px"><span lang="en">The same kσ rule with r on this task</span><span lang="ru">То же правило kσ с r на этой задаче</span></div>
     <div id="od-cmp-chart"></div>
     <div class="table-scroll"><table id="od-cmp"></table></div>
   </li>

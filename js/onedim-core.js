@@ -179,12 +179,12 @@
     var D = o.duration, eta = gaussSmooth(coloredNoise(D, o.hurst, makeRng(o.seed, "burst")), o.smooth == null ? 6 : o.smooth), g = envelope(D, o.envelope);
     var esd = std(eta) || 1, burst = new Float64Array(D);
     for (var i2 = 0; i2 < D; i2++) burst[i2] = o.magnitude * g[i2] * eta[i2] / esd;
-    var arr = all[o.source], j;
+    var arr = all[o.source], j, freqs = o.freqs || FREQS;
     var rhythm = [], event = [], periodic = new Float64Array(n), fractal = new Float64Array(n), values = new Float64Array(n);
     for (j = 0; j < p; j++) {
       var rj = new Float64Array(n), ej = new Float64Array(n), aj = arr[j];
       for (t = 0; t < n; t++) {
-        var c = Math.sin(TAU * FREQS[j] * t + PHASES[j]);
+        var c = Math.sin(TAU * freqs[j] * t + PHASES[j]);
         rj[t] = (o.hidden === j ? 0 : AMPS[j]) * (1 + m[j][t]) * c;
         var k = t - o.onset - aj.delay;
         if (aj.delay !== Infinity && k >= 0 && k < D) ej[t] = aj.gain * burst[k] * c;
@@ -311,6 +311,12 @@
     return t <= 0 ? 0 : Math.pow(t, -1 / shape - 1) / scale;
   }
   /** M1: mean run length to the end of the first run of r successes with probability π. */
+  /** Two-sided Gaussian tail α(k) = P(|Z| > k) (Abramowitz–Stegun 7.1.26 for erfc). */
+  function gaussTail2(k) {
+    var x = k / Math.SQRT2, t = 1 / (1 + 0.3275911 * x);
+    var erfc = t * (0.254829592 + t * (-0.284496736 + t * (1.421413741 + t * (-1.453152027 + t * 1.061405429)))) * Math.exp(-x * x);
+    return erfc;
+  }
   function arl(pi, r) { var s = 0; for (var j = 1; j <= r; j++) s += Math.pow(pi, -j); return s; }
 
   function potDetect(z, Tb, q, gamma, r) {
@@ -336,11 +342,12 @@
   }
 
   // ------------------------------------------------------------ ordinary baseline: 3σ rule on the raw series
-  function threeSigma(x, Tb, k) {
-    k = k || 3;
+  /** Ordinary k-sigma rule: alarm at the end of the first run of r samples with |x − x̄| > k·s (mean and sd of the background). */
+  function threeSigma(x, Tb, k, r) {
+    k = k || 3; r = r || 1;
     var bg = Array.prototype.slice.call(x, 0, Tb), m = mean(bg), s = std(bg), z = new Float64Array(x.length);
     for (var t = 0; t < x.length; t++) z[t] = Math.abs(x[t] - m) / s;
-    return { mean: m, sd: s, k: k, alarm: firstRun(z, k, 1, Tb), backgroundAlarms: countRuns(z, k, 1, 0, Tb), z: z };
+    return { mean: m, sd: s, k: k, r: r, alarm: firstRun(z, k, r, Tb), backgroundAlarms: countRuns(z, k, r, 0, Tb), z: z };
   }
 
 
@@ -356,7 +363,8 @@
     return { freqs: freqs, power: power };
   }
   /** Local maxima above `ratio` × median power; each is matched to the nearest dictionary frequency within `tol`. */
-  function spectralNodes(pg, ratio, tol) {
+  function spectralNodes(pg, ratio, tol, dict) {
+    dict = dict || FREQS;
     var med = quantile(pg.power, 0.5), peaks = [];
     for (var i = 1; i < pg.power.length - 1; i++) {
       if (pg.power[i] > pg.power[i - 1] && pg.power[i] >= pg.power[i + 1] && pg.power[i] > ratio * med) peaks.push({ f: pg.freqs[i], power: pg.power[i] });
@@ -367,7 +375,7 @@
     peaks.forEach(function (pk) { if (!kept.some(function (q) { return Math.abs(q.f - pk.f) <= tol; })) kept.push(pk); });
     kept.forEach(function (pk) {
       var best = -1;
-      FREQS.forEach(function (f, j) { if (Math.abs(f - pk.f) <= tol && (best < 0 || Math.abs(f - pk.f) < Math.abs(FREQS[best] - pk.f))) best = j; });
+      dict.forEach(function (f, j) { if (Math.abs(f - pk.f) <= tol && (best < 0 || Math.abs(f - pk.f) < Math.abs(dict[best] - pk.f))) best = j; });
       pk.node = best;
     });
     kept.sort(function (a, b) { return a.f - b.f; });
@@ -535,9 +543,9 @@
     return det.z.map(function (z) { var e = potDetect(z, B, q, gamma, r); return e.alarm < 0 ? null : e.alarm - r + 1; });
   }
   /** Ordinary baseline on the n-D series: per-channel 3σ, the first channel to cross is called the source. */
-  function firstToCross(chans, B, k) {
+  function firstToCross(chans, B, k, r) {
     var best = null;
-    chans.forEach(function (x, j) { var tc = threeSigma(x, B, k).alarm; if (tc >= 0 && (!best || tc < best.t)) best = { t: tc, node: j }; });
+    chans.forEach(function (x, j) { var tc = threeSigma(x, B, k, r).alarm; if (tc >= 0 && (!best || tc < best.t)) best = { t: tc, node: j }; });
     return best;
   }
   /** H0/H7 stationarity check on 4 background blocks: ptp of block means < σ and variance ratio < 4. */
@@ -558,13 +566,13 @@
   // rN: the n-D run length in samples — one correlation time of the envelope (2σ_t), because envelope samples are
   // not independent and a run of 3 adjacent samples is no protection (M1, clusters of exceedances).
   // before / after: the n-D search window around the 1-D alarm.
-  var SPEC = { q: 0.95, gamma: 0.999, r: 3, rN: 16, before: 100, after: 50, topK: 1, window: 40, ratio: 30, tol: 0.012, sdT: 8, arOrder: 2, edgeThreshold: 0.35 };
+  var SPEC = { sigmaK: 3, sigmaR: 1, q: 0.95, gamma: 0.999, r: 3, rN: 16, before: 100, after: 50, topK: 1, window: 40, ratio: 30, tol: 0.012, sdT: 8, arOrder: 2, edgeThreshold: 0.35 };
 
   function pipeline(o, spec) {
     var sp = {}; for (var k in SPEC) sp[k] = SPEC[k]; for (k in (spec || {})) sp[k] = spec[k];
     var Tb = o.background, s = simulate(o), edges = o.edges || EDGES, d = metric(edges);
     // 1-D stage (H0, H1): the series of E alone
-    var pg = periodogram(s.values, Tb, 0.01, 0.49, 0.0005), sn = spectralNodes(pg, sp.ratio, sp.tol);
+    var pg = periodogram(s.values, Tb, 0.01, 0.49, 0.0005), sn = spectralNodes(pg, sp.ratio, sp.tol, o.freqs || FREQS);
     var bm = harmonicFit(s.values, Tb, sn.peaks.map(function (pk) { return 1 / pk.f; })), resid = new Float64Array(s.n);
     for (var t = 0; t < s.n; t++) resid[t] = s.values[t] - bm.fit[t];
     var rz = robustZ(resid, Tb), ev1 = potDetect(rz.z, Tb, sp.q, sp.gamma, sp.r);
@@ -590,7 +598,7 @@
       onsets = channelOnsets(det, sp.q, sp.gamma, sp.rN);
       fit = arrivalFit(onsets, ids, d);
     }
-    var base1 = threeSigma(s.values, Tb, 3), baseN = firstToCross(env, Tb, 3);
+    var base1 = threeSigma(s.values, Tb, sp.sigmaK, sp.sigmaR), baseN = firstToCross(env, Tb, sp.sigmaK, sp.sigmaR);
     return { sig: s, spec: sp, d: d, pg: pg, sn: sn, bm: bm, resid: resid, rz: rz, ev1: ev1, ids: ids, nodes: nodes, env: env, margin: margin,
       sg: sg, fg: fg, fgEdges: fgEdges, fgCmp: compareEdges(fgEdges, sg.edges), gate1: gate1, gateN: gateN,
       det: det, rank: rank, rankF: rankF, rankE: rankE, onsets: onsets, fit: fit, base1: base1, baseN: baseN,
@@ -605,7 +613,7 @@
     periodogram: periodogram, spectralNodes: spectralNodes, morletEnvelope: morletEnvelope, harmonicFit: harmonicFit,
     structuralGraph: structuralGraph, metric: metric, doublyResolving: doublyResolving, compareEdges: compareEdges,
     innovationGraph: innovationGraph, arrivalFit: arrivalFit, robustZ: robustZ, gpdPdf: gpdPdf, potDetect: potDetect, arl: arl,
-    threeSigma: threeSigma, detectND: detectND, rankSources: rankSources, channelOnsets: channelOnsets, firstToCross: firstToCross,
+    threeSigma: threeSigma, gaussTail2: gaussTail2, firstRun: firstRun, countRuns: countRuns, detectND: detectND, rankSources: rankSources, channelOnsets: channelOnsets, firstToCross: firstToCross,
     pipeline: pipeline, stationarity: stationarity, hashSeries: hashSeries
   };
   if (typeof module !== "undefined" && module.exports) module.exports = api;

@@ -63,6 +63,7 @@
     svg.setAttribute("width", W); svg.setAttribute("height", H);
     var lx = cfg.logX ? Math.log10 : function (v) { return v; }, ly = cfg.logY ? Math.log10 : function (v) { return v; };
     var x0 = lx(cfg.x0), x1 = lx(cfg.x1), y0 = cfg.y0, y1 = cfg.y1;
+    if (y0 != null && y1 != null && cfg.logY) { y0 = ly(y0); y1 = ly(y1); }
     if (y0 == null || y1 == null) {
       var lo = Infinity, hi = -Infinity;
       (cfg.series || []).forEach(function (s) {
@@ -151,8 +152,8 @@
   function fmtTick(v) { var a = Math.abs(v), d = a >= 100 || a === 0 || Number.isInteger(v) ? 0 : a >= 10 ? 0 : a >= 1 ? 1 : 2; return fmt(v, d); }
   function fmtLog(v) {
     var p = Math.pow(10, v);
-    if (p >= 1) return fmt(p, 0);
-    if (p >= 0.01) return fmt(p, p >= 0.1 ? 1 : 2);
+    if (p >= 1 && p < 1e4) return fmt(p, 0);
+    if (p >= 0.01 && p < 1) return fmt(p, p >= 0.1 ? 1 : 2);
     return "10" + String(Math.round(v)).split("").map(function (c) { return c === "-" ? "⁻" : "⁰¹²³⁴⁵⁶⁷⁸⁹"[Number(c)]; }).join("");
   }
   Plot.prototype.dataX = function (ev) {
@@ -196,14 +197,16 @@
   function defaults() {
     var o = {}; for (var k in D0) o[k] = D0[k];
     o.hidden = -1;
+    o.freqs = C.FREQS.slice();
     return o;
   }
-  var state = { o: defaults(), spec: { q: 0.95, gamma: 0.999, r: 3 }, anim: 0 };
+  function defaultSpec() { return { q: 0.95, gamma: 0.999, r: 3, sigmaK: 3, sigmaR: 1 }; }
+  var state = { o: defaults(), spec: defaultSpec(), anim: 0 };
   var R = null;     // current result
   var mc = null;    // last Monte Carlo summary
 
   function nodeList(ids) { return ids.map(function (i) { return NAMES[i]; }).join(", "); }
-  function settingsKey() { var o = state.o; return JSON.stringify([o.onset, o.duration, o.hurst, o.magnitude, o.envelope, o.hidden, state.spec]); }
+  function settingsKey() { var o = state.o; return JSON.stringify([o.onset, o.duration, o.hurst, o.magnitude, o.envelope, o.hidden, o.freqs, state.spec]); }
 
   function compute() {
     var r = C.pipeline(state.o, state.spec);
@@ -257,7 +260,7 @@
     var src = state.o.source;
     animLayer = drawGraph($("od-graph"), {
       pick: true, edges: trueEdges(true),
-      sub: function (i) { return (i === 4 ? L("sensor · ", "датчик · ") : i === src ? "s* · " : "") + "f " + fmt(C.FREQS[i], 2); }
+      sub: function (i) { return (i === 4 ? L("sensor · ", "датчик · ") : i === src ? "s* · " : "") + "f " + fmt(state.o.freqs[i], 2); }
     });
     var arr = R.sig.arrivals, maxT = Math.max.apply(null, arr.map(function (a) { return isFinite(a.delay) ? a.delay : 0; })) + state.o.duration;
     var slider = $("od-anim"); slider.max = maxT;
@@ -267,7 +270,7 @@
     var html = "<thead><tr><th>" + head[0] + '</th><th class="num">' + head[1] + "</th><th>" + head[2] + '</th><th class="num">' + head[3] + '</th><th class="num">' + head[4] + '</th><th class="num">' + head[5] + "</th></tr></thead><tbody>";
     arr.slice().sort(function (a, b) { return a.delay - b.delay; }).forEach(function (a) {
       html += '<tr><td><span class="swatch dot" style="background:' + NODE_COLOR[a.node] + '"></span><b>' + NAMES[a.node] + "</b>" + (a.node === src ? " s*" : "") +
-        '</td><td class="num">' + fmt(C.FREQS[a.node], 2) + '</td><td class="mono">' + a.path.map(function (i) { return NAMES[i]; }).join("→") + '</td><td class="num">' + a.delay +
+        '</td><td class="num">' + fmt(state.o.freqs[a.node], 2) + '</td><td class="mono">' + a.path.map(function (i) { return NAMES[i]; }).join("→") + '</td><td class="num">' + a.delay +
         '</td><td class="num">' + fmt(a.gain, 2) + '</td><td class="num">' + (state.o.onset + a.delay) + "</td></tr>";
     });
     $("od-paths").innerHTML = html + "</tbody>";
@@ -325,16 +328,96 @@
     gpd: new Plot("od-gpd", { height: 200 }),
     pgram: new Plot("od-pgram", { height: 210 }),
     ind: new Plot("od-ind", { height: 210 }),
-    cmp: new Plot("od-cmp-chart", { height: 190 })
+    cmp: new Plot("od-cmp-chart", { height: 190 }),
+    arlSim: new Plot("od-arl-sim", { height: 200 }),
+    arlCurve: new Plot("od-arl-curve", { height: 200, left: 52 })
   };
-  var lanes = [], laneKey = "";
+  var lanes = [], laneKey = "", nodeLanes = [];
+  (function () {
+    var box = $("od-node-lanes");
+    NAMES.forEach(function (nm, j) {
+      var lab = document.createElement("div"); lab.className = "panel-label"; lab.id = "od-nl-l" + j; box.appendChild(lab);
+      var div = document.createElement("div"); div.id = "od-nl" + j; box.appendChild(div);
+      nodeLanes.push(new Plot("od-nl" + j, { height: j === 4 ? 92 : 62, group: "nodes", left: 40 }));
+    });
+  })();
+
+  // frequency sliders of step 1 (the object dictionary follows them)
+  function buildFreqs() {
+    var box = $("od-freqs");
+    box.innerHTML = NAMES.map(function (nm, j) {
+      return '<label><span><span class="swatch dot" style="background:' + NODE_COLOR[j] + '"></span><b>' + nm + '</b> f = <b id="od-fv' + j + '"></b></span>' +
+        '<input type="range" id="od-f' + j + '" min="0.02" max="0.48" step="0.01" value="' + state.o.freqs[j] + '" aria-label="f ' + nm + '"></label>';
+    }).join("");
+    NAMES.forEach(function (_, j) {
+      $("od-f" + j).addEventListener("input", function () {
+        state.o.freqs[j] = Number(this.value); $("od-fv" + j).textContent = fmt(state.o.freqs[j], 2); schedule();
+      });
+    });
+  }
+  buildFreqs();
+
+  function renderNodeLanes() {
+    var s = R.sig, x0 = state.o.onset - 60, x1 = Math.min(s.n - 1, R.eventEnd + 60), src = state.o.source;
+    var own = s.rhythm.map(function (rj, j) { var y = new Float64Array(s.n); for (var t = 0; t < s.n; t++) y[t] = rj[t] + s.event[j][t]; return y; });
+    NAMES.forEach(function (nm, j) {
+      var a = s.arrivals[j];
+      $("od-nl-l" + j).innerHTML = '<span class="swatch dot" style="background:' + NODE_COLOR[j] + '"></span> <b>' + nm + "</b>" + (j === src ? " s*" : "") + (j === 4 ? L(" (sensor)", " (датчик)") : "") +
+        " · f = " + fmt(state.o.freqs[j], 2) + L(" · period ", " · период ") + fmt(1 / state.o.freqs[j], 1) + L(" samples · event arrives ", " отсч. · событие приходит ") + (state.o.onset + a.delay);
+      nodeLanes[j].update({
+        x0: x0, x1: x1, y0: -7, y1: 7, yTicks: 2, hideX: j !== 4, xLabel: L("sample t", "отсчёт t"),
+        series: [{ y: own[j], color: NODE_COLOR[j], width: 1 }],
+        vlines: [{ x: state.o.onset + a.delay, color: "var(--ink)", dash: "3 3" }],
+        tip: function (x) { return { title: "t = " + x, rows: NAMES.map(function (n2, k) { return { label: n2, value: fmt(own[k][x]), color: NODE_COLOR[k] }; }) }; }
+      });
+    });
+  }
+
+  // ARL₀ of the kσ boundary on a stable Gaussian process (M1)
+  function renderARL() {
+    var k = state.spec.sigmaK, r = state.spec.sigmaR, N = 3000, rng = C.makeRng(state.o.seed, "arl-demo"), x = new Float64Array(N);
+    for (var t = 0; t < N; t++) x[t] = rng.normal();
+    var alpha = C.gaussTail2(k), arl0 = C.arl(alpha, r), pts = [], alarms = [], run = 0;
+    for (t = 0; t < N; t++) {
+      if (Math.abs(x[t]) > k) { pts.push({ x: t, y: x[t], color: "var(--ink)", r: 2.5 }); run++; if (run === r) alarms.push(t); } else run = 0;
+    }
+    P.arlSim.update({
+      x0: 0, x1: N - 1, y0: -4.5, y1: 4.5, xLabel: L("observation", "наблюдение"),
+      series: [{ y: x, color: "var(--muted)", width: 0.7 }], points: pts,
+      hlines: [{ y: k, label: "+" + fmt(k, 1) + "σ", color: "var(--ink)", dash: "6 3" }, { y: -k, label: "−" + fmt(k, 1) + "σ", color: "var(--ink)", dash: "6 3" }],
+      vlines: alarms.map(function (a) { return { x: a, color: "var(--bad)" }; }),
+      tip: function (i) { return { title: L("observation ", "наблюдение ") + i, rows: [{ label: "x", value: fmt(x[i]) }] }; }
+    });
+    var ks = [], curves = [1, 2, 3].map(function () { return []; });
+    for (var kk = 1.5; kk <= 4.5001; kk += 0.05) { ks.push(+kk.toFixed(2)); [1, 2, 3].forEach(function (rr, i) { curves[i].push(C.arl(C.gaussTail2(kk), rr)); }); }
+    var tones = ["var(--ink)", "var(--ink-2)", "var(--muted)"];
+    $("od-arl-legend").innerHTML = [1, 2, 3].map(function (rr, i) { return '<span class="key"><span class="swatch" style="background:' + tones[i] + '"></span>r = ' + rr + "</span>"; }).join("");
+    P.arlCurve.update({
+      x0: 1.5, x1: 4.5, y0: 1, y1: 1e12, logY: true, xLabel: "k",
+      series: curves.map(function (cv, i) { return { x: ks, y: cv, color: tones[i], width: 1.75, dash: i ? (i === 1 ? "6 3" : "2 3") : null }; }),
+      points: [{ x: k, y: arl0, color: "var(--bad)", r: 5 }, { x: 3, y: C.arl(C.gaussTail2(3), 1), color: "var(--ink)", r: 4 }],
+      labels: [{ x: 3, y: C.arl(C.gaussTail2(3), 1), text: "370", dy: 16, dx: 14 }],
+      vlines: [{ x: k, color: "var(--muted)", dash: "3 3" }],
+      snap: function (v) { return Math.round(v * 20) / 20; },
+      tip: function (v) { return { title: "k = " + fmt(v, 2) + ", α = " + fmt(C.gaussTail2(v), 5), rows: [1, 2, 3].map(function (rr, i) { return { label: "r = " + rr, value: arlText(C.arl(C.gaussTail2(v), rr)), color: tones[i] }; }) }; }
+    });
+    var Tb = state.o.background;
+    facts("od-arl-facts", [
+      [fmt(alpha, 4), L("α = P(|Z| > " + fmt(k, 1) + ") for a Gaussian process", "α = P(|Z| > " + fmt(k, 1) + ") для гауссовского процесса")],
+      [arlText(arl0), L("ARL<sub>0</sub> = μ<sub>r</sub>(α), r = " + r + ": mean number of observations to a false alarm", "ARL<sub>0</sub> = μ<sub>r</sub>(α), r = " + r + ": среднее число наблюдений до ложной тревоги")],
+      [fmt(N / arl0, N / arl0 < 10 ? 1 : 0) + " / " + alarms.length, L("false alarms in 3000 observations: expected / observed", "ложных тревог на 3000 наблюдений: ожидается / наблюдается")],
+      [fmt(Tb / arl0, Tb / arl0 < 10 ? 1 : 0) + " / " + R.base1.backgroundAlarms, L("on the real background of E (900 samples, not Gaussian): expected / observed", "на реальном фоне E (900 отсчётов, не гауссовский): ожидается / наблюдается")]
+    ]);
+  }
 
   function eventBand() { return [{ x0: R.eventStart, x1: R.eventEnd }]; }
 
   function renderStep2() {
     var o = state.o, src = o.source, D = o.duration, g = C.envelope(D, o.envelope), env = [], nenv = [];
     for (var i = 0; i < D; i++) { env.push(o.magnitude * g[i]); nenv.push(-o.magnitude * g[i]); }
+    var yMax = 3 * Number($("od-magnitude").max); // fixed by the slider range, so changing M changes the picture
     P.burst.update({
+      y0: -yMax, y1: yMax,
       x0: o.onset - 5, x1: o.onset + D + 5, xLabel: L("sample t at the source ", "отсчёт t в источнике ") + NAMES[src],
       series: [
         { y: env, x0: o.onset, color: "var(--muted)", dash: "4 3", width: 1 },
@@ -350,7 +433,7 @@
     var long = C.coloredNoise(2048, o.hurst, C.makeRng(o.seed, "hurst-demo")), d = C.dfa(long, [8, 16, 32, 64, 128, 256]);
     var xs = d.points.map(function (p) { return p.s; });
     P.dfa.update({
-      x0: 6, x1: 340, logX: true, logY: true, xLabel: L("scale s", "масштаб s"),
+      x0: 6, x1: 340, y0: 0.3, y1: 300, logX: true, logY: true, xLabel: L("scale s", "масштаб s"),
       series: [
         { x: xs, y: d.points.map(function (p) { return Math.pow(10, d.intercept + d.alpha * Math.log10(p.s)); }), color: NODE_COLOR[src], width: 2 },
         { x: xs, y: d.points.map(function (p) { return d.points[0].F * Math.pow(p.s / d.points[0].s, o.hurst); }), color: "var(--ink)", width: 1.25, dash: "5 4" }
@@ -485,7 +568,7 @@
     $("od-peaks").innerHTML = "<thead><tr><th>" + head.join("</th><th>") + "</th></tr></thead><tbody>" + sn.peaks.map(function (pk) {
       return '<tr><td class="mono">' + fmt(pk.f, 4) + '</td><td class="num">' + fmt(pk.power / sn.median, 0) + "</td><td>" +
         (pk.node >= 0 ? '<span class="swatch dot" style="background:' + NODE_COLOR[pk.node] + '"></span><b>' + NAMES[pk.node] + "</b>" : "?") +
-        '</td><td class="mono">' + (pk.node >= 0 ? fmt(C.FREQS[pk.node], 2) : "–") + "</td></tr>";
+        '</td><td class="mono">' + (pk.node >= 0 ? fmt(state.o.freqs[pk.node], 2) : "–") + "</td></tr>";
     }).join("") + "</tbody><tfoot><tr><td colspan=\"4\">" + L("Nodes found: ", "Найдено узлов: ") + "<b>" + R.ids.length + "</b> (" + nodeList(R.ids) + ")" +
       (state.o.hidden >= 0 ? L(" · rhythm of " + NAMES[state.o.hidden] + " hidden", " · ритм " + NAMES[state.o.hidden] + " скрыт") : "") + "</td></tr></tfoot>";
   }
@@ -504,7 +587,7 @@
     var x0 = 760, x1 = R.sig.n - 1;
     R.ids.forEach(function (id, k) {
       var a = R.sig.arrivals[id];
-      $("od-lane-l" + k).innerHTML = '<span class="swatch dot" style="background:' + NODE_COLOR[id] + '"></span> <b>' + NAMES[id] + "</b> · f = " + fmt(C.FREQS[id], 2) +
+      $("od-lane-l" + k).innerHTML = '<span class="swatch dot" style="background:' + NODE_COLOR[id] + '"></span> <b>' + NAMES[id] + "</b> · f = " + fmt(state.o.freqs[id], 2) +
         " · " + L("true arrival ", "истинный приход ") + (state.o.onset + a.delay);
       lanes[k].update({
         x0: x0, x1: x1, hideX: k !== R.ids.length - 1, xLabel: L("sample t", "отсчёт t"), yTicks: 2,
@@ -608,12 +691,13 @@
 
   function renderStep11() {
     var o = state.o, b = R.base1, x = R.sig.values, vl = [{ x: o.onset, label: "t*", dash: "4 3" }];
-    if (b.alarm >= 0) vl.push({ x: b.alarm, label: "3σ: " + b.alarm, color: "var(--muted)" });
+    var kl = fmt(b.k, 1) + "σ" + (b.r > 1 ? ", r = " + b.r : "");
+    if (b.alarm >= 0) vl.push({ x: b.alarm, label: kl + ": " + b.alarm, color: "var(--muted)" });
     if (R.tHat != null) vl.push({ x: R.tHat, label: "t̂ = " + R.tHat });
     P.cmp.update({
       x0: 760, x1: o.n - 1, xLabel: L("sample t at E", "отсчёт t в E"),
       series: [{ y: x, color: "var(--ink-2)", width: 0.8 }], bands: eventBand(), vlines: vl,
-      hlines: [{ y: b.mean + 3 * b.sd, label: "x̄ + 3s", color: "var(--muted)", dash: "4 3" }, { y: b.mean - 3 * b.sd, label: "x̄ − 3s", color: "var(--muted)", dash: "4 3" }],
+      hlines: [{ y: b.mean + b.k * b.sd, label: "x̄ + " + fmt(b.k, 1) + "s", color: "var(--muted)", dash: "4 3" }, { y: b.mean - b.k * b.sd, label: "x̄ − " + fmt(b.k, 1) + "s", color: "var(--muted)", dash: "4 3" }],
       tip: function (t) { return { title: "t = " + t, rows: [{ label: "x(t)", value: fmt(x[t]) }, { label: "|x − x̄|/s", value: fmt(b.z[t]) }] }; }
     });
     var bn = R.baseN, src = o.source, yes = function (t) { return t >= 0 ? L("yes, at ", "да, в ") + t : L("no", "нет"); };
@@ -623,7 +707,7 @@
       [L("Where", "Где"), "E " + L("(the sensor)", "(датчик)"), bn ? NAMES[R.ids[bn.node]] + (R.ids[bn.node] === src ? " ✓" : " ✗") : "–", R.rank ? NAMES[R.source] + (R.source === src ? " ✓" : " ✗") : "–"],
       [L("Same seed without the event: alarm?", "Та же затравка без события: тревога?"), yes(R.free.sigma3), yes(R.free.cross), yes(R.free.chain)]
     ];
-    var head = ru() ? ["", "3σ по сырому ряду", "3σ по каналам (первый)", "Конвейер"] : ["", "3σ on the raw series", "3σ per channel (first)", "Harness chain"];
+    var head = ru() ? ["", kl + " по сырому ряду", kl + " по каналам (первый)", "Конвейер"] : ["", kl + " on the raw series", kl + " per channel (first)", "Harness chain"];
     $("od-cmp").innerHTML = "<thead><tr><th>" + head.join("</th><th>") + "</th></tr></thead><tbody>" +
       rows.map(function (r) { return "<tr><td>" + r[0] + '</td><td class="mono">' + esc(r[1]) + '</td><td class="mono">' + esc(r[2]) + '</td><td class="mono">' + esc(r[3]) + "</td></tr>"; }).join("") + "</tbody>";
   }
@@ -632,7 +716,7 @@
   function renderGrid() {
     var rows = [], ok = 0, n = 0;
     [0.9, 0.95].forEach(function (q) { [0.99, 0.999].forEach(function (g) { [1, 3].forEach(function (r) {
-      var x = C.pipeline(state.o, { q: q, gamma: g, r: r }), good = x.rank && x.source === state.o.source;
+      var x = C.pipeline(state.o, { q: q, gamma: g, r: r, sigmaK: state.spec.sigmaK, sigmaR: state.spec.sigmaR }), good = x.rank && x.source === state.o.source;
       n++; if (good) ok++;
       rows.push([fmt(q), fmt(g, 3).replace(/0+$/, ""), r, x.ev1.alarm >= 0 ? x.ev1.alarm : "–", x.tHat != null ? x.tHat : "–", x.rank ? NAMES[x.source] : "–",
         x.rank ? pct(x.rank.probabilities[x.rank.source]) : "–", good ? "✓" : "✗"]);
@@ -645,7 +729,7 @@
 
   var mcToken = 0;
   function runMC() {
-    var token = ++mcToken, jobs = [], o = state.o, spec = { q: state.spec.q, gamma: state.spec.gamma, r: state.spec.r };
+    var token = ++mcToken, jobs = [], o = state.o, spec = {}; for (var sk in state.spec) spec[sk] = state.spec[sk];
     for (var sd = 1; sd <= 20; sd++) for (var s = 0; s < 4; s++) jobs.push({ seed: 1000 + sd, source: s });
     var acc = { st: [], fu: [], em: [], fit: [], cross: [], raw: [], free: { chain: 0, s3: 0, cross: 0, n: 0 } }, i = 0, key = settingsKey();
     $("od-mc-run").disabled = true;
@@ -695,8 +779,8 @@
       row(L("Chain, rank_source + functional graph", "Конвейер, rank_source + функциональный граф"), a.fu, fc) +
       row(L("Chain, rank_source + empty graph", "Конвейер, rank_source + пустой граф"), a.em, fc) +
       row(L("Chain, arrival fit (St. 2.18.3)", "Конвейер, подгонка приходов (утв. 2.18.3)"), a.fit, fc) +
-      row(L("3σ per channel, first to cross", "3σ по каналам, первый пересёкший"), a.cross, F.cross + "/" + F.n) +
-      row(L("3σ on the raw series (where = E)", "3σ по сырому ряду (где = E)"), a.raw, F.s3 + "/" + F.n) + "</tbody>";
+      row(L("kσ per channel, first to cross", "kσ по каналам, первый пересёкший") + " (k = " + fmt(state.spec.sigmaK, 1) + ", r = " + state.spec.sigmaR + ")", a.cross, F.cross + "/" + F.n) +
+      row(L("kσ on the raw series (where = E)", "kσ по сырому ряду (где = E)") + " (k = " + fmt(state.spec.sigmaK, 1) + ", r = " + state.spec.sigmaR + ")", a.raw, F.s3 + "/" + F.n) + "</tbody>";
     var dG = (top(a.st) - top(a.em)) / n;
     html += '<tfoot><tr><td colspan="5"><b>Δ<sub>G</sub> = ' + fmt(top(a.st) / n) + " − " + fmt(top(a.em) / n) + " = " + fmt(dG) + "</b> · " +
       (Math.abs(dG) < 0.05 ? L("the graph adds nothing to “where” here: peak and latency decide (as in the dissertation)", "граф здесь ничего не добавляет к «где»: решают пик и латентность (как в диссертации)") : "") +
@@ -730,7 +814,7 @@
       generator: "node rhythms + stochastic + Hurst burst along first-arrival paths (onedim-core.js)",
       params: { n: o.n, seed: o.seed, sigma: o.sigma, hurst: o.hurst, magnitude: o.magnitude, onset: o.onset, duration: o.duration, envelope: o.envelope,
         source: NAMES[o.source], background: [0, o.background], micro_rate: +o.microRate.toFixed(4), micro_amp: o.microAmp, hidden_rhythm: o.hidden >= 0 ? NAMES[o.hidden] : null },
-      dictionary: { freqs: C.FREQS, edges: C.EDGES.map(function (e) { return NAMES[e[0]] + "-" + NAMES[e[1]] + " tau=" + e[2] + " w=" + e[3]; }) },
+      dictionary: { freqs: o.freqs, edges: C.EDGES.map(function (e) { return NAMES[e[0]] + "-" + NAMES[e[1]] + " tau=" + e[2] + " w=" + e[3]; }) },
       spec: R.spec,
       series_fnv1a: C.hashSeries(R.sig.values),
       structural: { nodes: R.ids.map(function (i) { return NAMES[i]; }), peaks: R.sn.peaks.map(function (pk) { return +pk.f.toFixed(4); }),
@@ -744,7 +828,7 @@
 
   // ------------------------------------------------------------ coverage table
   var COVER = [
-    ["M1", ["ARL₀, run rule, clusters of exceedances", "ARL₀, правило серии, кластеры превышений"], "4, 9", 1],
+    ["M1", ["ARL₀, run rule, clusters of exceedances", "ARL₀, правило серии, кластеры превышений"], "4, 9, 11", 1],
     ["M2", ["identifiability: doubly resolving set", "идентифицируемость: дважды разрешающее множество"], "5, 10", 1],
     ["M3", ["inflation without grouping", "завышение без группировки"], "—", 0, ["no model is trained here: nothing to split", "здесь нет обучения: нечего разбивать"]],
     ["M4", ["value of the graph Δ_G", "ценность графа Δ_G"], "8, 12", 1],
@@ -779,13 +863,14 @@
     var o = state.o;
     SLIDERS.forEach(function (k) { $("od-" + k).value = o[k]; $("od-v-" + k).textContent = sliderText(k, o[k]); });
     $("od-v-seed").textContent = String(o.seed);
+    o.freqs.forEach(function (f, j) { var inp = $("od-f" + j); if (inp) { inp.value = f; $("od-fv" + j).textContent = fmt(f, 2); } });
     var press = function (sel, attr, val) {
       document.querySelectorAll(sel).forEach(function (b) { b.setAttribute("aria-pressed", String(String(b.getAttribute(attr)) === String(val))); });
     };
     press("#od-source [data-src]", "data-src", o.source);
     press("#od-envelope [data-env]", "data-env", o.envelope);
     press("#od-hidden [data-v]", "data-v", o.hidden);
-    [["od-q", "q"], ["od-gamma", "gamma"], ["od-r", "r"]].forEach(function (p) {
+    [["od-q", "q"], ["od-gamma", "gamma"], ["od-r", "r"], ["od-sk", "sigmaK"], ["od-sr", "sigmaR"]].forEach(function (p) {
       document.querySelectorAll("#" + p[0] + " [data-v]").forEach(function (b) { b.setAttribute("aria-pressed", String(Number(b.getAttribute("data-v")) === state.spec[p[1]])); });
     });
   }
@@ -797,18 +882,18 @@
   document.querySelectorAll("#od-source [data-src]").forEach(function (b) { b.addEventListener("click", function () { setSource(Number(b.getAttribute("data-src"))); }); });
   document.querySelectorAll("#od-envelope [data-env]").forEach(function (b) { b.addEventListener("click", function () { state.o.envelope = b.getAttribute("data-env"); refresh(); }); });
   document.querySelectorAll("#od-hidden [data-v]").forEach(function (b) { b.addEventListener("click", function () { state.o.hidden = Number(b.getAttribute("data-v")); refresh(); }); });
-  [["od-q", "q"], ["od-gamma", "gamma"], ["od-r", "r"]].forEach(function (p) {
+  [["od-q", "q"], ["od-gamma", "gamma"], ["od-r", "r"], ["od-sk", "sigmaK"], ["od-sr", "sigmaR"]].forEach(function (p) {
     document.querySelectorAll("#" + p[0] + " [data-v]").forEach(function (b) { b.addEventListener("click", function () { state.spec[p[1]] = Number(b.getAttribute("data-v")); refresh(); }); });
   });
   $("od-reseed").addEventListener("click", function () { state.o.seed += 1; refresh(); });
-  $("od-reset").addEventListener("click", function () { state.o = defaults(); state.spec = { q: 0.95, gamma: 0.999, r: 3 }; state.anim = 0; refresh(); });
+  $("od-reset").addEventListener("click", function () { state.o = defaults(); state.spec = defaultSpec(); state.anim = 0; buildFreqs(); refresh(); });
 
   var timer = null;
   function schedule() { clearTimeout(timer); timer = setTimeout(refresh, 60); }
   function refresh() { syncControls(); compute(); renderAll(); }
   function renderAll() {
     renderStep1(); renderStep2(); renderStep3(); renderStep4(); renderStep5(); renderStep6(); renderStep7(); renderStep8(); renderStep9();
-    renderStep10(); renderStep11(); renderMC(); renderStep13(); renderCoverage();
+    renderStep10(); renderStep11(); renderARL(); renderNodeLanes(); renderMC(); renderStep13(); renderCoverage();
     clearTimeout(renderAll.grid);
     renderAll.grid = setTimeout(renderGrid, 40);
   }
@@ -820,7 +905,7 @@
     clearTimeout(rw);
     rw = setTimeout(function () {
       var w = $("od-step1").clientWidth; if (Math.abs(w - lastW) < 4) return; lastW = w;
-      Object.keys(P).forEach(function (k) { P[k].redraw(); }); lanes.forEach(function (p) { p.redraw(); });
+      Object.keys(P).forEach(function (k) { P[k].redraw(); }); lanes.concat(nodeLanes).forEach(function (p) { p.redraw(); });
     }, 120);
   });
   refresh();
