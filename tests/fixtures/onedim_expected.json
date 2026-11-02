@@ -1,0 +1,9 @@
+{
+ "methods": {
+  "chain_structural_graph": {"top1": 77, "n": 80},
+  "chain_functional_graph": {"top1": 77, "n": 80},
+  "chain_empty_graph": {"top1": 78, "n": 80}
+ },
+ "event_free_series_with_alarm": {"chain": 0, "ksigma_raw": 16, "n": 20},
+ "spec_grid": {"right": 8, "n": 8}
+}

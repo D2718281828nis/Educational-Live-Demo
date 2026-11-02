@@ -713,13 +713,12 @@
   // ------------------------------------------------------------ step 12: Monte Carlo and the spec grid
   function renderGrid() {
     var rows = [], ok = 0, n = 0;
-    [0.9, 0.95].forEach(function (q) { [0.99, 0.999].forEach(function (g) { [1, 3].forEach(function (r) {
-      var sp = copySpec(); sp.q = q; sp.gamma = g; sp.r = r;
-      var x = C.pipeline(state.o, sp), good = x.rank && x.source === state.o.source;
-      n++; if (good) ok++;
-      rows.push([fmt(q), fmt(g, 3).replace(/0+$/, ""), r, x.ev1.alarm >= 0 ? x.ev1.alarm : "–", x.tHat != null ? x.tHat : "–", x.rank ? NAMES[x.source] : "–",
-        x.rank ? pct(x.rank.probabilities[x.rank.source]) : "–", good ? "✓" : "✗"]);
-    }); }); });
+    C.specGrid(state.o, copySpec()).forEach(function (c) {
+      var x = c.x;
+      n++; if (c.right) ok++;
+      rows.push([fmt(c.q), fmt(c.gamma, 3).replace(/0+$/, ""), c.r, x.ev1.alarm >= 0 ? x.ev1.alarm : "–", x.tHat != null ? x.tHat : "–", x.rank ? NAMES[x.source] : "–",
+        x.rank ? pct(x.rank.probabilities[x.rank.source]) : "–", c.right ? "✓" : "✗"]);
+    });
     var head = ru() ? ["q", "γ", "r", "тревога 1-D", "t̂", "ŝ", "P(ŝ)", "верно"] : ["q", "γ", "r", "1-D alarm", "t̂", "ŝ", "P(ŝ)", "right"];
     $("od-grid").innerHTML = "<thead><tr>" + head.map(function (h, i) { return "<th" + (i > 2 ? ' class="num"' : "") + ">" + h + "</th>"; }).join("") + "</tr></thead><tbody>" +
       rows.map(function (r) { return "<tr>" + r.map(function (c, i) { return "<td" + (i > 2 ? ' class="num"' : "") + ">" + c + "</td>"; }).join("") + "</tr>"; }).join("") +
@@ -728,30 +727,13 @@
 
   var mcToken = 0;
   function runMC() {
-    var token = ++mcToken, jobs = [], o = state.o, spec = copySpec();
-    for (var sd = 1; sd <= 20; sd++) for (var s = 0; s < 4; s++) jobs.push({ seed: 1000 + sd, source: s });
-    var acc = { st: [], fu: [], em: [], fit: [], cross: [], raw: [], free: { chain: 0, s3: 0, cross: 0, n: 0 } }, i = 0, key = settingsKey();
+    var token = ++mcToken, jobs = C.mcJobs(), o = state.o, spec = copySpec();
+    var acc = C.mcNew(), i = 0, key = settingsKey();
     $("od-mc-run").disabled = true;
     function step() {
       if (token !== mcToken) return;
       var stop = Math.min(jobs.length, i + 4);
-      for (; i < stop; i++) {
-        var q = {}; for (var k in o) q[k] = o[k];
-        q.seed = jobs[i].seed; q.source = jobs[i].source;
-        var x = C.pipeline(q, spec), src = q.source, on = q.onset, dt = x.tHat != null ? Math.abs(x.tHat - on) : NaN;
-        var hit = function (rk) { return rk && x.ids[rk.source] === src ? 1 : 0; };
-        acc.st.push({ top: hit(x.rank), dt: dt });
-        acc.fu.push({ top: hit(x.rankF), dt: dt });
-        acc.em.push({ top: hit(x.rankE), dt: dt });
-        acc.fit.push({ top: x.fit && x.fit.source === src ? 1 : 0, dt: x.fit ? Math.abs(x.fit.tStar - on) : NaN });
-        acc.cross.push({ top: x.baseN && x.ids[x.baseN.node] === src ? 1 : 0, dt: x.baseN ? Math.abs(x.baseN.t - on) : NaN });
-        acc.raw.push({ top: 0, dt: x.base1.alarm >= 0 ? Math.abs(x.base1.alarm - on) : NaN });
-        if (src === 0) {
-          q.magnitude = 0;
-          var f = C.pipeline(q, spec);
-          acc.free.n++; if (f.det.detected) acc.free.chain++; if (f.base1.alarm >= 0) acc.free.s3++; if (f.baseN) acc.free.cross++;
-        }
-      }
+      for (; i < stop; i++) C.mcAdd(o, spec, jobs[i], acc);
       $("od-mc-bar").style.width = (100 * i / jobs.length).toFixed(0) + "%";
       $("od-mc-status").textContent = i + " / " + jobs.length;
       if (i < jobs.length) { setTimeout(step, 0); return; }

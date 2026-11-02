@@ -78,6 +78,7 @@ js/site.js        language/theme switches and the Kuramoto card thumbnail
 js/onedim-core.js numerics of section 3 (generator, 1-D EVT, structural analysis, n-D Graph-EVT-agent port); runs in Node too
 tests/port_check.js           checks the JS graph methods against Graph-EVT-agent (Python): node tests/port_check.js
 tests/make_graph_reference.py regenerates tests/fixtures/graph_methods_reference.json from Graph-EVT-agent
+tests/experiments.js          reruns the page's Monte Carlo (seeds 1001–1020 × 4 sources) and spec grid: node tests/experiments.js --check → results/onedim_summary.json
 js/onedim.js      section 3: charts and controls
 .github/workflows/pages.yml   deploys the site to GitHub Pages
 ```

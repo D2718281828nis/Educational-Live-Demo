@@ -2,12 +2,14 @@ name: JS port check
 
 # js/onedim-core.js must reproduce the graph methods of Graph-EVT-agent (Python) on a fixed input.
 # The reference is tests/fixtures/graph_methods_reference.json, made by tests/make_graph_reference.py.
+# tests/experiments.js reruns the page's Monte Carlo and spec grid and checks the numbers quoted in the dissertation
+# (tests/fixtures/onedim_expected.json).
 
 on:
   push:
-    paths: ["js/onedim-core.js", "tests/**", ".github/workflows/port-check.yml"]
+    paths: ["js/onedim-core.js", "js/onedim.js", "tests/**", ".github/workflows/port-check.yml"]
   pull_request:
-    paths: ["js/onedim-core.js", "tests/**", ".github/workflows/port-check.yml"]
+    paths: ["js/onedim-core.js", "js/onedim.js", "tests/**", ".github/workflows/port-check.yml"]
   workflow_dispatch:
 
 permissions:
@@ -22,3 +24,4 @@ jobs:
         with:
           node-version: "20"
       - run: node tests/port_check.js
+      - run: node tests/experiments.js --check

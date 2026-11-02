@@ -753,6 +753,40 @@
       stop: !gated ? "no_evt_detected" : !det.detected ? "no_nd_alarm_near_1d_alarm" : null };
   }
 
+  // ------------------------------------------------------------ step 12: Monte Carlo and the spec grid (also run by tests/experiments.js)
+  /** The 80 Monte Carlo jobs of the page: seeds 1001–1020 × sources 0–3. */
+  function mcJobs() { var jobs = []; for (var sd = 1; sd <= 20; sd++) for (var s = 0; s < 4; s++) jobs.push({ seed: 1000 + sd, source: s }); return jobs; }
+  function mcNew() { return { st: [], fu: [], em: [], fit: [], cross: [], raw: [], free: { chain: 0, s3: 0, cross: 0, n: 0 } }; }
+  /** One job into the accumulator: top-1 hit and |t̂ − t*| per method; for source 0 also the same seed without the event. */
+  function mcAdd(o, spec, job, acc) {
+    var q = {}; for (var k in o) q[k] = o[k];
+    q.seed = job.seed; q.source = job.source;
+    var x = pipeline(q, spec), src = q.source, on = q.onset, dt = x.tHat != null ? Math.abs(x.tHat - on) : NaN;
+    var hit = function (rk) { return rk && x.ids[rk.source] === src ? 1 : 0; };
+    acc.st.push({ top: hit(x.rank), dt: dt });
+    acc.fu.push({ top: hit(x.rankF), dt: dt });
+    acc.em.push({ top: hit(x.rankE), dt: dt });
+    acc.fit.push({ top: x.fit && x.fit.source === src ? 1 : 0, dt: x.fit ? Math.abs(x.fit.tStar - on) : NaN });
+    acc.cross.push({ top: x.baseN && x.ids[x.baseN.node] === src ? 1 : 0, dt: x.baseN ? Math.abs(x.baseN.t - on) : NaN });
+    acc.raw.push({ top: 0, dt: x.base1.alarm >= 0 ? Math.abs(x.base1.alarm - on) : NaN });
+    if (src === 0) {
+      q.magnitude = 0;
+      var f = pipeline(q, spec);
+      acc.free.n++; if (f.det.detected) acc.free.chain++; if (f.base1.alarm >= 0) acc.free.s3++; if (f.baseN) acc.free.cross++;
+    }
+    return acc;
+  }
+  /** The 8-spec grid q ∈ {0.9, 0.95} × γ ∈ {0.99, 0.999} × r ∈ {1, 3} of the 1-D stage; spec is copied for each cell. */
+  function specGrid(o, spec) {
+    var rows = [];
+    [0.9, 0.95].forEach(function (q) { [0.99, 0.999].forEach(function (g) { [1, 3].forEach(function (r) {
+      var sp = {}; for (var k in spec) sp[k] = spec[k]; sp.q = q; sp.gamma = g; sp.r = r;
+      var x = pipeline(o, sp);
+      rows.push({ q: q, gamma: g, r: r, x: x, right: !!(x.rank && x.source === o.source) });
+    }); }); });
+    return rows;
+  }
+
   var api = {
     TAU: TAU, NODES: NODES, OUT: OUT, FREQS: FREQS, AMPS: AMPS, EDGES: EDGES, DEFAULTS: DEFAULTS, SPEC: SPEC, GRAPH: GRAPH, learnGraph: learnGraph,
     makeRng: makeRng, hashSeed: hashSeed, mean: mean, std: std, quantile: quantile, wilson: wilson,
@@ -761,7 +795,7 @@
     structuralGraph: structuralGraph, metric: metric, doublyResolving: doublyResolving, compareEdges: compareEdges,
     innovationGraph: innovationGraph, functionalGraph: functionalGraph, arrivalFit: arrivalFit, robustZ: robustZ, gpdPdf: gpdPdf, potDetect: potDetect, arl: arl,
     threeSigma: threeSigma, gaussTail2: gaussTail2, firstRun: firstRun, countRuns: countRuns, detectND: detectND, rankSources: rankSources, channelOnsets: channelOnsets, firstToCross: firstToCross,
-    pipeline: pipeline, stationarity: stationarity, hashSeries: hashSeries
+    pipeline: pipeline, stationarity: stationarity, hashSeries: hashSeries, mcJobs: mcJobs, mcNew: mcNew, mcAdd: mcAdd, specGrid: specGrid
   };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else global.OneDimCore = api;

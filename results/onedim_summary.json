@@ -1,0 +1,127 @@
+{
+ "settings": "page defaults (js/onedim-core.js DEFAULTS, SPEC); seeds 1001–1020 × sources 0–3",
+ "methods": {
+  "chain_structural_graph": {
+   "top1": 77,
+   "n": 80,
+   "wilson95": [
+    0.8955,
+    0.9872
+   ],
+   "median_abs_dt": 16.5
+  },
+  "chain_functional_graph": {
+   "top1": 77,
+   "n": 80,
+   "wilson95": [
+    0.8955,
+    0.9872
+   ],
+   "median_abs_dt": 16.5
+  },
+  "chain_empty_graph": {
+   "top1": 78,
+   "n": 80,
+   "wilson95": [
+    0.9134,
+    0.9931
+   ],
+   "median_abs_dt": 16.5
+  },
+  "chain_arrival_fit": {
+   "top1": 67,
+   "n": 80,
+   "wilson95": [
+    0.7416,
+    0.9025
+   ],
+   "median_abs_dt": 17
+  },
+  "ksigma_per_channel_first": {
+   "top1": 71,
+   "n": 80,
+   "wilson95": [
+    0.7998,
+    0.9397
+   ],
+   "median_abs_dt": 10
+  },
+  "ksigma_raw_series": {
+   "top1": 0,
+   "n": 80,
+   "wilson95": [
+    0,
+    0.0458
+   ],
+   "median_abs_dt": 28
+  }
+ },
+ "event_free_series_with_alarm": {
+  "chain": 0,
+  "ksigma_raw": 16,
+  "ksigma_per_channel": 16,
+  "n": 20
+ },
+ "spec_grid": {
+  "right": 8,
+  "n": 8,
+  "cells": [
+   {
+    "q": 0.9,
+    "gamma": 0.99,
+    "r": 1,
+    "right": true,
+    "t_hat": 1010
+   },
+   {
+    "q": 0.9,
+    "gamma": 0.99,
+    "r": 3,
+    "right": true,
+    "t_hat": 1010
+   },
+   {
+    "q": 0.9,
+    "gamma": 0.999,
+    "r": 1,
+    "right": true,
+    "t_hat": 1011
+   },
+   {
+    "q": 0.9,
+    "gamma": 0.999,
+    "r": 3,
+    "right": true,
+    "t_hat": 1011
+   },
+   {
+    "q": 0.95,
+    "gamma": 0.99,
+    "r": 1,
+    "right": true,
+    "t_hat": 1010
+   },
+   {
+    "q": 0.95,
+    "gamma": 0.99,
+    "r": 3,
+    "right": true,
+    "t_hat": 1010
+   },
+   {
+    "q": 0.95,
+    "gamma": 0.999,
+    "r": 1,
+    "right": true,
+    "t_hat": 1011
+   },
+   {
+    "q": 0.95,
+    "gamma": 0.999,
+    "r": 3,
+    "right": true,
+    "t_hat": 1011
+   }
+  ]
+ }
+}
