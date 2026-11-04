@@ -55,7 +55,7 @@
     for (var i = 0; i < xs.length; i++) { sxy += (xs[i] - mx) * (ys[i] - my); sxx += (xs[i] - mx) * (xs[i] - mx); }
     return { slope: sxy / sxx, intercept: my - sxy / sxx * mx };
   }
-  // Wilson interval for k successes of n (statement 2.18.8).
+  // Wilson interval for k successes of n (statement 2.1 of the 2.3.1 text).
   function wilson(k, n, z) {
     z = z || 1.96;
     if (!n) return [0, 1];
@@ -417,8 +417,8 @@
     return NODES.map(function (_, s0) { return arrivals(s0, edges).map(function (a) { return a.delay; }); });
   }
   /**
-   * Definition 2.18.2: O doubly resolves V if for every u ≠ v there are o₁, o₂ ∈ O with
-   * d(u, o₁) − d(u, o₂) ≠ d(v, o₁) − d(v, o₂). Returns the unresolved pairs (empty = identifiable, Theorem 2.18.1).
+   * Definition 7.1 (2.3.1 text): O doubly resolves V if for every u ≠ v there are o₁, o₂ ∈ O with
+   * d(u, o₁) − d(u, o₂) ≠ d(v, o₁) − d(v, o₂). Returns the unresolved pairs (empty = identifiable, Theorem 7.1).
    */
   function doublyResolving(O, d) {
     var bad = [];
@@ -632,7 +632,7 @@
     return { adjacency: adjacency, dependence: dependence, lag: lag, threshold: thr, pruned: pruned, p: p, method: method };
   }
 
-  /** Statement 2.18.3: ŝ = arg min_v ‖P(a − d_v)‖² over the channels with an onset; t̂* = mean(a − d_ŝ). */
+  /** Statement 7.1: ŝ = arg min_v ‖P(a − d_v)‖² over the channels with an onset; t̂* = mean(a − d_ŝ). */
   function arrivalFit(onsets, ids, d) {
     var obs = [];
     onsets.forEach(function (a, k) { if (a != null) obs.push({ a: a, node: ids[k] }); });
