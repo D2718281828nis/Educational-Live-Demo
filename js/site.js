@@ -66,5 +66,19 @@
     }
   }
 
+  // ------------------------------------------------------------ published build (version.json is written by pages.yml)
+  var build = document.getElementById("build-version");
+  if (build && window.fetch) {
+    fetch("version.json", { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : null; }).then(function (v) {
+      if (!v || !v.commit) return;
+      var a = document.createElement("a");
+      a.href = "https://github.com/D2718281828nis/Educational-Live-Demo/commit/" + v.commit;
+      a.textContent = (v.branch || "main") + " @ " + String(v.commit).slice(0, 7);
+      if (v.built) a.title = v.built;
+      build.append(" · build ", a);
+      build.hidden = false;
+    }).catch(function () {});
+  }
+
   setLang(lang(), false);
 })();
