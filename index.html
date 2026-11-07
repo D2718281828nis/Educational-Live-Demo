@@ -94,74 +94,135 @@
     <div>
       <h2><span lang="en">The dissertation in brief</span><span lang="ru">Диссертация кратко</span></h2>
       <p lang="en">Extreme (rare critical) states of complex systems are rarely labelled: classical machine learning needs labelled events,
-        which are few, so the data are unbalanced; features are chosen by trial, without criteria that predict before training whether an
-        event is detectable and what quality to expect; and decisions of neural models are opaque. The dissertation addresses the absence of a
-        <strong>systematic methodology for detecting and identifying extreme states of complex systems without labels</strong>
-        (specialty 2.3.1 “System analysis, control and information processing, statistics”).</p>
+        which are few; features are chosen by trial, without criteria that predict detectability before training; decisions of neural models
+        are opaque; and a language model placed on top of a numerical analysis may change its numbers. The dissertation addresses the absence of
+        <strong>intelligent machine-learning software systems for the analysis of extreme events of complex systems that need no labels, store and
+        process data about the system as graph models with a traceable decision, and produce a conclusion with verifiable sources without changing
+        the result of the numerical analysis</strong> (specialty 2.3.5 “Mathematical and software support of computing systems, complexes and
+        computer networks”).</p>
       <p lang="ru">Экстремальные (редкие критические) состояния сложных систем почти не размечены: классические методы машинного обучения
-        требуют размеченных событий, которых мало, и данные несбалансированы; признаки выбираются перебором, без критериев, по которым
-        до обучения видно, обнаружимо ли событие и какого качества ждать; решения нейросетевых моделей непрозрачны. Научная проблема
-        диссертации — <strong>отсутствие системной методологии выявления и идентификации экстремальных состояний сложных систем при
-        отсутствии разметки</strong> (специальность 2.3.1 «Системный анализ, управление и обработка информации, статистика»).</p>
+        требуют размеченных событий, которых мало; признаки выбираются перебором, без критериев, по которым до обучения видно, обнаружимо ли
+        событие; решения нейросетевых моделей непрозрачны, а языковая модель поверх численного анализа может изменить его числа. Научная
+        проблема диссертации — <strong>отсутствие интеллектуальных программных систем машинного обучения для анализа экстремальных событий
+        сложных систем, которые не требуют разметки, хранят и обрабатывают данные о системе графовыми моделями с прослеживаемым решением и
+        формируют заключение с проверяемыми источниками, не изменяя результата численного анализа</strong> (специальность 2.3.5
+        «Математическое и программное обеспечение вычислительных систем, комплексов и компьютерных сетей»).</p>
     </div>
   </header>
 
-  <div class="grid-4">
+  <div class="grid-3">
     <article class="card">
-      <span class="tag"><span lang="en">Thesis 1 · shown in the labs</span><span lang="ru">Положение 1 · показано в лабораториях</span></span>
-      <h3><span lang="en">Detection without labels by EVT</span><span lang="ru">Выявление без разметки на основе ТЭЗ</span></h3>
-      <p lang="en">The model learns on the object’s own unlabelled data: an extreme value threshold (POT/GPD, GEV) fitted on the background
-        decides that an extreme state began; unsupervised outlier detectors and a two-stage scheme cut false alarms. Effectiveness is the
-        reduction of expert review. Section 3: 0 alarms in 20 event-free series against 16 for the 3σ rule.</p>
-      <p lang="ru">Модель обучается на неразмеченных данных самого объекта: порог теории экстремальных значений (POT/GPD, GEV), обученный
-        на фоне, устанавливает начало экстремального состояния; обнаружители выбросов без учителя и двухэтапная схема снижают число ложных
-        тревог. Эффективность — сокращение объёма экспертной проверки. Раздел 3: 0 тревог в 20 рядах без события против 16 у правила 3σ.</p>
+      <span class="tag"><span lang="en">Position 1 · shown in the labs</span><span lang="ru">Положение 1 · показано в лабораториях</span></span>
+      <h3><span lang="en">Software for detecting extreme states without labels</span><span lang="ru">Программное обеспечение выявления экстремальных состояний без разметки</span></h3>
+      <p lang="en">One software pipeline whose handlers are tuned only on the object’s own background and return a testable hypothesis. The
+        feature space (spectral power and its principal components, wavelets, long-range-correlation indices) is chosen before training by
+        testable criteria — a heavy tail of the feature and the between-class distance. The alarm is raised by unsupervised outlier detectors
+        (one-class SVM, LNND) and an extreme value threshold with a persistence rule; a two-stage scheme with a deep network cuts false alarms.
+        The same code runs unchanged on systems of different nature.</p>
+      <p lang="en">Section 3: 0 alarms in 20 event-free series against 16 for the 3σ rule; the right answer under 8 of 8 specifications;
+        structural, functional and empty graphs give 77, 77 and 78 correct runs of 80 — the features decide, not the graph.</p>
+      <p lang="ru">Единый программный конвейер, обработчики которого настраиваются только по фону самого объекта и выдают проверяемую гипотезу.
+        Признаковое пространство (спектральная мощность и её главные компоненты, вейвлет-преобразование, показатели долговременных корреляций)
+        выбирается до обучения по проверяемым критериям — тяжёлому хвосту распределения признака и межклассовому расстоянию. Тревогу поднимают
+        алгоритмы обнаружения выбросов без учителя (одноклассовый SVM, LNND) и порог теории экстремальных значений с правилом устойчивости;
+        двухэтапная схема с глубокой нейронной сетью снижает число ложных тревог. Одна программная реализация применяется без изменения кода к
+        системам разной природы.</p>
+      <p lang="ru">Раздел 3: 0 тревог в 20 рядах без события против 16 у правила 3σ; верный результат при 8 из 8 спецификаций;
+        структурный, функциональный и пустой граф дают 77, 77 и 78 верных результатов из 80 — решают признаки, а не граф.</p>
     </article>
     <article class="card">
-      <span class="tag"><span lang="en">Thesis 2 · shown in the labs</span><span lang="ru">Положение 2 · показано в лабораториях</span></span>
-      <h3><span lang="en">Criteria for choosing the feature space</span><span lang="ru">Критерии выбора признакового пространства</span></h3>
-      <p lang="en">Features are chosen before training by three testable criteria: a heavy tail (detectability), the between-class distance
-        (quality of a distance-based detector) and the range of scales: DFA indices are informative when long-range correlations span
-        a wide range of scales (EEG, s<sub>max</sub> ≳ 300 samples) and uninformative on records with a slow trend and measurement noise
-        (C-MAPSS). Quality depends on the features more than on the classifier
-        or the graph: in section 3 the structural, functional and empty graphs find the source in 77, 77 and 78 of 80 runs.</p>
-      <p lang="ru">Признаки выбираются до обучения по трём проверяемым критериям: тяжёлый хвост (обнаружимость), межклассовое расстояние
-        (качество дистанционного алгоритма) и диапазон масштабов: показатели DFA информативны, когда долгие корреляции охватывают
-        широкий диапазон масштабов (ЭЭГ, s<sub>max</sub> ≳ 300 отсчётов), и неинформативны на записях с медленным трендом и шумом
-        измерений (C-MAPSS). Качество зависит от признаков больше, чем от классификатора
-        и графа: в разделе 3 структурный, функциональный и пустой граф находят источник в 77, 77 и 78 опытах из 80.</p>
+      <span class="tag"><span lang="en">Position 2</span><span lang="ru">Положение 2</span></span>
+      <h3><span lang="en">Architecture of transparent AI on the “objects – events” graph</span><span lang="ru">Архитектура прозрачного ИИ на графовой модели «объекты – события»</span></h3>
+      <p lang="en">Data about objects and events are an “objects – events” multigraph (objects are nodes, time-stamped weighted events are edges);
+        a graph neural network classifies nodes. Stores of inference results, of graph and neural models and a vertex-code dictionary (index and
+        information parts kept apart) sit on the graph-oriented computing system “Teragraph”. The graph builder is a parameterised software
+        interface: the dependence measure and the edge rule are parameters, and the defaults reproduce earlier results. A decision is traced
+        to nodes, edges and events; the edges’ contribution to accuracy is checked separately, by the same network with and without edges.</p>
+      <p lang="ru">Данные об объектах и событиях представлены мультиграфом «объекты – события» (объекты — узлы, события с временной меткой и
+        весом — рёбра); графовая нейронная сеть выполняет узловую классификацию. Хранилища результатов логического вывода, графовых и
+        нейросетевых моделей и словарь кодов вершин (индексная и информационная части хранятся раздельно) размещены на граф-ориентированном
+        комплексе «Тераграф». Построитель графа — параметризуемый программный интерфейс: мера зависимости и правило рёбер — параметры, при
+        значениях по умолчанию прежние результаты сохраняются. Решение прослеживается до узлов, рёбер и событий; вклад рёбер в точность
+        проверяется отдельно — той же сетью с графом и без рёбер.</p>
     </article>
     <article class="card">
-      <span class="tag"><span lang="en">Thesis 3</span><span lang="ru">Положение 3</span></span>
-      <h3><span lang="en">Graph architecture of transparent AI</span><span lang="ru">Графовая архитектура прозрачного ИИ</span></h3>
-      <p lang="en">Heterogeneous data are a graph (objects are nodes, time-stamped weighted events are edges); a graph neural network
-        classifies nodes, and the graph models are stored and processed on the graph-oriented computing system “Teragraph”. A decision can be
-        traced to nodes, edges and events. The graph is a testable model of structure; a gain in
-        accuracy from the edges is not claimed: their contribution is checked separately, by comparing the same network with and without edges.</p>
-      <p lang="ru">Разнородные данные представлены графом (объекты — узлы, события с временной меткой и весом — рёбра); графовая нейронная
-        сеть классифицирует узлы, графовые модели хранятся и обрабатываются на граф-ориентированном комплексе «Тераграф». Решение
-        прослеживается до узлов, рёбер и событий. Граф — проверяемая модель структуры; прирост точности
-        за счёт рёбер не заявляется: вклад рёбер проверяется отдельно, сравнением той же сети с графом и без рёбер.</p>
-    </article>
-    <article class="card">
-      <span class="tag"><span lang="en">Thesis 4</span><span lang="ru">Положение 4</span></span>
-      <h3><span lang="en">Multi-agent decision support with verifiable sources</span><span lang="ru">Мультиагентная поддержка решений с проверяемыми источниками</span></h3>
-      <p lang="en">Several LLM agents with different roles draft a conclusion on the results of automatic processing. Their statements are tied
-        to verifiable sources (knowledge base, knowledge graph); they assess the classifier’s verdict critically but do not replace it, and
-        the numbers are not changed by the language model. The system supports the decision; it does not make it.</p>
-      <p lang="ru">Несколько агентов на основе больших языковых моделей с разными ролями формируют заключение по результатам автоматической
-        обработки. Их выводы привязаны к проверяемым источникам (база знаний, граф знаний); вердикт классификатора они оценивают критически,
-        но не подменяют, а числа языковая модель не меняет. Система поддерживает решение, а не принимает его.</p>
+      <span class="tag"><span lang="en">Position 3</span><span lang="ru">Положение 3</span></span>
+      <h3><span lang="en">Interaction model of a multi-agent LLM decision-support system</span><span lang="ru">Модель взаимодействия компонентов мультиагентной СППР на основе LLM</span></h3>
+      <p lang="en">A three-level pipeline: data and the automatic classifier’s verdict arrive from the processing server over a REST API; a
+        consilium of agents with different roles, separate knowledge bases (RAG) and two rounds of discussion; a structured conclusion in
+        Markdown and JSON. The numerical result is computed before the agent layer and is not an input to any numerical step; every number of
+        the conclusion is checked against the outputs of deterministic tools; the classifier’s verdict is kept next to the agents’ conclusion
+        with a mark of disagreement. The system supports the decision; it does not make it.</p>
+      <p lang="ru">Трёхуровневый конвейер: данные и вердикт автоматического классификатора поступают от сервера обработки через REST API;
+        консилиум агентов с различными ролями, раздельными базами знаний (RAG) и двумя раундами обсуждения; структурированное заключение в
+        форматах Markdown и JSON. Численный результат вычисляется до агентного слоя и не служит входом ни одного численного шага; каждое число
+        заключения сверяется с выходами детерминированных инструментов; вердикт классификатора сохраняется рядом с заключением агентов вместе с
+        отметкой расхождения. Система выполняет функцию поддержки, а не принятия решения.</p>
     </article>
   </div>
 
-  <p class="note" lang="en" style="margin-top:12px;color:var(--muted);font-size:14px">Source localization (“where”) and the identifiability
-    theorem shown in sections 2–3 come from the 2.3.5 version of the dissertation (theorem 2.18.1 there). The 2.3.1 version does not defend them:
-    they are auxiliary results (Theorem 7.1, § 7.5), and the synthetic example of section 3 serves as a positive control for Theses 1–2.</p>
-  <p class="note" lang="ru" style="margin-top:12px;color:var(--muted);font-size:14px">Локализация источника («где») и теорема
-    идентифицируемости из разделов 2–3 взяты из версии диссертации по специальности 2.3.5 (там теорема 2.18.1). В версии 2.3.1 они на защиту
-    не выносятся: это вспомогательные результаты (теорема 7.1, § 7.5), а синтетический пример раздела 3 служит положительным контролем
-    Положений 1–2.</p>
+  <figure class="card arch" aria-labelledby="arch-cap">
+    <svg class="arch-fig" viewBox="0 0 960 306" role="img" aria-label="Software system of the dissertation: Position 1 numerical pipeline, Position 2 objects–events graph and stores, Position 3 agent consilium; numbers flow one way and are checked">
+      <defs>
+        <marker id="arch-head" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arch-head"/></marker>
+      </defs>
+      <!-- column frames -->
+      <rect x="8" y="26" width="300" height="230" rx="12" class="arch-col p1"/>
+      <rect x="330" y="26" width="300" height="230" rx="12" class="arch-col"/>
+      <rect x="652" y="26" width="300" height="230" rx="12" class="arch-col"/>
+      <text x="158" y="16" class="arch-h"><tspan lang="en">Position 1 · detection without labels</tspan><tspan lang="ru">Положение 1 · выявление без разметки</tspan></text>
+      <text x="480" y="16" class="arch-h"><tspan lang="en">Position 2 · transparent-AI graph</tspan><tspan lang="ru">Положение 2 · граф прозрачного ИИ</tspan></text>
+      <text x="802" y="16" class="arch-h"><tspan lang="en">Position 3 · agent decision support</tspan><tspan lang="ru">Положение 3 · агентная поддержка решений</tspan></text>
+
+      <!-- P1 pipeline -->
+      <g class="arch-box"><rect x="28" y="44" width="260" height="34" rx="7"/><text x="158" y="61"><tspan lang="en">multichannel series X · background only</tspan><tspan lang="ru">многоканальный ряд X · только фон</tspan></text></g>
+      <g class="arch-box"><rect x="28" y="96" width="260" height="34" rx="7"/><text x="158" y="113"><tspan lang="en">features chosen before training (H0)</tspan><tspan lang="ru">признаки до обучения (H0)</tspan></text></g>
+      <g class="arch-box"><rect x="28" y="148" width="260" height="34" rx="7"/><text x="158" y="165"><tspan lang="en">OC-SVM · LNND · POT/GPD + r (H1)</tspan><tspan lang="ru">OC-SVM · LNND · POT/GPD + r (H1)</tspan></text></g>
+      <g class="arch-box hi"><rect x="28" y="200" width="260" height="40" rx="7"/><text x="158" y="214"><tspan lang="en">numerical result y = f(X)</tspan><tspan lang="ru">численный результат y = f(X)</tspan></text><text x="158" y="230" class="arch-s"><tspan lang="en">t̂, alarms, manifest — fixed here</tspan><tspan lang="ru">t̂, тревоги, manifest — фиксированы</tspan></text></g>
+      <path d="M158 78 V96 M158 130 V148 M158 182 V200" class="arch-flow" marker-end="url(#arch-head)"/>
+
+      <!-- P2 graph -->
+      <g class="arch-g">
+        <line x1="380" y1="74" x2="450" y2="58"/><line x1="380" y1="74" x2="420" y2="120"/><line x1="450" y1="58" x2="420" y2="120"/>
+        <path d="M450 58 Q 500 70 520 104"/><path d="M450 58 Q 476 100 520 104"/><line x1="420" y1="120" x2="520" y2="104"/><line x1="520" y1="104" x2="590" y2="70"/>
+      </g>
+      <g class="arch-n"><circle cx="380" cy="74" r="9"/><circle cx="450" cy="58" r="9"/><circle cx="420" cy="120" r="9"/><circle cx="520" cy="104" r="9"/><circle cx="590" cy="70" r="9"/></g>
+      <text x="480" y="146" class="arch-s"><tspan lang="en">objects = nodes · events (time, weight) = edges</tspan><tspan lang="ru">объекты — узлы · события (время, вес) — рёбра</tspan></text>
+      <g class="arch-box"><rect x="350" y="160" width="128" height="34" rx="7"/><text x="414" y="177"><tspan lang="en">graph builder API</tspan><tspan lang="ru">построитель графа</tspan></text></g>
+      <g class="arch-box"><rect x="482" y="160" width="128" height="34" rx="7"/><text x="546" y="177"><tspan lang="en">GNN node class.</tspan><tspan lang="ru">ГНС, узлы</tspan></text></g>
+      <g class="arch-store"><rect x="350" y="204" width="260" height="36" rx="7"/><text x="480" y="216" class="arch-s"><tspan lang="en">stores: inference · graph &amp; neural models</tspan><tspan lang="ru">хранилища: вывод · модели графов и ГНС</tspan></text><text x="480" y="231" class="arch-s"><tspan lang="en">vertex-code dictionary · “Teragraph”</tspan><tspan lang="ru">словарь кодов вершин · «Тераграф»</tspan></text></g>
+
+      <!-- P3 agents -->
+      <g class="arch-box"><rect x="672" y="44" width="260" height="34" rx="7"/><text x="802" y="61"><tspan lang="en">REST API: data + classifier verdict</tspan><tspan lang="ru">REST API: данные + вердикт</tspan></text></g>
+      <g class="arch-agent"><circle cx="730" cy="122" r="18"/><circle cx="802" cy="122" r="18"/><circle cx="874" cy="122" r="18"/><text x="730" y="122">A₁</text><text x="802" y="122">A₂</text><text x="874" y="122">A₃</text></g>
+      <path d="M748 116 H784 M820 116 H856 M856 128 H820 M784 128 H748" class="arch-talk"/>
+      <text x="802" y="150" class="arch-s"><tspan lang="en">roles · separate RAG bases · 2 rounds</tspan><tspan lang="ru">роли · раздельные базы RAG · 2 раунда</tspan></text>
+      <g class="arch-box"><rect x="672" y="168" width="260" height="30" rx="7"/><text x="802" y="183"><tspan lang="en">number check: ∀a ∃e: |a − e| ≤ ε</tspan><tspan lang="ru">сверка чисел: ∀a ∃e: |a − e| ≤ ε</tspan></text></g>
+      <g class="arch-box hi"><rect x="672" y="206" width="260" height="34" rx="7"/><text x="802" y="223"><tspan lang="en">conclusion MD + JSON · verdict kept</tspan><tspan lang="ru">заключение MD + JSON · вердикт рядом</tspan></text></g>
+      <path d="M802 78 V102 M802 160 V168 M802 198 V206" class="arch-flow" marker-end="url(#arch-head)"/>
+
+      <!-- cross-column flows -->
+      <path d="M288 220 C 318 220, 322 177, 350 177" class="arch-flow" marker-end="url(#arch-head)"/>
+      <path d="M610 177 C 640 177, 640 61, 672 61" class="arch-flow" marker-end="url(#arch-head)"/>
+      <path d="M288 232 C 470 300, 640 290, 672 183" class="arch-flow dash" marker-end="url(#arch-head)"/>
+      <text x="480" y="298" class="arch-s"><tspan lang="en">numbers flow one way: y is computed before the agent layer, never fed back, and every number of the text is checked against it</tspan><tspan lang="ru">числа идут в одну сторону: y считается до агентного слоя, обратно не подаётся, и каждое число текста сверяется с ним</tspan></text>
+    </svg>
+    <figcaption id="arch-cap">
+      <span lang="en">How the three Positions fit into one software system (illustration; no new results). The labs on this page show
+        the left column — Position 1.</span>
+      <span lang="ru">Как три Положения складываются в одну программную систему (иллюстрация, новых результатов нет). Лаборатории этой
+        страницы показывают левую колонку — Положение 1.</span>
+    </figcaption>
+  </figure>
+
+  <p class="note" lang="en" style="margin-top:12px;color:var(--muted);font-size:14px">Source localization (“where”), the identifiability
+    theorem and the arrival-time estimate shown in sections 2–3 are auxiliary results of the 2.3.5 version (Theorem 6.1, Statements 6.1–6.2,
+    § 6.5, Appendix Б): they are not published and are not put forward for defence. The synthetic example of section 3 serves as a positive
+    control for Position 1.</p>
+  <p class="note" lang="ru" style="margin-top:12px;color:var(--muted);font-size:14px">Локализация источника («где»), теорема
+    идентифицируемости и оценка по временам прихода из разделов 2–3 — вспомогательные результаты версии 2.3.5 (теорема 6.1, утверждения
+    6.1–6.2, § 6.5, приложение Б): они не опубликованы и на защиту не выносятся. Синтетический пример раздела 3 служит положительным
+    контролем Положения 1.</p>
 
   <div class="systems" aria-label="Systems">
     <span class="pill"><span lang="en">Tested by one code base on three complex systems:</span><span lang="ru">Проверено единым кодом на трёх сложных системах:</span></span>
@@ -221,8 +282,8 @@
   </div>
 
   <h3 class="rv-sub"><span class="rv-n">2.2</span><span lang="en">Methods M1–M9</span><span lang="ru">Методы М1–М9</span></h3>
-  <p class="rv-lede" lang="en">M1–M5 are stated as propositions and proved in the text of the dissertation (chapters 3, 5, 7); M6–M9 are proposed methods with code in the companion repositories.</p>
-  <p class="rv-lede" lang="ru">М1–М5 сформулированы как утверждения и доказаны в тексте диссертации (главы 3, 5, 7); М6–М9 — предлагаемые методы с программной опорой в репозиториях.</p>
+  <p class="rv-lede" lang="en">M1–M5 are stated as propositions and proved in the text of the dissertation (chapters 3, 4, 6); M2, M3 and M5 are auxiliary and are not put forward for defence. M6–M9 are proposed methods with code in the companion repositories.</p>
+  <p class="rv-lede" lang="ru">М1–М5 сформулированы как утверждения и доказаны в тексте диссертации (главы 3, 4, 6); М2, М3 и М5 — вспомогательные, на защиту не выносятся. М6–М9 — предлагаемые методы с программной опорой в репозиториях.</p>
   <div class="rv-methods">
       <article class="rv-card">
         <div class="rv-top"><span class="rv-code">M1</span><span class="rv-st proved"><span lang="en">proved, St. 3.1</span><span lang="ru">доказано, утв. 3.1</span></span></div>
@@ -232,28 +293,28 @@
         <div class="rv-where"><span lang="en">shown in § 3, steps 4, 8, 10</span><span lang="ru">показано в § 3, шаги 4, 8, 10</span></div>
       </article>
       <article class="rv-card">
-        <div class="rv-top"><span class="rv-code">M2</span><span class="rv-st proved"><span lang="en">proved, Th. 7.1</span><span lang="ru">доказано, теор. 7.1</span></span></div>
+        <div class="rv-top"><span class="rv-code">M2</span><span class="rv-st proved"><span lang="en">proved, Th. 6.1 · auxiliary</span><span lang="ru">доказано, теор. 6.1 · вспомог.</span></span></div>
         <h4><span lang="en">Identifiability of the source</span><span lang="ru">Идентифицируемость источника</span></h4>
         <div class="rv-f"><span lang="en">O doubly resolves V ⇔ s* is unique</span><span lang="ru">O дважды разрешает V ⇔ s* единственен</span></div>
         <p><span lang="en">From arrival times the source is unique only if the observed set doubly resolves the graph. One sensor never does.</span><span lang="ru">По временам прихода источник единственен, только если наблюдаемое множество дважды разрешает граф. Один датчик — никогда.</span></p>
         <div class="rv-where"><span lang="en">shown in § 3, steps 4, 5, 9</span><span lang="ru">показано в § 3, шаги 4, 5, 9</span></div>
       </article>
       <article class="rv-card rv-dim">
-        <div class="rv-top"><span class="rv-code">M3</span><span class="rv-st proved"><span lang="en">proved, St. 5.1–5.2</span><span lang="ru">доказано, утв. 5.1–5.2</span></span></div>
+        <div class="rv-top"><span class="rv-code">M3</span><span class="rv-st proved"><span lang="en">proved, St. 4.1–4.2 · auxiliary</span><span lang="ru">доказано, утв. 4.1–4.2 · вспомог.</span></span></div>
         <h4><span lang="en">Inflation without grouping</span><span lang="ru">Завышение без группировки</span></h4>
         <div class="rv-f">Δ = (1 − K<sup>−(m−1)</sup>)(h − a₀)</div>
         <p><span lang="en">Splitting nodes of one physical group between train and test overstates quality by Δ.</span><span lang="ru">Разбиение узлов одной физической группы между обучением и проверкой завышает качество на Δ.</span></p>
         <div class="rv-where"><span lang="en">not shown in § 3</span><span lang="ru">в § 3 не показано</span></div>
       </article>
       <article class="rv-card">
-        <div class="rv-top"><span class="rv-code">M4</span><span class="rv-st proved"><span lang="en">proved, St. 5.3</span><span lang="ru">доказано, утв. 5.3</span></span></div>
+        <div class="rv-top"><span class="rv-code">M4</span><span class="rv-st proved"><span lang="en">proved, St. 4.3</span><span lang="ru">доказано, утв. 4.3</span></span></div>
         <h4><span lang="en">Value of the graph</span><span lang="ru">Ценность графа</span></h4>
         <div class="rv-f">Δ<sub>G</sub> = M(f(X, A)) − M(f(X, ∅))</div>
         <p><span lang="en">The graph counts only if it beats the empty graph on every seed and by the Nadeau–Bengio test.</span><span lang="ru">Граф ценен, только если превосходит пустой граф на каждой затравке и по критерию Надо — Бенжио.</span></p>
         <div class="rv-where"><span lang="en">shown in § 3, steps 7, 11</span><span lang="ru">показано в § 3, шаги 7, 11</span></div>
       </article>
       <article class="rv-card">
-        <div class="rv-top"><span class="rv-code">M5</span><span class="rv-st proved"><span lang="en">proved, St. 7.2</span><span lang="ru">доказано, утв. 7.2</span></span></div>
+        <div class="rv-top"><span class="rv-code">M5</span><span class="rv-st proved"><span lang="en">proved, St. 6.2 · auxiliary</span><span lang="ru">доказано, утв. 6.2 · вспомог.</span></span></div>
         <h4><span lang="en">Estimates are not merged</span><span lang="ru">Оценки не сводятся</span></h4>
         <div class="rv-f">P(Ŝ<sub>i</sub> = Ŝ<sub>j</sub>) = ½ + 2(a<sub>i</sub> − ½)(a<sub>j</sub> − ½)</div>
         <p><span lang="en">Independent estimates are merged only when they agree often enough; otherwise they are kept side by side.</span><span lang="ru">Независимые оценки сливаются, только если достаточно часто согласны; иначе сохраняются рядом.</span></p>
@@ -332,11 +393,11 @@
     <div>
       <h2><span lang="en">One sensor, five nodes: from a 1-D series to “when — where”</span><span lang="ru">Один датчик, пять узлов: от одномерного ряда к ответу «когда — где»</span></h2>
       <p lang="en">An extreme event starts in one of the nodes A–D and spreads along the graph. Only node E is measured: one series (<i>p</i> = 1).
-        By Theorem 7.1 one sensor cannot tell the source, so the harness goes in two stages: <b>1-D EVT</b> decides that an extreme event
+        By Theorem 6.1 (auxiliary) one sensor cannot tell the source, so the harness goes in two stages: <b>1-D EVT</b> decides that an extreme event
         happened; a <b>structural analysis</b> of the background turns the series into nodes, edges and an <b>n-D series</b>; the <b>n-D path of
         Graph-EVT-agent</b> answers when and where. An ordinary 3σ rule runs alongside. Everything is recomputed in the browser.</p>
       <p lang="ru">Экстремальное событие зарождается в одном из узлов A–D и распространяется по графу. Измеряется только узел E — один ряд (<i>p</i> = 1).
-        По теореме 7.1 один датчик не различает источник, поэтому конвейер работает в два этапа: <b>одномерная EVT</b> устанавливает, что произошло
+        По теореме 6.1 (вспомогательный результат) один датчик не различает источник, поэтому конвейер работает в два этапа: <b>одномерная EVT</b> устанавливает, что произошло
         экстремальное событие; <b>структурный анализ</b> фона превращает ряд в узлы, рёбра и <b>многомерный ряд</b>; <b>n-D-ветвь Graph-EVT-agent</b>
         отвечает, когда и где. Рядом работает обычное правило 3σ. Всё пересчитывается в браузере.</p>
     </div>
@@ -378,7 +439,7 @@
   <li class="od-step" id="od-step1">
     <div class="od-step-head"><span class="od-n">1</span><div>
       <h3><span lang="en">The system and the task</span><span lang="ru">Система и постановка</span></h3>
-      <span class="od-tags">H6 · <span lang="en">positive control</span><span lang="ru">положительный контроль</span> · <span lang="en">Def.</span><span lang="ru">опр.</span> 7.1</span>
+      <span class="od-tags">H6 · <span lang="en">positive control</span><span lang="ru">положительный контроль</span> · <span lang="en">Def.</span><span lang="ru">опр.</span> 6.1</span>
     </div></div>
     <p lang="en">Every node has its own rhythm with frequency f (like the characteristic frequencies of a machine’s parts). The sensor at E hears all
       rhythms at once. The event swells the rhythm of the source node and reaches each other node along the fastest path: an edge delays it by τ samples
@@ -507,7 +568,7 @@
   <li class="od-step">
     <div class="od-step-head"><span class="od-n">7</span><div>
       <h3><span lang="en">Structural analysis · edges: finding the structure</span><span lang="ru">Структурный анализ · рёбра: поиск структуры</span></h3>
-      <span class="od-tags">H2 · M4 · <span lang="en">Theses 2–3</span><span lang="ru">Положения 2–3</span></span>
+      <span class="od-tags">H2 · M4 · <span lang="en">Positions 1–2</span><span lang="ru">Положения 1–2</span></span>
     </div></div>
     <p lang="en">The <b>structural</b> graph is the physical adjacency from the object dictionary. The <b>functional</b> graph is estimated from data: an
       identification record of the same system (no event, the rhythms excited by spontaneous bursts, as in commissioning) is turned into the same five
@@ -576,18 +637,18 @@
   <li class="od-step">
     <div class="od-step-head"><span class="od-n">9</span><div>
       <h3><span lang="en">n-D Graph-EVT-agent: <code>rank_source</code> — the answer</span><span lang="ru">n-D Graph-EVT-agent: <code>rank_source</code> — ответ</span></h3>
-      <span class="od-tags">H3 · M2 · M5 · <span lang="en">St.</span><span lang="ru">утв.</span> 7.1</span>
+      <span class="od-tags">H3 · M2 · M5 · <span lang="en">St.</span><span lang="ru">утв.</span> 6.1 · <span lang="en">auxiliary</span><span lang="ru">вспомогательно</span></span>
     </div></div>
     <p lang="en">In the 40 samples after t̂, each channel gets peak, energy and latency of its z, its degree and the mean peak of its neighbours in the structural
       graph; P(s) = softmax(peak + √energy + 0.15·neighbour − 0.5·latency). A second, independent estimate uses only the onset of each channel and the
-      graph metric d (statement 7.1). The two are kept side by side (M5).</p>
+      graph metric d (statement 6.1). The two are kept side by side (M5).</p>
     <p lang="ru">В 40 отсчётах после t̂ каждый канал получает пик, энергию и латентность своей z, степень и средний пик соседей в структурном графе;
       P(s) = softmax(пик + √энергия + 0,15·соседи − 0,5·латентность). Вторая, независимая оценка использует только начало каждого канала и метрику графа d
-      (утверждение 7.1). Обе оценки сохраняются рядом (М5).</p>
+      (утверждение 6.1). Обе оценки сохраняются рядом (М5).</p>
     <div class="od-answer" id="od-answer"></div>
     <div class="od-two">
       <div><div class="panel-label"><span lang="en">P(s), rank_source with the structural graph</span><span lang="ru">P(s), rank_source со структурным графом</span></div><div id="od-bars" class="od-bars"></div></div>
-      <div><div class="panel-label"><span lang="en">Statement 7.1: ‖P(a − d<sub>v</sub>)‖² per candidate (lower is better)</span><span lang="ru">Утверждение 7.1: ‖P(a − d<sub>v</sub>)‖² по кандидатам (меньше — лучше)</span></div><div id="od-fit" class="od-bars"></div></div>
+      <div><div class="panel-label"><span lang="en">Statement 6.1: ‖P(a − d<sub>v</sub>)‖² per candidate (lower is better)</span><span lang="ru">Утверждение 6.1: ‖P(a − d<sub>v</sub>)‖² по кандидатам (меньше — лучше)</span></div><div id="od-fit" class="od-bars"></div></div>
     </div>
     <details class="table-view" open><summary><span lang="en">Features of rank_source</span><span lang="ru">Признаки rank_source</span></summary><div class="table-scroll"><table id="od-feats"></table></div></details>
   </li>
@@ -707,7 +768,7 @@
         <li>тревога POT/GPD, ранжирование источника, GNN и GAT</li>
         <li>конвейер агента Graph-EVT и оркестрация</li>
       </ul>
-      <div class="meta"><b><span lang="en">In the dissertation:</span><span lang="ru">В диссертации:</span></b> § 2.9, § 3.7, § 7.1; <span lang="en">Thesis 1</span><span lang="ru">Положение 1</span></div>
+      <div class="meta"><b><span lang="en">In the dissertation:</span><span lang="ru">В диссертации:</span></b> §§ 3.8, 3.13, 4.3 (<span lang="en">Fig.</span><span lang="ru">рис.</span> 1, 6–7, 10–12); <span lang="en">Positions 1–2</span><span lang="ru">Положения 1–2</span></div>
       <div class="links">
         <a class="btn primary small" lang="en" href="https://d2718281828nis.github.io/EVT-educational-demo/index?lang=en">Open lab ↗</a>
         <a class="btn primary small" lang="ru" href="https://d2718281828nis.github.io/EVT-educational-demo/index?lang=ru">Открыть ↗</a>
@@ -728,15 +789,15 @@
         <li>tune 12 coupled Kuramoto oscillators (ω, φ, coupling K)</li>
         <li>inject a Hurst-coloured burst into <code>channel_00</code></li>
         <li>watch it spread; phase coherence <i>r</i>(<i>t</i>)</li>
-        <li>presets reproduce the R4 benchmark of § 3.7 (Fig. 6–7)</li>
+        <li>presets reproduce the R4 benchmark of § 3.8 (Fig. 6–7)</li>
       </ul>
       <ul lang="ru">
         <li>12 связанных осцилляторов Курамото (ω, φ, связь K)</li>
         <li>впрыск всплеска с показателем Хёрста в <code>channel_00</code></li>
         <li>распространение по каналам и параметр порядка <i>r</i>(<i>t</i>)</li>
-        <li>пресеты воспроизводят эталон R4 из § 3.7 (рис. 6–7)</li>
+        <li>пресеты воспроизводят эталон R4 из § 3.8 (рис. 6–7)</li>
       </ul>
-      <div class="meta"><b><span lang="en">In the dissertation:</span><span lang="ru">В диссертации:</span></b> § 2.9, § 3.7; <span lang="en">Thesis 1, positive control</span><span lang="ru">Положение 1, положительный контроль</span></div>
+      <div class="meta"><b><span lang="en">In the dissertation:</span><span lang="ru">В диссертации:</span></b> § 2.9, § 3.8 (<span lang="en">Fig.</span><span lang="ru">рис.</span> 6–7); <span lang="en">Position 1, positive control</span><span lang="ru">Положение 1, положительный контроль</span></div>
       <div class="links">
         <a class="btn primary small" href="https://d2718281828nis.github.io/EVT-educational-demo/kuramoto/"><span lang="en">Open lab ↗</span><span lang="ru">Открыть ↗</span></a>
         <a class="btn small" href="https://github.com/D2718281828nis/EVT-educational-demo/tree/main/site/kuramoto"><span lang="en">Source</span><span lang="ru">Код</span></a>
@@ -770,7 +831,7 @@
         <li>сети эхо-состояний и NG-RC обучаются прямо в браузере</li>
         <li>связь с ТАУ: резервуар как модель (A, B, C, D)</li>
       </ul>
-      <div class="meta"><b><span lang="en">In the dissertation:</span><span lang="ru">В диссертации:</span></b> <span lang="en">§ 2.17, § 3.12 of the 2.3.5 version: model-based detection; not part of the 2.3.1 text</span><span lang="ru">§ 2.17, § 3.12 версии 2.3.5: модельно-ориентированная детекция; в текст 2.3.1 не входит</span></div>
+      <div class="meta"><b><span lang="en">In the dissertation:</span><span lang="ru">В диссертации:</span></b> <span lang="en">not in the text: auxiliary educational repository R11</span><span lang="ru">в текст не вошёл: вспомогательный образовательный репозиторий R11</span></div>
       <div class="links">
         <a class="btn primary small" lang="en" href="https://d2718281828nis.github.io/ML-Reservoir_Computing/">Open lab ↗</a>
         <a class="btn primary small" lang="ru" href="https://d2718281828nis.github.io/ML-Reservoir_Computing/ru/">Открыть ↗</a>
@@ -802,7 +863,7 @@
     <table class="role">
       <tbody>
         <tr><td><span lang="en">Repository</span><span lang="ru">Репозиторий</span></td>
-          <td><span lang="en">R5 — Interactive labs (artifact No. 5 in the 2.3.5 version)</span><span lang="ru">R5 — интерактивные лаборатории (артефакт № 5 в версии 2.3.5)</span></td></tr>
+          <td><span lang="en">R5 — Interactive labs (repository No. 5 of the repository table)</span><span lang="ru">R5 — интерактивные лаборатории (репозиторий № 5 таблицы репозиториев)</span></td></tr>
         <tr><td><span lang="en">Type</span><span lang="ru">Тип</span></td>
           <td><b><span lang="en">Direct</span><span lang="ru">Прямой</span></b></td></tr>
         <tr><td><span lang="en">Location</span><span lang="ru">Расположение</span></td>
@@ -812,14 +873,16 @@
             <a href="https://d2718281828nis.github.io/ML-Reservoir_Computing/ru/"><span lang="en">reservoir computing</span><span lang="ru">резервуарные вычисления</span></a>;
             <span lang="en">catalog:</span><span lang="ru">каталог:</span> <a href="https://ai-is-out-there.github.io/#library">ai-is-out-there.github.io/#library</a></td></tr>
         <tr><td><span lang="en">Used in</span><span lang="ru">Где используется</span></td>
-          <td><span lang="en">§ 3.7, Fig. 8 “One sensor, five nodes”; Thesis 1 — rows 1.10 (false alarms on event-free series) and 1.11
-            (robustness to the specification); Thesis 2 — row 2.10 (features matter more than the graph); practical significance</span>
-            <span lang="ru">§ 3.7, рис. 8 «Один датчик, пять узлов»; Положение 1 — строки 1.10 (ложные тревоги на рядах без события) и 1.11
-            (устойчивость к спецификации); Положение 2 — строка 2.10 (признаки важнее графа); практическая значимость</span></td></tr>
+          <td><span lang="en">§ 3.8, Fig. 8 “One sensor, five nodes”; Position 1 — rows 1.9 (false alarms on event-free series), 1.10
+            (robustness to the specification) and 1.20 (features matter more than the model and the graph); reliability — D7 (the browser
+            port equals the reference up to 5·10⁻¹³) and D8 (positive control); practical significance</span>
+            <span lang="ru">§ 3.8, рис. 8 «Один датчик, пять узлов»; Положение 1 — строки 1.9 (ложные тревоги на рядах без события), 1.10
+            (устойчивость к спецификации) и 1.20 (признаки важнее модели и графа); достоверность — Д7 (браузерная реализация совпадает с
+            эталонной до 5·10⁻¹³) и Д8 (положительный контроль); практическая значимость</span></td></tr>
         <tr><td><span lang="en">Purpose</span><span lang="ru">Зачем</span></td>
-          <td><span lang="en">Positive control with a known moment and source for Theses 1–2, and a visual demonstration of the method; the basis
+          <td><span lang="en">Positive control with a known moment and source for Position 1, and a visual demonstration of the method; the basis
             for an act of implementation in the educational process.</span>
-            <span lang="ru">Положительный контроль с известными моментом и источником для Положений 1–2 и наглядная демонстрация метода;
+            <span lang="ru">Положительный контроль с известными моментом и источником для Положения 1 и наглядная демонстрация метода;
             основание для акта внедрения в учебный процесс.</span></td></tr>
       </tbody>
     </table>
@@ -827,7 +890,7 @@
 
   <div class="grid-3" style="margin-top:14px">
     <article class="card">
-      <h3><span lang="en">§ 3.7 · positive control</span><span lang="ru">§ 3.7 · положительный контроль</span></h3>
+      <h3><span lang="en">§ 3.8 · positive control</span><span lang="ru">§ 3.8 · положительный контроль</span></h3>
       <p lang="en">On real systems there are no labels: the true moment and source are unknown or given only by an external hypothesis, so
         the accuracy of the answer cannot be measured there. The method is therefore first checked on synthetic benchmarks with a known moment and source. The labs make these benchmarks visible
         and let anyone change their parameters.</p>
@@ -837,28 +900,26 @@
     </article>
     <article class="card">
       <h3><span lang="en">Practical significance</span><span lang="ru">Практическая значимость</span></h3>
-      <p lang="en">Open software with reproducible results — the Graph-EVT-agent library, the applied repository of the three examples of chapter 7
+      <p lang="en">Open software with reproducible results — the Graph-EVT-agent library, the applied repository of the three examples of chapter 6
         and the teaching repository with the “when — where” setting — is part of the practical significance. The labs are its
         no-install, in-browser face for students and reviewers.</p>
       <p lang="ru">Открытые программные средства с воспроизводимыми результатами — библиотека Graph-EVT-agent, прикладной репозиторий трёх
-        примеров главы 7 и учебный репозиторий с постановкой «когда — где» — входят в практическую значимость. Лаборатории — их
+        примеров главы 6 и учебный репозиторий с постановкой «когда — где» — входят в практическую значимость. Лаборатории — их
         браузерная форма без установки для студентов и рецензентов.</p>
     </article>
     <article class="card">
-      <h3><span lang="en">Specialty passport 2.3.1</span><span lang="ru">Паспорт специальности 2.3.1</span></h3>
-      <p lang="en">Thesis 1 is mapped to items 4, 2, 11 and 10 of the passport, Thesis 2 to items 3, 12 and 4. Item 12 covers visualization and
-        analysis of information by computer methods: the labs show the method’s numbers as interactive figures that anyone can recompute.</p>
-      <p lang="ru">Положение 1 отнесено к пп. 4, 2, 11 и 10 паспорта, Положение 2 — к пп. 3, 12 и 4. Пункт 12 — визуализация и анализ
-        информации компьютерными методами: лаборатории показывают числа метода интерактивными рисунками, которые любой может пересчитать.</p>
+      <h3><span lang="en">Specialty passport 2.3.5</span><span lang="ru">Паспорт специальности 2.3.5</span></h3>
+      <p lang="en">Position 1 is mapped to item 4 of the passport, Position 2 to items 4, 8 and 3, Position 3 to items 3 and 4. The labs belong
+        to the software of Position 1: an intelligent machine-learning system that works without labels, shown so that anyone can recompute
+        its numbers.</p>
+      <p lang="ru">Положение 1 отнесено к п. 4 паспорта, Положение 2 — к пп. 4, 8 и 3, Положение 3 — к пп. 3 и 4. Лаборатории входят в
+        программное обеспечение Положения 1: интеллектуальная система машинного обучения без разметки, показанная так, что любой может
+        пересчитать её числа.</p>
     </article>
   </div>
-  <blockquote lang="ru">п. 12 «Визуализация, трансформация и анализ информации на основе компьютерных методов обработки информации»</blockquote>
-  <blockquote lang="en">Item 12: “Visualization, transformation and analysis of information based on computer methods of information
-    processing” (translated from the Russian passport).</blockquote>
-  <p lang="en" style="color:var(--muted);font-size:14px">In the 2.3.5 version of the dissertation the labs support item 7 of that passport
-    (human–machine interfaces, computer graphics, visualization).</p>
-  <p lang="ru" style="color:var(--muted);font-size:14px">В версии диссертации по специальности 2.3.5 лаборатории подтверждают п. 7 её паспорта
-    (человеко-машинные интерфейсы, компьютерная графика, визуализация).</p>
+  <blockquote lang="ru">п. 4 «Интеллектуальные системы машинного обучения, управления базами данных и знаний, инструментальные средства разработки цифровых продуктов»</blockquote>
+  <blockquote lang="en">Item 4: “Intelligent machine-learning systems, database and knowledge management systems, tools for developing digital
+    products” (translated from the Russian passport).</blockquote>
 </section>
 
 <!-- ============================================================== 6 REPOSITORIES -->
@@ -886,11 +947,11 @@
           <td><span lang="en">synthetic benchmarks with a known moment and source, 19 notebooks; hosts the guide and the Kuramoto explorer</span>
             <span lang="ru">синтетические эталоны с известными моментом и источником, 19 ноутбуков; на нём размещены руководство и обозреватель Курамото</span></td></tr>
         <tr><td><a href="https://github.com/D2718281828nis/Extreme-Value-Theory-New-Approach">Extreme-Value-Theory-New-Approach</a></td><td class="mono">b57440f</td>
-          <td><span lang="en">public code and reference results of the three examples of chapter 7; matches the dissertation’s computation core on every key (2026-11-02)</span>
-            <span lang="ru">публичный код и эталонные результаты трёх примеров главы 7; совпадает с расчётным ядром диссертации по всем ключам (02.11.2026)</span></td></tr>
+          <td><span lang="en">public code and reference results of the three examples of chapter 6; matches the dissertation’s computation core on every key (2026-11-02)</span>
+            <span lang="ru">публичный код и эталонные результаты трёх примеров главы 6; совпадает с расчётным ядром диссертации по всем ключам (02.11.2026)</span></td></tr>
         <tr><td><a href="https://github.com/D2718281828nis/ML-Reservoir_Computing">ML-Reservoir_Computing</a></td><td class="mono">—</td>
-          <td><span lang="en">the echo state network equation of § 2.17 (2.3.5 version) with reproducible comparisons; hosts the reservoir explainer</span>
-            <span lang="ru">уравнение эхо-сети § 2.17 (версия 2.3.5) с воспроизводимыми сравнениями; на нём размещён разбор резервуарных вычислений</span></td></tr>
+          <td><span lang="en">echo state networks with reproducible comparisons (auxiliary educational repository R11, not in the dissertation text); hosts the reservoir explainer</span>
+            <span lang="ru">эхо-сети с воспроизводимыми сравнениями (вспомогательный образовательный репозиторий R11, в текст диссертации не вошёл); на нём размещён разбор резервуарных вычислений</span></td></tr>
       </tbody>
     </table>
   </div>

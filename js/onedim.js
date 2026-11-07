@@ -491,8 +491,8 @@
         (st.ratio < 4 ? " < 4" : " ≥ 4") + " → " + (st.stationary ? "стационарен" : "нестационарен")), st.stationary ? "ok" : "warn"],
       ["detect_evt", ev.alarm >= 0 ? L("1-D alarm τ_r = " + ev.alarm + ": an extreme event happened", "одномерная тревога τ_r = " + ev.alarm + ": экстремальное событие произошло")
         : L("no alarm → stop: <code>no_evt_detected</code>", "тревоги нет → остановка: <code>no_evt_detected</code>"), ev.alarm >= 0 ? "ok" : "warn"],
-      ["rank_source", L("p = 1: O = {E} leaves all " + R.gate1.length + " node pairs unresolved (Theorem 7.1) → <code>single_channel_cannot_localize</code> → structural analysis (steps 5–7) → n-D route (steps 8–9)",
-        "p = 1: при O = {E} не разрешены все " + R.gate1.length + " пар узлов (теорема 7.1) → <code>single_channel_cannot_localize</code> → структурный анализ (шаги 5–7) → n-D-маршрут (шаги 8–9)"), "next"]
+      ["rank_source", L("p = 1: O = {E} leaves all " + R.gate1.length + " node pairs unresolved (Theorem 6.1) → <code>single_channel_cannot_localize</code> → structural analysis (steps 5–7) → n-D route (steps 8–9)",
+        "p = 1: при O = {E} не разрешены все " + R.gate1.length + " пар узлов (теорема 6.1) → <code>single_channel_cannot_localize</code> → структурный анализ (шаги 5–7) → n-D-маршрут (шаги 8–9)"), "next"]
     ];
     $("od-route").innerHTML = items.map(function (it) {
       return '<li class="' + it[2] + '"><span class="od-mark">' + (it[2] === "ok" ? "✓" : it[2] === "warn" ? "!" : "→") + "</span><span><code>" + it[0] + "</code> " + it[1] + "</span></li>";
@@ -666,7 +666,7 @@
       '<div><span class="od-a-k">' + L("When", "Когда") + '</span><span class="od-a-v">t̂ = ' + R.tHat + "</span><span class=\"od-a-n\">t* = " + state.o.onset + ", " + L("error ", "ошибка ") + (R.tHat - state.o.onset >= 0 ? "+" : "") + (R.tHat - state.o.onset) + "</span></div>" +
       '<div><span class="od-a-k">' + L("Where", "Где") + '</span><span class="od-a-v"><span class="swatch dot" style="background:' + NODE_COLOR[s] + '"></span>ŝ = ' + NAMES[s] + "</span><span class=\"od-a-n\">P = " + pct(rk.probabilities[rk.source]) + " · " +
       (ok ? L("correct", "верно") : L("wrong, true ", "неверно, истинный ") + NAMES[src]) + "</span></div>" +
-      '<div><span class="od-a-k">' + L("St. 7.1", "Утв. 7.1") + '</span><span class="od-a-v">' + (fit ? "ŝ = " + NAMES[fit.source] + ", t̂* = " + fit.tStar : "–") + '</span><span class="od-a-n">' +
+      '<div><span class="od-a-k">' + L("St. 6.1", "Утв. 6.1") + '</span><span class="od-a-v">' + (fit ? "ŝ = " + NAMES[fit.source] + ", t̂* = " + fit.tStar : "–") + '</span><span class="od-a-n">' +
       (fit ? (agree ? L("agrees with rank_source (M5)", "совпадает с rank_source (М5)") : L("disagrees with rank_source — both are kept (M5)", "не совпадает с rank_source — обе оценки сохраняются (М5)")) : L("fewer than 2 onsets", "меньше 2 начал")) + "</span></div>";
     bars("od-bars", R.ids.map(function (id, k) {
       return { name: "<b>" + NAMES[id] + "</b>" + (id === src ? " <small>s*</small>" : ""), frac: rk.probabilities[k], color: NODE_COLOR[id], value: pct(rk.probabilities[k]) };
@@ -759,7 +759,7 @@
       row(L("Chain, rank_source + structural graph", "Конвейер, rank_source + структурный граф"), a.st, fc) +
       row(L("Chain, rank_source + functional graph", "Конвейер, rank_source + функциональный граф") + " (" + state.spec.graph.method + ")", a.fu, fc) +
       row(L("Chain, rank_source + empty graph", "Конвейер, rank_source + пустой граф"), a.em, fc) +
-      row(L("Chain, arrival fit (St. 7.1)", "Конвейер, подгонка приходов (утв. 7.1)"), a.fit, fc) +
+      row(L("Chain, arrival fit (St. 6.1)", "Конвейер, подгонка приходов (утв. 6.1)"), a.fit, fc) +
       row(L("kσ per channel, first to cross", "kσ по каналам, первый пересёкший") + " (k = " + fmt(state.spec.sigmaK, 1) + ", r = " + state.spec.sigmaR + ")", a.cross, F.cross + "/" + F.n) +
       row(L("kσ on the raw series (where = E)", "kσ по сырому ряду (где = E)") + " (k = " + fmt(state.spec.sigmaK, 1) + ", r = " + state.spec.sigmaR + ")", a.raw, F.s3 + "/" + F.n) + "</tbody>";
     var dG = (top(a.st) - top(a.em)) / n;

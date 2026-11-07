@@ -226,6 +226,25 @@ main > section { padding-top: 40px; padding-bottom: 16px; }
 .rv-bar { fill: var(--axis); } .rv-bar.hi { fill: var(--series-2); }
 .rv-rules { display: grid; gap: 4px; font-size: 13px; color: var(--ink-2); border-top: 1px solid var(--border); padding-top: 8px; }
 .rv-rules b { color: var(--ink); margin-right: 6px; }
+/* ---------------------------------------------------------------- section 1: architecture of the three Positions */
+.arch { margin: 14px 0 0; padding: 12px 14px; overflow-x: auto; }
+.arch-fig { display: block; width: 100%; min-width: 720px; height: auto; }
+.arch figcaption { color: var(--ink-2); font-size: 13px; margin-top: 6px; }
+.arch-col { fill: var(--surface-2); stroke: var(--border); }
+.arch-col.p1 { fill: var(--band); stroke: var(--series-2); stroke-opacity: 0.5; }
+.arch-h { font: 700 12.5px system-ui, sans-serif; fill: var(--ink); text-anchor: middle; dominant-baseline: central; }
+.arch-box rect, .arch-store rect { fill: var(--surface); stroke: var(--axis); stroke-width: 1.2; }
+.arch-store rect { stroke-dasharray: 5 3; }
+.arch-box.hi rect { stroke: var(--series-1); stroke-width: 2; }
+.arch-box text, .arch-agent text { font: 600 11.5px system-ui, sans-serif; fill: var(--ink); text-anchor: middle; dominant-baseline: central; }
+.arch-s { font: 500 10.5px system-ui, sans-serif; fill: var(--ink-2); text-anchor: middle; dominant-baseline: central; }
+.arch-flow { fill: none; stroke: var(--ink-2); stroke-width: 1.5; }
+.arch-flow.dash { stroke: var(--series-1); stroke-dasharray: 5 4; }
+.arch-head { fill: var(--ink-2); }
+.arch-g line, .arch-g path { stroke: var(--axis); stroke-width: 2; fill: none; }
+.arch-n circle { fill: var(--series-1); }
+.arch-agent circle { fill: var(--surface); stroke: var(--series-3); stroke-width: 2; }
+.arch-talk { stroke: var(--series-3); stroke-width: 1.2; fill: none; }
 .rv-methods { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; }
 .rv-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; }
 .rv-card.rv-dim { opacity: 0.72; }
