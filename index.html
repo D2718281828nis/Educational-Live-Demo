@@ -27,9 +27,11 @@
     <a href="#s1"><b>1</b><span lang="en">Dissertation</span><span lang="ru">Диссертация</span></a>
     <a href="#s2"><b>2</b><span lang="en">Task · methods</span><span lang="ru">Постановка · методы</span></a>
     <a href="#s3"><b>3</b><span lang="en">One sensor</span><span lang="ru">Один датчик</span></a>
-    <a href="#s4"><b>4</b><span lang="en">Labs</span><span lang="ru">Лаборатории</span></a>
-    <a href="#s5"><b>5</b><span lang="en">Role in the thesis</span><span lang="ru">Место в диссертации</span></a>
-    <a href="#s6"><b>6</b><span lang="en">Repositories</span><span lang="ru">Репозитории</span></a>
+    <a href="#p2"><b>4</b><span lang="en">Position 2 · graph</span><span lang="ru">Положение 2 · граф</span></a>
+    <a href="#p3"><b>5</b><span lang="en">Position 3 · agents</span><span lang="ru">Положение 3 · агенты</span></a>
+    <a href="#s4"><b>6</b><span lang="en">Labs</span><span lang="ru">Лаборатории</span></a>
+    <a href="#s5"><b>7</b><span lang="en">Role in the thesis</span><span lang="ru">Место в диссертации</span></a>
+    <a href="#s6"><b>8</b><span lang="en">Repositories</span><span lang="ru">Репозитории</span></a>
   </div>
   <div class="nav-tools">
     <div class="seg small" role="group" aria-label="Language / Язык">
@@ -80,6 +82,7 @@
       <a class="btn primary" href="#s4"><span lang="en">Open the labs ↓</span><span lang="ru">К лабораториям ↓</span></a>
       <a class="btn" href="#s2"><span lang="en">Task, methods, harness</span><span lang="ru">Постановка, методы, средства</span></a>
       <a class="btn" href="#s3"><span lang="en">From one sensor to when — where</span><span lang="ru">От одного датчика к «когда — где»</span></a>
+      <a class="btn" href="#p2"><span lang="en">Positions 2 and 3, interactive</span><span lang="ru">Положения 2 и 3 интерактивно</span></a>
       <a class="btn" href="https://ai-is-out-there.github.io/#library"><span lang="en">Catalog of all labs ↗</span><span lang="ru">Каталог лабораторий ↗</span></a>
     </div>
   </div>
@@ -112,7 +115,7 @@
 
   <div class="grid-3">
     <article class="card">
-      <span class="tag"><span lang="en">Position 1 · shown in the labs</span><span lang="ru">Положение 1 · показано в лабораториях</span></span>
+      <span class="tag"><span lang="en">Position 1 · shown in <a href="#s3">section 3</a> and the labs</span><span lang="ru">Положение 1 · показано в <a href="#s3">разделе 3</a> и лабораториях</span></span>
       <h3><span lang="en">Software for detecting extreme states without labels</span><span lang="ru">Программное обеспечение выявления экстремальных состояний без разметки</span></h3>
       <p lang="en">One software pipeline whose handlers are tuned only on the object’s own background and return a testable hypothesis. The
         feature space (spectral power and its principal components, wavelets, long-range-correlation indices) is chosen before training by
@@ -131,7 +134,7 @@
         структурный, функциональный и пустой граф дают 77, 77 и 78 верных результатов из 80 — решают признаки, а не граф.</p>
     </article>
     <article class="card">
-      <span class="tag"><span lang="en">Position 2</span><span lang="ru">Положение 2</span></span>
+      <span class="tag"><span lang="en">Position 2 · shown in <a href="#p2">section 4</a></span><span lang="ru">Положение 2 · показано в <a href="#p2">разделе 4</a></span></span>
       <h3><span lang="en">Architecture of transparent AI on the “objects – events” graph</span><span lang="ru">Архитектура прозрачного ИИ на графовой модели «объекты – события»</span></h3>
       <p lang="en">Data about objects and events are an “objects – events” multigraph (objects are nodes, time-stamped weighted events are edges);
         a graph neural network classifies nodes. Stores of inference results, of graph and neural models and a vertex-code dictionary (index and
@@ -146,7 +149,7 @@
         проверяется отдельно — той же сетью с графом и без рёбер.</p>
     </article>
     <article class="card">
-      <span class="tag"><span lang="en">Position 3</span><span lang="ru">Положение 3</span></span>
+      <span class="tag"><span lang="en">Position 3 · shown in <a href="#p3">section 5</a></span><span lang="ru">Положение 3 · показано в <a href="#p3">разделе 5</a></span></span>
       <h3><span lang="en">Interaction model of a multi-agent LLM decision-support system</span><span lang="ru">Модель взаимодействия компонентов мультиагентной СППР на основе LLM</span></h3>
       <p lang="en">A three-level pipeline: data and the automatic classifier’s verdict arrive from the processing server over a REST API; a
         consilium of agents with different roles, separate knowledge bases (RAG) and two rounds of discussion; a structured conclusion in
@@ -208,10 +211,12 @@
       <text x="480" y="298" class="arch-s"><tspan lang="en">numbers flow one way: y is computed before the agent layer, never fed back, and every number of the text is checked against it</tspan><tspan lang="ru">числа идут в одну сторону: y считается до агентного слоя, обратно не подаётся, и каждое число текста сверяется с ним</tspan></text>
     </svg>
     <figcaption id="arch-cap">
-      <span lang="en">How the three Positions fit into one software system (illustration; no new results). The labs on this page show
-        the left column — Position 1.</span>
-      <span lang="ru">Как три Положения складываются в одну программную систему (иллюстрация, новых результатов нет). Лаборатории этой
-        страницы показывают левую колонку — Положение 1.</span>
+      <span lang="en">How the three Positions fit into one software system (illustration; no new results). Section 3 and the labs show
+        the left column — Position 1; section 4 shows the middle column — Position 2; section 5 shows the right column — Position 3, with the
+        result of section 3 as its input.</span>
+      <span lang="ru">Как три Положения складываются в одну программную систему (иллюстрация, новых результатов нет). Раздел 3 и лаборатории
+        показывают левую колонку — Положение 1; раздел 4 — среднюю колонку, Положение 2; раздел 5 — правую колонку, Положение 3, с результатом
+        раздела 3 на входе.</span>
     </figcaption>
   </figure>
 
@@ -734,10 +739,254 @@
   </div>
 </section>
 
-<!-- ============================================================== 4 LABS -->
-<section id="s4">
+<!-- ============================================================== 4 POSITION 2: A GRAPH YOU CAN CHECK -->
+<section id="p2">
   <header class="sec-head">
     <span class="num">4</span>
+    <div>
+      <h2><span lang="en">Position 2 · A graph you can check: traced decisions, edges measured separately</span><span lang="ru">Положение 2 · Проверяемый граф: прослеживаемое решение, вклад рёбер отдельно</span></h2>
+      <p lang="en">Position 2 claims an <b>architecture</b> and <b>transparency</b>, not higher accuracy. Data about objects and events are an
+        “objects – events” multigraph; a decision of the graph network is traced to the nodes, edges and events it used; the graph
+        builder is a parameterised interface; and the contribution of the edges is measured on its own, by the same model with the graph
+        and with an empty graph. Section 4.1 shows <i>how</i> a decision is stored and traced. Section 4.2 shows <i>why</i> the edges must be
+        checked separately, on the model example of § 4.8 with the dissertation’s own data. Section 4.3 gives the numbers from the three real systems.</p>
+      <p lang="ru">Положение 2 заявляет <b>архитектуру</b> и <b>прозрачность</b>, а не рост точности. Данные об объектах и событиях — мультиграф
+        «объекты – события»; решение графовой сети прослеживается до использованных узлов, рёбер и событий; построитель графа —
+        параметризуемый интерфейс; вклад рёбер измеряется отдельно — той же моделью с графом и с пустым графом. Раздел 4.1 показывает,
+        <i>как</i> решение хранится и прослеживается. Раздел 4.2 — <i>почему</i> рёбра нужно проверять отдельно, на модельном примере § 4.8 с
+        данными диссертации. Раздел 4.3 — числа на трёх реальных системах.</p>
+    </div>
+  </header>
+
+  <h3 class="rv-sub"><span class="rv-n">4.1</span><span lang="en">How a decision is stored and traced</span><span lang="ru">Как решение хранится и прослеживается</span></h3>
+  <div class="od-step">
+    <p lang="en">Objects (patients, studies) are vertices of one kind, events (visits) of another; an edge joins an object to an event and carries the
+      time τ (the edge key) and the weight ω (a token of the conclusion). Two edges between the same pair are allowed — a multigraph (P-02 has two
+      dated edges to E-13). Click an object and choose how many layers the network has: a K-layer graph network can use only what lies within K
+      hops, so its decision is traced to exactly that part of the graph. The vertex-code dictionary keeps the <b>index part</b> (code → vertex,
+      edge keys: the structure) apart from the <b>information part</b> (attributes), which is read only for the vertices in the trace.</p>
+    <p lang="ru">Объекты (пациенты, исследования) — вершины одного вида, события (визиты) — другого; ребро соединяет объект с событием и несёт
+      время τ (ключ ребра) и вес ω (токен заключения). Между одной парой допустимы два ребра — это мультиграф (у P-02 два ребра с разными
+      датами к E-13). Щёлкните объект и выберите число слоёв сети: K-слойная графовая сеть использует только то, что лежит в пределах K
+      шагов, поэтому её решение прослеживается ровно до этой части графа. Словарь кодов вершин хранит <b>индексную часть</b> (код → вершина,
+      ключи рёбер: структура) отдельно от <b>информационной</b> (атрибуты), которая читается только для вершин трассы.</p>
+    <div class="eq-block"><span class="lbl"><span lang="en">graph</span><span lang="ru">граф</span></span>
+      𝒢 = (V<sub>obj</sub> ∪ V<sub>ev</sub>, ℰ), &nbsp; ℰ = {(u, v, τ, ω): u ∈ V<sub>obj</sub>, v ∈ V<sub>ev</sub>} &nbsp;
+      <span class="muted">(§ 4.2)</span> &nbsp;·&nbsp; ŷ<sub>u</sub> = f<sub>θ</sub>(X, A)<sub>u</sub> <span lang="en">depends only on</span><span lang="ru">зависит только от</span> {v : d(u, v) ≤ K}</div>
+    <div class="od-two">
+      <div>
+        <div class="od-spec">
+          <span><span lang="en">network layers K</span><span lang="ru">слоёв сети K</span> <span class="seg small" id="p2-K"><button type="button" data-v="1">1</button><button type="button" data-v="2">2</button><button type="button" data-v="3">3</button><button type="button" data-v="4">4</button></span></span>
+        </div>
+        <svg id="p2-eg" class="od-graph" viewBox="0 0 360 300" role="img" aria-label="Objects – events multigraph"></svg>
+        <div class="legend" id="p2-eg-legend"></div>
+      </div>
+      <div>
+        <div class="panel-label"><span lang="en">Vertex-code dictionary · index part (always read)</span><span lang="ru">Словарь кодов вершин · индексная часть (читается всегда)</span></div>
+        <div class="table-scroll"><table id="p2-index"></table></div>
+        <div class="panel-label"><span lang="en">Information part (read only for the trace)</span><span lang="ru">Информационная часть (читается только для трассы)</span></div>
+        <div class="table-scroll"><table id="p2-info"></table></div>
+      </div>
+    </div>
+    <div class="readout" id="p2-trace"></div>
+    <details class="table-view"><summary><span lang="en">Record in the store of inference results (JSON)</span><span lang="ru">Запись в хранилище результатов вывода (JSON)</span></summary><pre class="od-pre" id="p2-record"></pre></details>
+    <p class="muted" style="font-size:13px;margin-top:8px" lang="en">Illustration with made-up codes, no patient data. In [P14] the same model is a
+      <code>networkx.MultiGraph</code> “patient – events” on MIMIC-IV-ECG (R9); the stores and the dictionary sit on the graph-oriented complex
+      “Teragraph” (§ 4.4).</p>
+    <p class="muted" style="font-size:13px;margin-top:8px" lang="ru">Иллюстрация с условными кодами, без данных пациентов. В [P14] та же модель —
+      <code>networkx.MultiGraph</code> «пациент – события» на MIMIC-IV-ECG (R9); хранилища и словарь размещены на граф-ориентированном комплексе
+      «Тераграф» (§ 4.4).</p>
+  </div>
+
+  <h3 class="rv-sub"><span class="rv-n">4.2</span><span lang="en">When do the edges help? The model example of § 4.8</span><span lang="ru">Когда рёбра помогают? Модельный пример § 4.8</span></h3>
+  <div class="od-step" id="p2-lab">
+    <p lang="en">About 1 670 points, 14 % red. On the <b>chains</b> and <b>circles</b> sets red and green fill the same area, and a point’s
+      neighbourhood looks the same for both colours: the colour is set by the <i>length</i> of the chain a point lies on, which no small
+      neighbourhood shows. A method gets only the coordinates, scores every point and flags as many as there are red points; colours are used
+      only to compute F<sub>1</sub>. The graph builder is a parameter: k nearest neighbours, k from 1 to 8. The <b>same score</b> is computed
+      with the graph and with the empty graph, and their difference is the value of the graph Δ<sub>G</sub> (M4). Click a point to trace
+      its score.</p>
+    <p lang="ru">Около 1 670 точек, 14 % красных. На наборах <b>цепочки</b> и <b>окружности</b> красные и зелёные занимают одну область, и
+      окрестность точки выглядит одинаково для обоих цветов: цвет задаёт <i>длина</i> цепочки, на которой лежит точка, а её не видно ни в
+      одной малой окрестности. Метод получает только координаты, оценивает каждую точку и отмечает столько, сколько красных; цвета нужны
+      только для F<sub>1</sub>. Построитель графа — параметр: k ближайших соседей, k от 1 до 8. <b>Одна и та же оценка</b> считается с
+      графом и с пустым графом; разность — ценность графа Δ<sub>G</sub> (М4). Щёлкните точку, чтобы проследить её оценку.</p>
+    <div class="od-gctl">
+      <div class="od-ctl"><span class="od-ctl-label"><span lang="en">Data</span><span lang="ru">Данные</span></span>
+        <div class="seg small" id="p2-ds"><button type="button" data-v="original"><span lang="en">overlay</span><span lang="ru">наложение</span></button><button type="button" data-v="ring"><span lang="en">ring</span><span lang="ru">кольцо</span></button><button type="button" data-v="chains"><span lang="en">chains</span><span lang="ru">цепочки</span></button><button type="button" data-v="circles"><span lang="en">circles</span><span lang="ru">окружности</span></button></div></div>
+      <div class="od-ctl"><span class="od-ctl-label"><span lang="en">Builder: k nearest neighbours</span><span lang="ru">Построитель: k ближайших соседей</span></span>
+        <div class="seg small" id="p2-k"><button type="button" data-v="1">1</button><button type="button" data-v="2">2</button><button type="button" data-v="3">3</button><button type="button" data-v="4">4</button><button type="button" data-v="5">5</button><button type="button" data-v="6">6</button><button type="button" data-v="7">7</button><button type="button" data-v="8">8</button></div></div>
+      <div class="od-ctl"><span class="od-ctl-label"><span lang="en">Score f</span><span lang="ru">Оценка f</span></span>
+        <div class="seg small" id="p2-f"><button type="button" data-v="component"><span lang="en">component size</span><span lang="ru">размер компоненты</span></button><button type="button" data-v="smooth"><span lang="en">smoothing, K = 3</span><span lang="ru">сглаживание, K = 3</span></button></div></div>
+      <div class="od-ctl"><label class="od-check-l"><input type="checkbox" id="p2-leak"> <span lang="en">leaky builder: edges may use the colour</span><span lang="ru">утечка: рёбра используют цвет</span></label></div>
+    </div>
+    <div class="od-two wide-left">
+      <div>
+        <div class="legend" id="p2-legend"></div>
+        <div class="p2-canvas-box"><canvas id="p2-canvas" aria-label="Points and k-NN graph" role="img"></canvas></div>
+        <div class="readout" id="p2-pick"></div>
+      </div>
+      <div>
+        <div class="p2-facts" id="p2-facts"></div>
+        <ul class="od-route" id="p2-rule"></ul>
+        <div class="panel-label"><span lang="en">F<sub>1</sub> against k: the same score with and without edges</span><span lang="ru">F<sub>1</sub> от k: одна оценка с рёбрами и без них</span></div>
+        <div class="legend" id="p2-curve-legend"></div>
+        <div id="p2-curve"></div>
+        <details class="table-view"><summary><span lang="en">Builder configuration (JSON)</span><span lang="ru">Конфигурация построителя (JSON)</span></summary><pre class="od-pre" id="p2-config"></pre></details>
+      </div>
+    </div>
+    <div class="eq-block" style="margin-top:12px"><span class="lbl"><span lang="en">rule</span><span lang="ru">правило</span></span>
+      (a) h(A) ≈ 1, &nbsp; (b) Pr(y<sub>i</sub> = 1 | B<sub>r</sub>(x<sub>i</sub>)) ≈ p, &nbsp; Pr(y<sub>i</sub> = 1 | 𝒦(i)) ∈ {0, 1}; &nbsp;
+      <span lang="en">components = chains if</span><span lang="ru">компоненты = цепочки, если</span> k·δ &lt; g <span lang="en">(open)</span><span lang="ru">(открытые)</span>, ⌈k/2⌉·δ &lt; g <span lang="en">(closed)</span><span lang="ru">(замкнутые)</span>
+      <span class="muted">(4.18), (4.22)</span></div>
+    <div class="callout" id="p2-verdict"></div>
+  </div>
+
+  <h3 class="rv-sub"><span class="rv-n">4.3</span><span lang="en">What the real systems say</span><span lang="ru">Что показали реальные системы</span></h3>
+  <div class="facts p2-real">
+    <div class="fact"><div class="v"><span lang="en">77.3 % <span class="muted">vs</span> 7.7 %</span><span lang="ru">77,3 % <span class="muted">против</span> 7,7 %</span></div><div class="k"><span lang="en">edges of the phase-synchrony graph inside one electrode shaft, against a random graph (brain, stereo-EEG): the graph is a checkable model of the structure (§ 4.6)</span><span lang="ru">рёбер графа фазовой синхронности внутри одного электродного ствола против случайного графа (мозг, стерео-ЭЭГ): граф — проверяемая модель структуры (§ 4.6)</span></div></div>
+    <div class="fact"><div class="v"><span lang="en">0.97–1.00 <span class="muted">vs</span> 0.29</span><span lang="ru">0,97–1,00 <span class="muted">против</span> 0,29</span></div><div class="k"><span lang="en">modules of a modular Kuramoto network recovered by the builders, against chance (positive control)</span><span lang="ru">восстановление модулей модульной сети Курамото построителями против случайного уровня (положительный контроль)</span></div></div>
+    <div class="fact"><div class="v">0 <span class="muted" lang="en">of</span><span class="muted" lang="ru">из</span> 28</div><div class="k"><span lang="en">isolated checks (M4) on three systems that confirmed a contribution of the edges to accuracy (§ 4.7, Fig. 28–29)</span><span lang="ru">изолированных проверок (М4) на трёх системах подтвердили вклад рёбер в точность (§ 4.7, рис. 28–29)</span></div></div>
+    <div class="fact"><div class="v"><span lang="en">+0.083</span><span lang="ru">+0,083</span></div><div class="k"><span lang="en">false “gain of the graph” created by group leakage when the split ignores physical groups (M3)</span><span lang="ru">ложный «выигрыш графа», который создаёт утечка группы при разбиении без группировки (М3)</span></div></div>
+    <div class="fact"><div class="v">97 % <span class="muted" lang="en">vs</span><span class="muted" lang="ru">против</span> 83 %</div><div class="k"><span lang="en">graph network vs MLP on MIMIC-IV-ECG [P14]; the architectures differ, so the graph’s contribution is not isolated in this comparison</span><span lang="ru">графовая сеть против MLP на MIMIC-IV-ECG [P14]; архитектуры различаются, вклад графа в этом сравнении не изолирован</span></div></div>
+    <div class="fact"><div class="v">72 <span class="muted" lang="en">of</span><span class="muted" lang="ru">из</span> 72</div><div class="k"><span lang="en">comparisons bit-identical with the earlier implementation at default values: 10 dependence measures as parameters of R3 <code>GraphConfig</code> (§ 4.5)</span><span lang="ru">сравнений побитово равны прежней реализации при значениях по умолчанию: 10 мер зависимости как параметры R3 <code>GraphConfig</code> (§ 4.5)</span></div></div>
+  </div>
+  <div class="callout">
+    <span lang="en"><b>Why the Position is worded this way.</b> The example in 4.2 shows that edges <i>can</i> carry the decision (Δ<sub>G</sub> = +0.86
+      on chains at k = 2) but only when rule (4.22) holds, and that the same builder with another k, or on other data, gives Δ<sub>G</sub> ≈ 0.
+      On the three real systems the isolated check did not confirm the edges’ value for any graph hypothesis. So Position 2 puts forward the
+      architecture that makes this check possible — traced decisions, a builder whose parameters are explicit, a separate measurement of Δ<sub>G</sub> —
+      and not a gain in accuracy.</span>
+    <span lang="ru"><b>Почему Положение сформулировано так.</b> Пример 4.2 показывает, что рёбра <i>могут</i> нести решение (Δ<sub>G</sub> = +0,86
+      на цепочках при k = 2), но только при выполнении правила (4.22), а тот же построитель при другом k или на других данных даёт
+      Δ<sub>G</sub> ≈ 0. На трёх реальных системах изолированная проверка не подтвердила ценность рёбер ни для одной гипотезы графа. Поэтому
+      Положение 2 выносит архитектуру, которая делает эту проверку возможной, — прослеживаемое решение, построитель с явными параметрами,
+      отдельное измерение Δ<sub>G</sub>, — а не выигрыш в точности.</span>
+  </div>
+</section>
+
+<!-- ============================================================== 5 POSITION 3: AGENTS THAT CANNOT CHANGE THE NUMBERS -->
+<section id="p3">
+  <header class="sec-head">
+    <span class="num">5</span>
+    <div>
+      <h2><span lang="en">Position 3 · A consilium of agents that cannot change the numbers</span><span lang="ru">Положение 3 · Консилиум агентов, который не может изменить числа</span></h2>
+      <p lang="en">Position 3 is a model of how software components interact: the numerical result y = f<sub>θ</sub>(X) is computed <b>before</b>
+        the agent layer and is never an input to a numerical step; agents with different roles and separate knowledge bases discuss a bounded
+        summary s(y) in two rounds; every number of their conclusion is checked against s(y); the classifier’s verdict is kept next to the
+        agents’ verdict with a mark of disagreement. Below, the input is the <b>live result of section 3</b> — change anything there and the
+        consilium reruns. The agents are a stub client, as in the R3 tests: no language model runs on this page, so you can inject faults and watch
+        each rule catch them.</p>
+      <p lang="ru">Положение 3 — модель взаимодействия программных компонентов: численный результат y = f<sub>θ</sub>(X) вычисляется <b>до</b>
+        агентного слоя и не служит входом ни одного численного шага; агенты с разными ролями и раздельными базами знаний обсуждают
+        ограниченную сводку s(y) в два раунда; каждое число заключения сверяется с s(y); вердикт классификатора хранится рядом с вердиктом
+        агентов и отметкой расхождения. Ниже вход — <b>текущий результат раздела 3</b>: измените что-либо там, и консилиум пересчитается.
+        Агенты — подставной клиент, как в тестах R3: языковая модель на странице не работает, поэтому можно вносить ошибки и смотреть, как
+        каждое правило их ловит.</p>
+    </div>
+  </header>
+
+  <div class="card od-controls p3-controls">
+    <div class="od-ctl"><span class="od-ctl-label"><span lang="en">LLM provider (<code>--provider</code>)</span><span lang="ru">Провайдер LLM (<code>--provider</code>)</span></span>
+      <div class="seg" id="p3-provider"><button type="button" data-v="a"><span lang="en">stub A · fractions</span><span lang="ru">заглушка A · доли</span></button><button type="button" data-v="b"><span lang="en">stub B · percent</span><span lang="ru">заглушка B · проценты</span></button></div></div>
+    <div class="od-ctl"><span class="od-ctl-label"><span lang="en">Inject a fault into the agents</span><span lang="ru">Внести ошибку в работу агентов</span></span>
+      <div class="seg p3-faults" id="p3-fault"><button type="button" data-v="none"><span lang="en">none</span><span lang="ru">нет</span></button><button type="button" data-v="misquote"><span lang="en">misquoted number</span><span lang="ru">искажённое число</span></button><button type="button" data-v="stubborn"><span lang="en">misquoted twice</span><span lang="ru">искажено дважды</span></button><button type="button" data-v="disagree"><span lang="en">disputes the source</span><span lang="ru">оспаривает источник</span></button><button type="button" data-v="threshold"><span lang="en">proposes a new threshold</span><span lang="ru">предлагает новый порог</span></button></div></div>
+  </div>
+
+  <ol class="od-steps">
+    <li class="od-step">
+      <div class="od-step-head"><span class="od-n">1</span><div>
+        <h3><span lang="en">Level 1 · REST API: data and the classifier’s verdict from the processing server</span><span lang="ru">Уровень 1 · REST API: данные и вердикт классификатора от сервера обработки</span></h3>
+        <span class="od-tags">§ 5.2 · [P21] · <span lang="en">Def. 5.1</span><span lang="ru">опр. 5.1</span></span>
+      </div></div>
+      <p lang="en">The endpoints are those of [P21]. Here the “processing server” is the pipeline of section 3, run in your browser; the calls are
+        simulated, nothing leaves the page. The summary s(y) is frozen before it is handed on, and its fingerprint is taken.</p>
+      <p lang="ru">Конечные точки — как в [P21]. Здесь «сервер обработки» — конвейер раздела 3 в вашем браузере; вызовы имитируются, ничего
+        не покидает страницу. Сводка s(y) замораживается до передачи дальше, и снимается её отпечаток.</p>
+      <div class="od-two">
+        <div><div class="panel-label"><span lang="en">Request log</span><span lang="ru">Журнал запросов</span></div><pre class="od-pre p3-log" id="p3-rest"></pre></div>
+        <div><div class="panel-label"><span lang="en">Summary s(y) — the only thing the agents see (no raw samples)</span><span lang="ru">Сводка s(y) — всё, что видят агенты (без сырых отсчётов)</span></div><pre class="od-pre p3-log" id="p3-evidence"></pre></div>
+      </div>
+    </li>
+    <li class="od-step">
+      <div class="od-step-head"><span class="od-n">2</span><div>
+        <h3><span lang="en">Level 2 · Consilium: roles, separate knowledge bases, two rounds</span><span lang="ru">Уровень 2 · Консилиум: роли, раздельные базы знаний, два раунда</span></h3>
+        <span class="od-tags">§ 5.2 · H9 · RAG</span>
+      </div></div>
+      <p lang="en">Round 1: each reviewer writes an independent conclusion from s(y) and its own base. Round 2: each answers the others. A role
+        can query only its own base; a request to another base is refused. In [P21] the roles are a professor-epileptologist (textbooks, <code>textbook_db</code>),
+        a neurologist (clinical guidelines, <code>kr_db</code>), an intern and a student; here the same protocol runs with the reviewer roles of R3.</p>
+      <p lang="ru">Раунд 1: каждый рецензент пишет независимое заключение по s(y) и своей базе. Раунд 2: каждый отвечает остальным. Роль
+        может обращаться только к своей базе; запрос к чужой отклоняется. В [P21] роли — профессор-эпилептолог (учебники, <code>textbook_db</code>),
+        невролог (клинические рекомендации, <code>kr_db</code>), интерн и студент; здесь тот же протокол выполняется с ролями рецензентов R3.</p>
+      <div class="table-scroll"><table class="p3-rounds" id="p3-rounds"></table></div>
+      <div class="readout" id="p3-refused"></div>
+    </li>
+    <li class="od-step">
+      <div class="od-step-head"><span class="od-n">3</span><div>
+        <h3><span lang="en">Level 3 · Conclusion in Markdown and JSON, checked and kept next to the verdict</span><span lang="ru">Уровень 3 · Заключение в Markdown и JSON, сверенное и сохранённое рядом с вердиктом</span></h3>
+        <span class="od-tags">§§ 5.1, 5.3, 5.4 · M6</span>
+      </div></div>
+      <div class="od-two">
+        <div>
+          <div class="panel-label"><span lang="en">Chair’s conclusion (numbers: green — found in s(y), red — not found)</span><span lang="ru">Заключение председателя (числа: зелёные — есть в s(y), красные — нет)</span></div>
+          <div class="p3-md" id="p3-final"></div>
+          <details class="table-view" id="p3-first-box"><summary><span lang="en">First draft, before the one allowed rewrite</span><span lang="ru">Первый вариант до единственной переписки</span></summary><div class="p3-md" id="p3-first"></div></details>
+        </div>
+        <div>
+          <div class="p3-checks" id="p3-checks"></div>
+          <div class="panel-label"><span lang="en">Verdicts kept side by side</span><span lang="ru">Вердикты хранятся рядом</span></div>
+          <div class="table-scroll"><table id="p3-verdicts"></table></div>
+        </div>
+      </div>
+      <div class="eq-block" style="margin-top:12px"><span class="lbl">M6</span>
+        y = f<sub>θ</sub>(X) <span lang="en">does not depend on</span><span lang="ru">не зависит от</span> L, &nbsp; A = L(s(y)); &nbsp;
+        ∀a ∈ N(A) ∃e ∈ N(s(y)): |a − e| ≤ ε<sub>round</sub>; &nbsp; A ⊇ {ŷ<sub>clf</sub>, ŷ<sub>agents</sub>, 𝟙[ŷ<sub>agents</sub> ≠ ŷ<sub>clf</sub>]}</div>
+    </li>
+    <li class="od-step">
+      <div class="od-step-head"><span class="od-n">4</span><div>
+        <h3><span lang="en">Try the number check yourself</span><span lang="ru">Проверьте сверку чисел сами</span></h3>
+        <span class="od-tags">§ 5.4 · <code>verify_numbers</code></span>
+      </div></div>
+      <p lang="en">Edit the text. A number with d decimals passes when some value e of s(y) is within half a unit of its last written digit,
+        |a − e| ≤ 0.5·10<sup>−d</sup>; a percentage passes as 100·e; integers below 10 (list numbers, “top-3”) are not checked. The function is
+        ported from Graph-EVT-agent and checked against it in CI. Note its limit: a wrong number that happens to equal another value of the
+        summary passes — the check is necessary, not sufficient.</p>
+      <p lang="ru">Измените текст. Число с d знаками после запятой проходит, если какое-то значение e из s(y) отличается от него не более чем
+        на половину единицы последнего записанного разряда, |a − e| ≤ 0,5·10<sup>−d</sup>; процент проходит как 100·e; целые меньше 10 (номера
+        пунктов, «топ-3») не проверяются. Функция перенесена из Graph-EVT-agent и сверяется с ней в CI. Её предел: неверное число, случайно
+        равное другому значению сводки, проходит — проверка необходима, но не достаточна.</p>
+      <div class="od-two">
+        <div><textarea id="p3-edit" class="p3-edit" spellcheck="false" aria-label="Text to check"></textarea>
+          <div class="controls"><button type="button" class="btn small" id="p3-edit-reset"><span lang="en">Reset text</span><span lang="ru">Вернуть текст</span></button></div></div>
+        <div><div class="p3-md" id="p3-edit-view"></div><div class="table-scroll"><table id="p3-edit-table"></table></div></div>
+      </div>
+    </li>
+  </ol>
+
+  <div class="facts p2-real">
+    <div class="fact"><div class="v">REST · 2 <span lang="en">rounds</span><span lang="ru">раунда</span></div><div class="k"><span lang="en">[P21]: EDF upload <code>POST /api/v1/files/</code>, session <code>POST /api/v1/session/</code>, status polling; four agents, two ChromaDB bases (<code>kr_db</code> for the neurologist only, <code>textbook_db</code> for the professor only), conclusion in Markdown and JSON</span><span lang="ru">[P21]: загрузка EDF <code>POST /api/v1/files/</code>, сессия <code>POST /api/v1/session/</code>, опрос статуса; четыре агента, две базы ChromaDB (<code>kr_db</code> — только неврологу, <code>textbook_db</code> — только профессору), заключение в Markdown и JSON</span></div></div>
+    <div class="fact"><div class="v">no_epilepsy <span class="muted">≠</span> <span lang="en">medium</span><span lang="ru">средний</span></div><div class="k"><span lang="en">the case of [P21]: the classifier said “no_epilepsy”, the consilium rated the risk as medium; the disagreement was recorded, not resolved by the agents (§ 5.3)</span><span lang="ru">случай [P21]: классификатор — «no_epilepsy», консилиум оценил риск как средний; расхождение зафиксировано, а не разрешено агентами (§ 5.3)</span></div></div>
+    <div class="fact"><div class="v"><span lang="en">0.99 / 0.96 · 0.81 / 0.78</span><span lang="ru">0,99 / 0,96 · 0,81 / 0,78</span></div><div class="k"><span lang="en">R8: precision / recall of extracting the blocks and the arrows of a doctor’s algorithm from Appendix B of a clinical guideline, shown next to the source (§ 5.5)</span><span lang="ru">R8: точность / полнота извлечения блоков и стрелок алгоритма действий врача из «Приложения Б» клинической рекомендации, показанного рядом с источником (§ 5.5)</span></div></div>
+  </div>
+  <div class="callout">
+    <span lang="en"><b>Why it works and where it stops.</b> Invariance does not depend on the agents behaving well: y is computed and frozen before them and
+      no numerical step reads their output, so any provider — including a broken one — leaves y unchanged (try the faults). The number check
+      and the kept verdict make any change of a number or of the answer <i>visible</i> rather than silent. What is not claimed: agreement of the
+      consilium with expert doctors was not measured, and the value of the knowledge graph Δ<sub>KG</sub> was checked on one case; the system supports
+      a decision and does not make it.</span>
+    <span lang="ru"><b>Почему это работает и где предел.</b> Инвариантность не зависит от того, хорошо ли ведут себя агенты: y вычисляется и замораживается
+      до них, и ни один численный шаг не читает их выход, поэтому любой провайдер — даже неисправный — оставляет y неизменным (попробуйте ошибки).
+      Сверка чисел и сохранённый вердикт делают любое изменение числа или ответа <i>видимым</i>, а не тихим. Чего Положение не утверждает:
+      согласие консилиума с врачами-экспертами не измерялось, ценность графа знаний Δ<sub>KG</sub> проверена на одном случае; система
+      поддерживает решение, а не принимает его.</span>
+  </div>
+</section>
+
+<!-- ============================================================== 6 LABS -->
+<section id="s4">
+  <header class="sec-head">
+    <span class="num">6</span>
     <div>
       <h2><span lang="en">The labs</span><span lang="ru">Лаборатории</span></h2>
       <p lang="en">Each lab is a static page on GitHub Pages: open it, move the sliders, every number is recomputed in the browser.</p>
@@ -848,10 +1097,10 @@
   </div>
 </section>
 
-<!-- ============================================================== 5 ROLE -->
+<!-- ============================================================== 7 ROLE -->
 <section id="s5">
   <header class="sec-head">
-    <span class="num">5</span>
+    <span class="num">7</span>
     <div>
       <h2><span lang="en">Role in the dissertation</span><span lang="ru">Место в диссертации</span></h2>
       <p lang="en">The labs are one of the dissertation’s software artifacts. This is how the artifact table of the dissertation describes them.</p>
@@ -879,6 +1128,13 @@
             <span lang="ru">§ 3.8, рис. 8 «Один датчик, пять узлов»; Положение 1 — строки 1.9 (ложные тревоги на рядах без события), 1.10
             (устойчивость к спецификации) и 1.20 (признаки важнее модели и графа); достоверность — Д7 (браузерная реализация совпадает с
             эталонной до 5·10⁻¹³) и Д8 (положительный контроль); практическая значимость</span></td></tr>
+        <tr><td><span lang="en">Also shows</span><span lang="ru">Также показывает</span></td>
+          <td><span lang="en">Sections 4–5 illustrate Positions 2 and 3, with no new results: the model example of § 4.8 on the R6 data at commit
+            <code>4518ddc</code> (formulas (4.17)–(4.23), Fig. 19) and the rules of §§ 5.1–5.4 (M6) with <code>verify_numbers</code> ported from
+            Graph-EVT-agent; both ports are checked against Python in CI</span>
+            <span lang="ru">Разделы 4–5 иллюстрируют Положения 2 и 3 без новых результатов: модельный пример § 4.8 на данных R6 коммита
+            <code>4518ddc</code> (формулы (4.17)–(4.23), рис. 19) и правила §§ 5.1–5.4 (М6) с перенесённой из Graph-EVT-agent функцией
+            <code>verify_numbers</code>; обе реализации сверяются с Python в CI</span></td></tr>
         <tr><td><span lang="en">Purpose</span><span lang="ru">Зачем</span></td>
           <td><span lang="en">Positive control with a known moment and source for Position 1, and a visual demonstration of the method; the basis
             for an act of implementation in the educational process.</span>
@@ -911,10 +1167,12 @@
       <h3><span lang="en">Specialty passport 2.3.5</span><span lang="ru">Паспорт специальности 2.3.5</span></h3>
       <p lang="en">Position 1 is mapped to item 4 of the passport, Position 2 to items 4, 8 and 3, Position 3 to items 3 and 4. The labs belong
         to the software of Position 1: an intelligent machine-learning system that works without labels, shown so that anyone can recompute
-        its numbers.</p>
+        its numbers. Sections 4 and 5 make the software interfaces of Positions 2 and 3 (the graph builder and its check, the interaction
+        rules of the agent layer) visible in the same way.</p>
       <p lang="ru">Положение 1 отнесено к п. 4 паспорта, Положение 2 — к пп. 4, 8 и 3, Положение 3 — к пп. 3 и 4. Лаборатории входят в
         программное обеспечение Положения 1: интеллектуальная система машинного обучения без разметки, показанная так, что любой может
-        пересчитать её числа.</p>
+        пересчитать её числа. Разделы 4 и 5 так же наглядно показывают программные интерфейсы Положений 2 и 3 (построитель графа и его
+        проверку, правила взаимодействия агентного слоя).</p>
     </article>
   </div>
   <blockquote lang="ru">п. 4 «Интеллектуальные системы машинного обучения, управления базами данных и знаний, инструментальные средства разработки цифровых продуктов»</blockquote>
@@ -922,10 +1180,10 @@
     products” (translated from the Russian passport).</blockquote>
 </section>
 
-<!-- ============================================================== 6 REPOSITORIES -->
+<!-- ============================================================== 8 REPOSITORIES -->
 <section id="s6">
   <header class="sec-head">
-    <span class="num">6</span>
+    <span class="num">8</span>
     <div>
       <h2><span lang="en">Related repositories</span><span lang="ru">Связанные репозитории</span></h2>
       <p lang="en">The labs are built on the author’s open code. Commits are the ones cited in the dissertation.</p>
@@ -941,8 +1199,11 @@
       </tr></thead>
       <tbody>
         <tr><td><a href="https://github.com/D2718281828nis/Graph-EVT-agent">Graph-EVT-agent</a></td><td class="mono">244474c</td>
-          <td><span lang="en">the library: EVT detection (“when”), graph building and source ranking (“where”); ported to JavaScript in the guide and in section 3 of this page (<code>detect</code>, <code>build_baseline_graph</code>, <code>rank_source</code>, graph methods), checked against Python in CI</span>
-            <span lang="ru">библиотека: детекция по ТЭЗ («когда»), построение графа и ранжирование источника («где»); портирована на JavaScript в руководстве и в разделе 3 этой страницы (<code>detect</code>, <code>build_baseline_graph</code>, <code>rank_source</code>, графовые методы), сверка с Python в CI</span></td></tr>
+          <td><span lang="en">the library: EVT detection (“when”), graph building and source ranking (“where”); ported to JavaScript in the guide and in section 3 of this page (<code>detect</code>, <code>build_baseline_graph</code>, <code>rank_source</code>, graph methods) and in section 5 (<code>verify_numbers</code>, <code>parse_verdict</code>, disagreement), checked against Python in CI</span>
+            <span lang="ru">библиотека: детекция по ТЭЗ («когда»), построение графа и ранжирование источника («где»); портирована на JavaScript в руководстве и в разделе 3 этой страницы (<code>detect</code>, <code>build_baseline_graph</code>, <code>rank_source</code>, графовые методы) и в разделе 5 (<code>verify_numbers</code>, <code>parse_verdict</code>, расхождение), сверка с Python в CI</span></td></tr>
+        <tr><td><a href="https://github.com/D2718281828nis/ML-MachineLearning-Graphs">ML-MachineLearning-Graphs</a></td><td class="mono">4518ddc</td>
+          <td><span lang="en">the chains-and-circles data and notebook of § 4.8 (<code>datasets/</code>, <code>examples/graph_connectivity_chains_circles.ipynb</code>); section 4 recomputes its graph numbers in the browser, checked against Python in CI</span>
+            <span lang="ru">данные и ноутбук «цепочки и окружности» § 4.8 (<code>datasets/</code>, <code>examples/graph_connectivity_chains_circles.ipynb</code>); раздел 4 пересчитывает его числа по графу в браузере, сверка с Python в CI</span></td></tr>
         <tr><td><a href="https://github.com/D2718281828nis/EVT-educational-demo">EVT-educational-demo</a></td><td class="mono">2cc7071</td>
           <td><span lang="en">synthetic benchmarks with a known moment and source, 19 notebooks; hosts the guide and the Kuramoto explorer</span>
             <span lang="ru">синтетические эталоны с известными моментом и источником, 19 ноутбуков; на нём размещены руководство и обозреватель Курамото</span></td></tr>
@@ -969,6 +1230,10 @@
 
 <script src="js/onedim-core.js"></script>
 <script src="js/onedim.js"></script>
+<script src="js/p2-core.js"></script>
+<script src="js/p2.js"></script>
+<script src="js/p3-core.js"></script>
+<script src="js/p3.js"></script>
 <script src="js/site.js"></script>
 </body>
 </html>

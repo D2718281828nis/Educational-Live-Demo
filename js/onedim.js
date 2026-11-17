@@ -805,6 +805,20 @@
         arrival_fit: R.fit ? { source: NAMES[R.fit.source], t_star: R.fit.tStar } : null, sigma3_alarm: R.base1.alarm, stop: R.stop }
     };
     $("od-manifest").textContent = JSON.stringify(manifest, null, 2);
+
+    // The bounded summary s(y) handed to the agent layer of section 5 (Position 3): numbers only, no raw samples.
+    var summary = {
+      detection: { detected: !!(R.gated && R.det.detected), alarm_1d: R.ev1.alarm, t_hat: R.tHat },
+      ranking: R.rank ? { node_ids: R.rank.order.map(function (i) { return NAMES[R.ids[i]]; }),
+        probabilities: R.rank.order.map(function (i) { return +R.rank.probabilities[i].toFixed(4); }) } : null,
+      graph: { method: state.spec.graph.method, nodes: R.ids.map(function (i) { return NAMES[i]; }), functional_edges: R.fgEdges.length },
+      spec: { q: state.spec.q, gamma: state.spec.gamma, r: state.spec.r },
+      arrival_fit: R.fit ? NAMES[R.fit.source] : null,
+      sigma3_alarm: R.base1.alarm
+    };
+    var detail = { summary: summary, meta: { n: o.n, series_fnv1a: manifest.series_fnv1a, spec: R.spec } };
+    window.ELD_OD_RESULT = detail;
+    document.dispatchEvent(new CustomEvent("eld:od-result", { detail: detail }));
   }
 
   // ------------------------------------------------------------ coverage table

@@ -1,15 +1,15 @@
 name: JS port check
 
-# js/onedim-core.js must reproduce the graph methods of Graph-EVT-agent (Python) on a fixed input.
-# The reference is tests/fixtures/graph_methods_reference.json, made by tests/make_graph_reference.py.
+# The browser numerics must match their independent references: graph methods, Position 2 datasets,
+# and the Position 3 agent protocol.
 # tests/experiments.js reruns the page's Monte Carlo and spec grid and checks the numbers quoted in the dissertation
 # (tests/fixtures/onedim_expected.json).
 
 on:
   push:
-    paths: ["js/onedim-core.js", "js/onedim.js", "tests/**", ".github/workflows/port-check.yml"]
+    paths: ["js/onedim-core.js", "js/onedim.js", "js/p2-core.js", "js/p2.js", "js/p3-core.js", "js/p3.js", "data/p2_datasets.json", "tests/**", ".github/workflows/port-check.yml"]
   pull_request:
-    paths: ["js/onedim-core.js", "js/onedim.js", "tests/**", ".github/workflows/port-check.yml"]
+    paths: ["js/onedim-core.js", "js/onedim.js", "js/p2-core.js", "js/p2.js", "js/p3-core.js", "js/p3.js", "data/p2_datasets.json", "tests/**", ".github/workflows/port-check.yml"]
   workflow_dispatch:
 
 permissions:
@@ -25,3 +25,7 @@ jobs:
           node-version: "20"
       - run: node tests/port_check.js
       - run: node tests/experiments.js --check
+      - run: node tests/p2_check.js
+      - run: node tests/p3_check.js
+      - run: node --check js/p2.js
+      - run: node --check js/p3.js

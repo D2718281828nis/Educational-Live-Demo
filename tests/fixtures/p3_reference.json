@@ -1,0 +1,158 @@
+{
+ "evidence": {
+  "detection": {
+   "detected": true,
+   "alarm_1d": 1032,
+   "t_hat": 1016,
+   "threshold": 4.2817
+  },
+  "ranking": {
+   "node_ids": [
+    "B",
+    "A",
+    "C"
+   ],
+   "probabilities": [
+    0.8312,
+    0.1201,
+    0.0487
+   ]
+  },
+  "graph": {
+   "method": "granger",
+   "functional_edges": 5,
+   "nodes": [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E"
+   ]
+  },
+  "spec": {
+   "q": 0.95,
+   "gamma": 0.999,
+   "r": 3
+  },
+  "note": "excess kurtosis 13,27 on the background"
+ },
+ "numbers": [
+  {
+   "text": "Onset at sample 1016, 1-D alarm at 1032.",
+   "unverified": []
+  },
+  {
+   "text": "Onset at sample 1023.",
+   "unverified": [
+    "1023"
+   ]
+  },
+  {
+   "text": "Source B with P = 0.83.",
+   "unverified": []
+  },
+  {
+   "text": "Source B with P = 0.84.",
+   "unverified": [
+    "0.84"
+   ]
+  },
+  {
+   "text": "Source B with P = 83.1 %.",
+   "unverified": []
+  },
+  {
+   "text": "Source B with P = 83 %.",
+   "unverified": []
+  },
+  {
+   "text": "Source B with P = 95.3 %.",
+   "unverified": [
+    "95.3"
+   ]
+  },
+  {
+   "text": "Threshold 4.28, exactly 4.2817, too precise 4.28170, wrong 4.2.",
+   "unverified": [
+    "4.2"
+   ]
+  },
+  {
+   "text": "Kurtosis 13.3 and 13,27 and 13.2.",
+   "unverified": [
+    "13.2"
+   ]
+  },
+  {
+   "text": "Top-3 candidates, step 2 of 5, r = 3, 11 nodes.",
+   "unverified": [
+    "11"
+   ]
+  },
+  {
+   "text": "Negative −0.05 and -0.95 and 0.95.",
+   "unverified": [
+    "−0.05",
+    "-0.95"
+   ]
+  },
+  {
+   "text": "Начало на отсчёте 1016, тревога — 1032; P = 0,83; узел5 и x1016.",
+   "unverified": []
+  },
+  {
+   "text": "Scientific 1.016e3 and 1e3.",
+   "unverified": [
+    "1e3"
+   ]
+  },
+  {
+   "text": "Version v2.3.5 and 2.3.5 and 12.5.",
+   "unverified": [
+    "2.3",
+    "12.5"
+   ]
+  },
+  {
+   "text": "q = 0.90 would alarm earlier.",
+   "unverified": [
+    "0.90"
+   ]
+  }
+ ],
+ "verdicts": [
+  {
+   "text": "text {\"event_detected\": true, \"source\": \"B\"}",
+   "verdict": {
+    "event_detected": true,
+    "source": "B"
+   }
+  },
+  {
+   "text": "```json\n{\"event_detected\": false, \"source\": null}\n```",
+   "verdict": {
+    "event_detected": false,
+    "source": null
+   }
+  },
+  {
+   "text": "first {\"event_detected\": true} then {\"event_detected\": false, \"source\": \"A\"}",
+   "verdict": {
+    "event_detected": false,
+    "source": "A"
+   }
+  },
+  {
+   "text": "broken {\"event_detected\": yes}",
+   "verdict": null
+  },
+  {
+   "text": "no verdict here",
+   "verdict": null
+  },
+  {
+   "text": "{\"source\": \"B\"}",
+   "verdict": null
+  }
+ ]
+}

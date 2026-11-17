@@ -21,7 +21,7 @@ installation.
 
 | Lab | What you can do | Dissertation | Language |
 |---|---|---|---|
-| [Graph-EVT: interactive guide](https://d2718281828nis.github.io/EVT-educational-demo/index) | additive Hurst signal, 1-D vs n-D, POT/GPD alarm, source ranking, GNN vs GAT, agent pipeline | §§ 3.8, 3.13, 4.3 (Fig. 1, 6–7, 10–12); Positions 1–2 | EN · RU |
+| [Graph-EVT: interactive guide](https://d2718281828nis.github.io/EVT-educational-demo/index) | additive Hurst signal, 1-D vs n-D, POT/GPD alarm, source ranking, graph trace and edge-value experiment, agent consilium | §§ 3.8, 3.13, 4.3, 4.8, 5.2–5.5 (Fig. 1, 6–7, 10–12); Positions 1–3 | EN · RU |
 | [Kuramoto propagation explorer](https://d2718281828nis.github.io/EVT-educational-demo/kuramoto/) | tune 12 coupled Kuramoto oscillators and watch a Hurst-coloured burst spread from `channel_00` | § 2.9, § 3.8 (Fig. 6–7); Position 1, positive control | EN |
 | [Reservoir computing explainer](https://d2718281828nis.github.io/ML-Reservoir_Computing/) ([RU](https://d2718281828nis.github.io/ML-Reservoir_Computing/ru/)) | feed-forward network vs echo state network and NG-RC, trained in the browser; link to control theory | not in the text (auxiliary educational repository R11) | EN · RU |
 | Catalog: [ai-is-out-there.github.io/#library](https://ai-is-out-there.github.io/#library) | all labs, including those outside the dissertation | — | — |
@@ -34,7 +34,9 @@ an EVT threshold with a persistence rule; (2) the architecture of a transparent-
 graph — stores, vertex-code dictionary, “Teragraph”, a parameterised graph builder, the edges’ contribution checked
 separately; (3) the interaction model of a multi-agent LLM decision-support system — REST API, a consilium of agents with
 separate RAG bases, Markdown/JSON, numbers computed before the agent layer and checked against the tools. A diagram shows how
-the three fit into one software system; the labs show Position 1. Source localization (“where”), the identifiability
+the three fit into one software system; the page now has interactive demonstrations for all three Positions. Sections 4–5
+show how to trace a graph decision and test the edge contribution, and how the agent layer can support—but cannot silently
+change—the numerical result. Source localization (“where”), the identifiability
 theorem and the arrival-time estimate are auxiliary results of 2.3.5 (Theorem 6.1, Statements 6.1–6.2, § 6.5, Appendix Б):
 not published and not put forward for defence; the synthetic example is a positive control for Position 1. Then follow a
 short visual review of the “when — where” task, the methods M1–M9 and the harness H0–H10 (section 2) and a worked
@@ -67,21 +69,25 @@ Repository R5, type **Direct** (specialty 2.3.5, v35; `disser-text/artifacts/2-3
 
 | | |
 |---|---|
-| Position | **Position 1** — software for detecting extreme states without labels (passport 2.3.5, item 4) |
-| Supports | core rows 1.9 (0 alarms in 20 event-free series vs 16 for the 3σ rule), 1.10 (right answer under 8 of 8 specifications) and 1.20 (structural, functional and empty graphs: 77, 77 and 78 of 80 — the features decide, not the graph); reliability rows D7 (browser port equals the reference up to 5·10⁻¹³) and D8 (positive control) |
-| Where | § 3.8 “Checking the method on synthetic benchmarks with a known moment”, Fig. 8 “One sensor, five nodes”; practical significance |
-| Code | `js/onedim-core.js`, `js/onedim.js`; numbers from `tests/experiments.js` → `results/onedim_summary.json` |
+| Position | **Positions 1–3** — unlabeled event detection; transparent graph architecture; multi-agent decision support (passport 2.3.5, item 4) |
+| Supports | Position 1: core rows 1.9, 1.10 and 1.20; reliability rows D7–D8. Position 2: traced object–event decisions and an isolated same-model graph/empty-graph comparison; the dissertation reports no confirmed edge contribution in 28 real-system checks. Position 3: demonstrates the frozen numerical result, bounded summary, number check and preserved classifier/agent disagreement; it does not claim measured agreement with clinicians. |
+| Where | §§ 3.8, 4.2–4.8, 5.1–5.5; sections 4 and 5 of the page explain the examples and the limits of each claim |
+| Code | `js/onedim-core.js`, `js/p2-core.js`, `js/p3-core.js` and their page renderers; Python-reference fixtures and checks in `tests/` |
 
 The page is also the basis for an act of implementation in the educational process.
 
-### Checking the quoted numbers
+### Checking the numerical results and interactive protocols
 
-Every number the dissertation quotes from this page is recomputed in Node by the same functions the page calls
-(`mcJobs`, `mcAdd`, `specGrid` in `js/onedim-core.js`) and checked in CI (`.github/workflows/port-check.yml`):
+The page's Position 1 results are recomputed in Node by the same functions the page calls (`mcJobs`, `mcAdd`,
+`specGrid` in `js/onedim-core.js`). Position 2 datasets are compared with Python-generated reference values, and
+Position 3's number-checking, verdict and fault scenarios are checked against reference cases. CI runs all checks in
+`.github/workflows/port-check.yml`:
 
 ```bash
 node tests/port_check.js           # JS graph methods = Graph-EVT-agent build_graph (Python) on a fixed input
 node tests/experiments.js --check  # Monte Carlo 20 seeds × 4 sources + spec grid → results/onedim_summary.json
+node tests/p2_check.js             # Position 2 graph scores = Python reference across four datasets
+node tests/p3_check.js             # Position 3 number checks, verdict parsing and agent fault scenarios
 ```
 
 | Number in the dissertation | Key in `results/onedim_summary.json` | Expected (`tests/fixtures/onedim_expected.json`) |
@@ -110,14 +116,21 @@ ru/index.html     Russian entry point → ../?lang=ru
 css/site.css      styles, light and dark themes
 js/site.js        language/theme switches and the Kuramoto card thumbnail
 js/onedim-core.js numerics of section 3 (generator, 1-D EVT, structural analysis, n-D Graph-EVT-agent port); runs in Node too
+js/p2-core.js     numerics of section 4 (objects–events graph trace and edge-value examples); runs in Node too
+js/p3-core.js     rules of section 5 (number checks, verdicts and stub consilium); runs in Node too
+data/p2_datasets.json synthetic datasets for the Position 2 interactive lab
 tests/port_check.js           checks the JS graph methods against Graph-EVT-agent (Python): node tests/port_check.js
+tests/p2_check.js             checks Position 2 values against Python references
+tests/p3_check.js             checks Position 3 rules and fault scenarios
 tests/make_graph_reference.py regenerates tests/fixtures/graph_methods_reference.json from Graph-EVT-agent
+tests/make_p2_reference.py    regenerates the Position 2 reference values
+tests/make_p3_reference.py    regenerates the Position 3 reference cases
 tests/experiments.js          reruns the page's Monte Carlo (seeds 1001–1020 × 4 sources) and spec grid: node tests/experiments.js --check → results/onedim_summary.json
 tests/fixtures/               Python reference of the graph methods; numbers the dissertation quotes (onedim_expected.json)
 results/onedim_summary.json   output of tests/experiments.js
 js/onedim.js      section 3: charts and controls
 .github/workflows/pages.yml       deploys the site to GitHub Pages (manual run can publish another branch; writes version.json)
-.github/workflows/port-check.yml  runs port_check.js and experiments.js --check
+.github/workflows/port-check.yml  runs all reference, experiment and interactive-protocol checks
 ```
 
 Run locally: `python3 -m http.server` in the repository root, then open http://localhost:8000/.
@@ -141,7 +154,7 @@ All data are synthetic. The labs illustrate the method and are not intended for 
 
 | Лаборатория | Что можно сделать | В диссертации | Язык |
 |---|---|---|---|
-| [Graph-EVT: руководство](https://d2718281828nis.github.io/EVT-educational-demo/index?lang=ru) | аддитивный сигнал по Хёрсту, 1-D и n-D, тревога POT/GPD, ранжирование источника, GNN и GAT, конвейер агента | §§ 3.8, 3.13, 4.3 (рис. 1, 6–7, 10–12); Положения 1–2 | RU · EN |
+| [Graph-EVT: руководство](https://d2718281828nis.github.io/EVT-educational-demo/index?lang=ru) | аддитивный сигнал по Хёрсту, 1-D и n-D, тревога POT/GPD, ранжирование источника, трассировка графа и проверка ценности рёбер, консилиум агентов | §§ 3.8, 3.13, 4.3, 4.8, 5.2–5.5 (рис. 1, 6–7, 10–12); Положения 1–3 | RU · EN |
 | [Обозреватель Курамото](https://d2718281828nis.github.io/EVT-educational-demo/kuramoto/) | 12 связанных осцилляторов Курамото и распространение всплеска из `channel_00` | § 2.9, § 3.8 (рис. 6–7); Положение 1, положительный контроль | EN |
 | [Резервуарные вычисления](https://d2718281828nis.github.io/ML-Reservoir_Computing/ru/) | сеть прямого распространения против сети эхо-состояний и NG-RC, обучение в браузере; связь с ТАУ | в текст не вошёл (вспомогательный образовательный репозиторий R11) | RU · EN |
 | Каталог: [ai-is-out-there.github.io/#library](https://ai-is-out-there.github.io/#library) | все лаборатории, включая не относящиеся к диссертации | — | — |
@@ -154,8 +167,10 @@ All data are synthetic. The labs illustrate the method and are not intended for 
 прозрачного ИИ на графовой модели «объекты – события» — хранилища, словарь кодов вершин, «Тераграф», параметризуемый
 построитель графа, отдельная проверка вклада рёбер; (3) модель взаимодействия программных компонентов мультиагентной СППР
 на основе LLM — REST API, консилиум агентов с раздельными базами RAG, Markdown/JSON, числа считаются до агентного слоя и
-сверяются с инструментами. Схема показывает, как три Положения складываются в одну программную систему; лаборатории
-показывают Положение 1. Локализация источника («где»), теорема идентифицируемости и оценка по временам прихода —
+сверяются с инструментами. Схема показывает, как три Положения складываются в одну программную систему; страница теперь
+интерактивно показывает все три Положения. Разделы 4–5 поясняют трассировку решения графовой сети и проверку вклада
+рёбер, а также поддержку принятия решения агентным слоем, который не может незаметно изменить численный результат.
+Локализация источника («где»), теорема идентифицируемости и оценка по временам прихода —
 вспомогательные результаты версии 2.3.5 (теорема 6.1, утверждения 6.1–6.2, § 6.5, приложение Б): не опубликованы и на
 защиту не выносятся; синтетический пример служит положительным контролем Положения 1. Далее — короткий наглядный обзор
 задачи «когда — где», методов М1–М9 и средств H0–H10 (раздел 2) и разобранный синтетический пример (раздел 3).
@@ -188,21 +203,25 @@ All data are synthetic. The labs illustrate the method and are not intended for 
 
 | | |
 |---|---|
-| Положение | **Положение 1** — алгоритмическое и программное обеспечение выявления экстремальных состояний без разметки (паспорт 2.3.5, п. 4) |
-| Что подтверждает | строки ядра 1.9 (0 тревог в 20 рядах без события против 16 у правила 3σ), 1.10 (верный результат при 8 из 8 спецификаций) и 1.20 (структурный, функциональный и пустой граф — 77, 77 и 78 из 80: решают признаки, а не граф); строки достоверности Д7 (браузерная реализация совпадает с эталонной до 5·10⁻¹³) и Д8 (положительный контроль) |
-| Где | § 3.8 «Проверка метода на синтетических эталонах с известным моментом», рис. 8 «Один датчик, пять узлов»; практическая значимость |
-| Код | `js/onedim-core.js`, `js/onedim.js`; числа — `tests/experiments.js` → `results/onedim_summary.json` |
+| Положение | **Положения 1–3** — выявление событий без разметки; прозрачная архитектура на графе; многоагентная поддержка решений (паспорт 2.3.5, п. 4) |
+| Что подтверждает | Положение 1: строки ядра 1.9, 1.10 и 1.20; достоверность Д7–Д8. Положение 2: трассировку решений на графе «объекты – события» и отдельное сравнение той же модели с графом и пустым графом; в диссертации на реальных системах вклад рёбер не подтверждён в 28 проверках. Положение 3: неизменность замороженного численного результата, ограниченную сводку, сверку чисел и сохранение расхождения вердиктов; согласие с врачами-экспертами не заявляется как измеренный результат. |
+| Где | §§ 3.8, 4.2–4.8, 5.1–5.5; разделы страницы 4 и 5 объясняют примеры и ограничения выводов |
+| Код | `js/onedim-core.js`, `js/p2-core.js`, `js/p3-core.js` и отрисовщики страницы; эталоны и тесты в `tests/` |
 
 Страница также служит основанием для акта внедрения в учебный процесс.
 
-### Проверка приведённых чисел
+### Проверка численных результатов и интерактивных протоколов
 
-Каждое число, которое диссертация берёт с этой страницы, пересчитывается в Node теми же функциями, что вызывает
-страница (`mcJobs`, `mcAdd`, `specGrid` в `js/onedim-core.js`), и сверяется в CI (`.github/workflows/port-check.yml`):
+Результаты Положения 1 пересчитываются в Node теми же функциями, что вызывает страница (`mcJobs`, `mcAdd`, `specGrid`
+в `js/onedim-core.js`). Данные Положения 2 сверяются с эталонными значениями, созданными в Python; сверка чисел,
+разбор вердикта и сценарии ошибок Положения 3 проверяются по эталонным случаям. CI запускает все проверки
+из `.github/workflows/port-check.yml`:
 
 ```bash
 node tests/port_check.js           # графовые методы JS = build_graph Graph-EVT-agent (Python) на фиксированном входе
 node tests/experiments.js --check  # Монте-Карло 20 затравок × 4 источника + сетка спецификаций → results/onedim_summary.json
+node tests/p2_check.js             # значения графовых примеров Положения 2 = эталон Python на четырёх наборах
+node tests/p3_check.js             # проверка чисел, разбор вердикта и сценарии ошибок агентов Положения 3
 ```
 
 | Число в диссертации | Ключ в `results/onedim_summary.json` | Ожидается (`tests/fixtures/onedim_expected.json`) |
@@ -231,13 +250,20 @@ ru/index.html     русская точка входа → ../?lang=ru
 css/site.css      стили, светлая и тёмная темы
 js/site.js        переключатели языка и темы, миниатюра карточки Курамото
 js/onedim-core.js вычисления раздела 3 (генератор, 1-D EVT, структурный анализ, перенос n-D Graph-EVT-agent); работает и в Node
+js/p2-core.js     вычисления раздела 4 (трассировка графа «объекты – события» и ценность рёбер); работает и в Node
+js/p3-core.js     правила раздела 5 (проверка чисел, вердикты и консилиум-заглушка); работает и в Node
+data/p2_datasets.json синтетические данные для интерактивного опыта Положения 2
 js/onedim.js      раздел 3: графики и элементы управления
 tests/port_check.js           сверка графовых методов JS с Graph-EVT-agent (Python)
+tests/p2_check.js             сверка значений Положения 2 с эталонами Python
+tests/p3_check.js             проверка правил и сценариев ошибок Положения 3
 tests/make_graph_reference.py заново строит tests/fixtures/graph_methods_reference.json по Graph-EVT-agent
+tests/make_p2_reference.py    заново строит эталонные значения Положения 2
+tests/make_p3_reference.py    заново строит эталонные случаи Положения 3
 tests/experiments.js          Монте-Карло и сетка спецификаций страницы → results/onedim_summary.json
 tests/fixtures/               эталон графовых методов Python; числа, которые приводит диссертация (onedim_expected.json)
 .github/workflows/pages.yml       публикация на GitHub Pages (ручной запуск может опубликовать другую ветку; пишет version.json)
-.github/workflows/port-check.yml  запуск port_check.js и experiments.js --check
+.github/workflows/port-check.yml  запуск эталонных проверок, экспериментов и интерактивных протоколов
 ```
 
 Локальный запуск: `python3 -m http.server` в корне репозитория, затем откройте http://localhost:8000/.
