@@ -86,7 +86,7 @@ Position 3's number-checking, verdict and fault scenarios are checked against re
 ```bash
 node tests/port_check.js           # JS graph methods = Graph-EVT-agent build_graph (Python) on a fixed input
 node tests/experiments.js --check  # Monte Carlo 20 seeds × 4 sources + spec grid → results/onedim_summary.json
-node tests/p2_check.js             # Position 2 graph scores = Python reference across four datasets
+node tests/p2_check.js             # Position 2 node types/K-hop trace and graph scores across four datasets
 node tests/p3_check.js             # Position 3 number checks, verdict parsing and agent fault scenarios
 ```
 
@@ -120,7 +120,7 @@ js/p2-core.js     numerics of section 4 (objects–events graph trace and edge-v
 js/p3-core.js     rules of section 5 (number checks, verdicts and stub consilium); runs in Node too
 data/p2_datasets.json synthetic datasets for the Position 2 interactive lab
 tests/port_check.js           checks the JS graph methods against Graph-EVT-agent (Python): node tests/port_check.js
-tests/p2_check.js             checks Position 2 values against Python references
+tests/p2_check.js             checks Position 2 node types/K-hop trace and values against Python references
 tests/p3_check.js             checks Position 3 rules and fault scenarios
 tests/make_graph_reference.py regenerates tests/fixtures/graph_methods_reference.json from Graph-EVT-agent
 tests/make_p2_reference.py    regenerates the Position 2 reference values
@@ -220,7 +220,7 @@ All data are synthetic. The labs illustrate the method and are not intended for 
 ```bash
 node tests/port_check.js           # графовые методы JS = build_graph Graph-EVT-agent (Python) на фиксированном входе
 node tests/experiments.js --check  # Монте-Карло 20 затравок × 4 источника + сетка спецификаций → results/onedim_summary.json
-node tests/p2_check.js             # значения графовых примеров Положения 2 = эталон Python на четырёх наборах
+node tests/p2_check.js             # типы вершин, трасса K шагов и значения Положения 2 на четырёх наборах
 node tests/p3_check.js             # проверка чисел, разбор вердикта и сценарии ошибок агентов Положения 3
 ```
 
@@ -255,7 +255,7 @@ js/p3-core.js     правила раздела 5 (проверка чисел, 
 data/p2_datasets.json синтетические данные для интерактивного опыта Положения 2
 js/onedim.js      раздел 3: графики и элементы управления
 tests/port_check.js           сверка графовых методов JS с Graph-EVT-agent (Python)
-tests/p2_check.js             сверка значений Положения 2 с эталонами Python
+tests/p2_check.js             проверка типов вершин, трассы K шагов и значений Положения 2
 tests/p3_check.js             проверка правил и сценариев ошибок Положения 3
 tests/make_graph_reference.py заново строит tests/fixtures/graph_methods_reference.json по Graph-EVT-agent
 tests/make_p2_reference.py    заново строит эталонные значения Положения 2

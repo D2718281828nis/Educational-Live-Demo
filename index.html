@@ -760,25 +760,31 @@
 
   <h3 class="rv-sub"><span class="rv-n">4.1</span><span lang="en">How a decision is stored and traced</span><span lang="ru">Как решение хранится и прослеживается</span></h3>
   <div class="od-step">
-    <p lang="en">Objects (patients, studies) are vertices of one kind, events (visits) of another; an edge joins an object to an event and carries the
-      time τ (the edge key) and the weight ω (a token of the conclusion). Two edges between the same pair are allowed — a multigraph (P-02 has two
-      dated edges to E-13). Click an object and choose how many layers the network has: a K-layer graph network can use only what lies within K
-      hops, so its decision is traced to exactly that part of the graph. The vertex-code dictionary keeps the <b>index part</b> (code → vertex,
-      edge keys: the structure) apart from the <b>information part</b> (attributes), which is read only for the vertices in the trace.</p>
-    <p lang="ru">Объекты (пациенты, исследования) — вершины одного вида, события (визиты) — другого; ребро соединяет объект с событием и несёт
+    <p lang="en">Patients and studies are separate node types; visits are event nodes. An edge joins one patient or study to one visit and carries
+      the time τ (the edge key) and the weight ω (a token of the conclusion). Two edges between the same pair are allowed — a multigraph (P-02 has two
+      dated edges to E-13). Choose a node and set K, the number of message-passing hops: K = 1 adds direct neighbours; each increase adds the next
+      hop ring. Patients are blue circles, studies green diamonds, and visits purple squares; the number is hop distance from the selected node (0).
+      Bold edges are used in the trace; focus or hover an edge to inspect τ and ω. A dashed outline marks the outer ring,
+      and faded nodes lie beyond K. The vertex-code dictionary keeps the
+      <b>index part</b> (code → vertex, edge keys: the structure) apart from the <b>information part</b> (attributes), read only for traced vertices.</p>
+    <p lang="ru">Пациенты и исследования — разные типы вершин; визиты — вершины событий. Ребро соединяет пациента или исследование с визитом и несёт
       время τ (ключ ребра) и вес ω (токен заключения). Между одной парой допустимы два ребра — это мультиграф (у P-02 два ребра с разными
-      датами к E-13). Щёлкните объект и выберите число слоёв сети: K-слойная графовая сеть использует только то, что лежит в пределах K
-      шагов, поэтому её решение прослеживается ровно до этой части графа. Словарь кодов вершин хранит <b>индексную часть</b> (код → вершина,
-      ключи рёбер: структура) отдельно от <b>информационной</b> (атрибуты), которая читается только для вершин трассы.</p>
+      датами к E-13). Выберите вершину и задайте K — число шагов передачи сообщений: при K = 1 добавляются прямые соседи; каждое увеличение
+      добавляет следующий слой. Пациенты — синие круги, исследования — зелёные ромбы, визиты — фиолетовые квадраты; число показывает расстояние
+      от выбранной вершины в шагах (0). Жирные рёбра входят в трассу; наведите указатель или фокус на ребро, чтобы увидеть τ и ω.
+      Пунктирная обводка отмечает внешний слой, бледные вершины лежат дальше K. Словарь кодов вершин хранит
+      <b>индексную часть</b> (код → вершина, ключи рёбер: структура) отдельно от <b>информационной</b> (атрибуты),
+      которая читается только для вершин трассы.</p>
     <div class="eq-block"><span class="lbl"><span lang="en">graph</span><span lang="ru">граф</span></span>
       𝒢 = (V<sub>obj</sub> ∪ V<sub>ev</sub>, ℰ), &nbsp; ℰ = {(u, v, τ, ω): u ∈ V<sub>obj</sub>, v ∈ V<sub>ev</sub>} &nbsp;
       <span class="muted">(§ 4.2)</span> &nbsp;·&nbsp; ŷ<sub>u</sub> = f<sub>θ</sub>(X, A)<sub>u</sub> <span lang="en">depends only on</span><span lang="ru">зависит только от</span> {v : d(u, v) ≤ K}</div>
     <div class="od-two">
       <div>
         <div class="od-spec">
-          <span><span lang="en">network layers K</span><span lang="ru">слоёв сети K</span> <span class="seg small" id="p2-K"><button type="button" data-v="1">1</button><button type="button" data-v="2">2</button><button type="button" data-v="3">3</button><button type="button" data-v="4">4</button></span></span>
+          <span><span lang="en">message-passing hops K</span><span lang="ru">шагов передачи сообщений K</span> <span class="seg small" id="p2-K"><button type="button" data-v="1">1</button><button type="button" data-v="2">2</button><button type="button" data-v="3">3</button><button type="button" data-v="4">4</button></span></span>
         </div>
-        <svg id="p2-eg" class="od-graph" viewBox="0 0 360 300" role="img" aria-label="Objects – events multigraph"></svg>
+        <svg id="p2-eg" class="od-graph" viewBox="0 0 360 300" role="group" aria-label="Patient–study–visit graph"></svg>
+        <div class="readout p2-k-effect" id="p2-k-effect" aria-live="polite"></div>
         <div class="legend" id="p2-eg-legend"></div>
       </div>
       <div>

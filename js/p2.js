@@ -25,6 +25,19 @@
     return node;
   }
   function css(name) { return getComputedStyle(root).getPropertyValue(name).trim(); }
+  function nodeType(n) {
+    if (n.kind === "patient") return L("patient", "пациент");
+    if (n.kind === "study") return L("study", "исследование");
+    return L("visit", "визит");
+  }
+  function nodeShape(parent, type, x, y, scale, cls) {
+    if (type === "patient") return el("circle", { cx: x, cy: y, r: 15 * scale, class: cls }, parent);
+    if (type === "study") return el("path", {
+      d: "M" + x + "," + (y - 15 * scale) + " L" + (x + 15 * scale) + "," + y + " L" + x + "," + (y + 15 * scale) + " L" + (x - 15 * scale) + "," + y + " Z",
+      class: cls
+    }, parent);
+    return el("rect", { x: x - 15 * scale, y: y - 12 * scale, width: 30 * scale, height: 24 * scale, rx: 4 * scale, class: cls }, parent);
+  }
   function press(sel, val) {
     document.querySelectorAll(sel + " [data-v]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-v") === String(val))); });
   }
@@ -38,8 +51,10 @@
   };
   var eg = { sel: 1, K: 2 };
   var POS = G.nodes.map(function (n) {
-    var objs = G.nodes.filter(function (m) { return m.side === n.side; }), i = objs.indexOf(n);
-    return n.side === "obj" ? [70, 30 + i * (240 / (objs.length - 1))] : [290, 40 + i * (220 / (objs.length - 1))];
+    var same = G.nodes.filter(function (m) { return m.kind === n.kind; }), i = same.indexOf(n);
+    if (n.kind === "patient") return [58, 42 + i * (216 / (same.length - 1))];
+    if (n.kind === "study") return [164, 112 + i * 76];
+    return [300, 35 + i * (230 / (same.length - 1))];
   });
 
   function renderEG() {
@@ -51,32 +66,56 @@
     G.edges.forEach(function (e) {
       var key = e.u + "-" + e.v, m = seen[key] = (seen[key] || 0) + 1;
       var a = POS[e.u], b = POS[e.v], cx = (a[0] + b[0]) / 2, cy = (a[1] + b[1]) / 2 + (m - 1) * 40;
-      var path = el("path", { d: "M" + a[0] + "," + a[1] + " Q" + cx + "," + cy + " " + b[0] + "," + b[1], class: "p2-e" + (on[e.id] ? " on" : "") }, svg);
-      el("title", {}, path).textContent = G.nodes[e.u].code + " – " + G.nodes[e.v].code + " · τ = " + e.tau + " · ω = " + e.omega;
-      if (on[e.id]) {            // label at the curve's midpoint B(½) = ¼a + ½c + ¼b
-        var t = el("text", { x: 0.25 * a[0] + 0.5 * cx + 0.25 * b[0], y: 0.25 * a[1] + 0.5 * cy + 0.25 * b[1] - 3, class: "p2-e-label" }, svg);
-        t.textContent = e.tau.slice(5);
-      }
+      var edgeLabel = G.nodes[e.u].code + " – " + G.nodes[e.v].code + " · τ = " + e.tau + " · ω = " + e.omega;
+      var path = el("path", {
+        d: "M" + a[0] + "," + a[1] + " Q" + cx + "," + cy + " " + b[0] + "," + b[1],
+        class: "p2-e" + (on[e.id] ? " on" : ""),
+        tabindex: 0, role: "img", "aria-label": edgeLabel
+      }, svg);
+      el("title", {}, path).textContent = edgeLabel;
     });
     G.nodes.forEach(function (n, i) {
-      var g = el("g", { class: "p2-n " + n.side + (rf.dist[i] === Infinity ? " off" : ""), tabindex: 0, role: "button", "aria-label": n.code }, svg);
-      if (n.side === "obj") el("circle", { cx: POS[i][0], cy: POS[i][1], r: 15 }, g);
-      else el("rect", { x: POS[i][0] - 15, y: POS[i][1] - 12, width: 30, height: 24, rx: 5 }, g);
-      el("text", { x: POS[i][0] + (n.side === "obj" ? -36 : 40), y: POS[i][1] }, g).textContent = n.code;
-      if (rf.dist[i] !== Infinity && i !== eg.sel) el("text", { x: POS[i][0], y: POS[i][1], class: "p2-hop", style: "fill:#fff" }, g).textContent = rf.dist[i];
-      if (i === eg.sel) el(n.side === "obj" ? "circle" : "rect", n.side === "obj" ? { cx: POS[i][0], cy: POS[i][1], r: 20, class: "p2-sel" } : { x: POS[i][0] - 20, y: POS[i][1] - 17, width: 40, height: 34, rx: 7, class: "p2-sel" }, svg);
+      var type = n.kind, d = rf.dist[i], x = POS[i][0], y = POS[i][1];
+      var g = el("g", {
+        class: "p2-n " + type + (d === Infinity ? " off" : ""),
+        tabindex: 0, role: "button", "aria-pressed": String(i === eg.sel),
+        "aria-label": n.code + " · " + nodeType(n) + (d === Infinity ? L(" · outside the current trace", " · вне текущей трассы") : L(" · distance " + d, " · расстояние " + d))
+      }, svg);
+      if (d === eg.K && i !== eg.sel) nodeShape(g, type, x, y, 1.42, "p2-frontier");
+      if (i === eg.sel) nodeShape(g, type, x, y, 1.42, "p2-sel");
+      nodeShape(g, type, x, y, 1, "p2-shape");
+      var labelX = type === "patient" ? x - 36 : type === "study" ? x - 25 : x + 40;
+      var labelAnchor = type === "study" ? "end" : "middle";
+      el("text", { x: labelX, y: y, "text-anchor": labelAnchor, class: "p2-code" }, g).textContent = n.code;
+      if (d !== Infinity && i !== eg.sel) el("text", { x: x, y: y, class: "p2-hop" }, g).textContent = d;
       var pick = function () { eg.sel = i; renderEG(); };
       g.addEventListener("click", pick);
       g.addEventListener("keydown", function (ev) { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); pick(); } });
     });
-    $("p2-eg-legend").innerHTML = '<span class="key"><span class="swatch dot" style="background:var(--series-1)"></span>' + L("object", "объект") + "</span>" +
-      '<span class="key"><span class="swatch dot" style="background:var(--series-7);border-radius:2px"></span>' + L("event", "событие") + "</span>" +
-      '<span class="key">' + L("number in a vertex = hops from the chosen vertex", "число в вершине — шагов от выбранной") + "</span>";
+    $("p2-eg").setAttribute("aria-label", L("Patient–study–visit graph. Select a node to trace its K-hop neighborhood.", "Граф пациентов, исследований и визитов. Выберите вершину, чтобы проследить K-окрестность."));
+    $("p2-eg-legend").innerHTML =
+      '<span class="key"><span class="p2-key patient"></span>' + L("patient", "пациент") + "</span>" +
+      '<span class="key"><span class="p2-key study"></span>' + L("study", "исследование") + "</span>" +
+      '<span class="key"><span class="p2-key visit"></span>' + L("visit", "визит") + "</span>" +
+      '<span class="key"><span class="p2-key frontier"></span>' + L("outer layer K", "внешний слой K") + "</span>" +
+      '<span class="key">' + L("number = hop distance", "число = расстояние в шагах") + "</span>";
 
     var inTrace = G.nodes.filter(function (n, i) { return rf.dist[i] !== Infinity; });
+    var layerCounts = [];
+    for (var layer = 0; layer <= eg.K; layer++) {
+      layerCounts.push(G.nodes.filter(function (n, i) { return rf.dist[i] === layer; }).length);
+    }
+    $("p2-k-effect").textContent = L(
+      "K = " + eg.K + ": " + inTrace.length + " of " + G.nodes.length + " vertices and " + rf.edges.length + " of " + G.edges.length +
+        " edges are in the trace. Hop layers from " + G.nodes[eg.sel].code + ": " + layerCounts.map(function (n, d) { return "d=" + d + " " + n; }).join(" · ") +
+        ". Dashed outlines mark the outer layer; faded nodes are beyond K.",
+      "K = " + eg.K + ": в трассе " + inTrace.length + " из " + G.nodes.length + " вершин и " + rf.edges.length + " из " + G.edges.length +
+        " рёбер. Слои от " + G.nodes[eg.sel].code + ": " + layerCounts.map(function (n, d) { return "d=" + d + " — " + n; }).join(" · ") +
+        ". Пунктиром отмечена внешняя граница; бледные вершины находятся дальше K."
+    );
     var keys = function (i) { return G.adj[i].map(function (eid) { return G.edges[eid].tau.slice(5); }).join(", "); };
-    $("p2-index").innerHTML = "<thead><tr><th>" + L("code", "код") + "</th><th>" + L("vertex", "вершина") + "</th><th>" + L("edge keys τ", "ключи рёбер τ") + "</th></tr></thead><tbody>" +
-      G.nodes.map(function (n, i) { return '<tr class="' + (rf.dist[i] === Infinity ? "p2-dim" : "") + '"><td class="mono">' + n.code + '</td><td class="mono">v' + i + "</td><td>" + keys(i) + "</td></tr>"; }).join("") + "</tbody>";
+    $("p2-index").innerHTML = "<thead><tr><th>" + L("code", "код") + "</th><th>" + L("type", "тип") + "</th><th>" + L("vertex", "вершина") + "</th><th>" + L("edge keys τ", "ключи рёбер τ") + "</th></tr></thead><tbody>" +
+      G.nodes.map(function (n, i) { return '<tr class="' + (rf.dist[i] === Infinity ? "p2-dim" : "") + '"><td class="mono">' + n.code + '</td><td>' + nodeType(n) + '</td><td class="mono">v' + i + "</td><td>" + keys(i) + "</td></tr>"; }).join("") + "</tbody>";
     $("p2-info").innerHTML = "<thead><tr><th>" + L("code", "код") + "</th><th>" + L("attributes", "атрибуты") + "</th></tr></thead><tbody>" +
       inTrace.map(function (n) {
         var a = INFO[n.code] ? INFO[n.code][ru() ? 1 : 0] : L("visit · conclusions ", "визит · заключения ") + G.adj[n.id].map(function (eid) { return G.edges[eid].omega; }).filter(function (v, k, arr) { return arr.indexOf(v) === k; }).join(", ");
@@ -84,17 +123,19 @@
       }).join("") + "</tbody>";
 
     var objs = inTrace.filter(function (n) { return n.side === "obj"; }).map(function (n) { return n.code; });
+    var patients = inTrace.filter(function (n) { return n.kind === "patient"; }).map(function (n) { return n.code; });
+    var studies = inTrace.filter(function (n) { return n.kind === "study"; }).map(function (n) { return n.code; });
     var evs = inTrace.filter(function (n) { return n.side === "ev"; }).map(function (n) { return n.code; });
     var s = G.nodes[eg.sel];
-    $("p2-trace").innerHTML = L("<b>Trace of the decision for " + s.code + "</b> with K = " + eg.K + ": " + objs.length + " objects (" + objs.join(", ") + "), " +
-      evs.length + " events (" + (evs.join(", ") || "–") + ") and " + rf.edges.length + " of " + G.edges.length + " edges. Nothing outside this part of the graph can change ŷ; " +
+    $("p2-trace").innerHTML = L("<b>Trace of the decision for " + s.code + "</b> with K = " + eg.K + ": " + patients.length + " patients (" + patients.join(", ") + "), " +
+      studies.length + " studies (" + studies.join(", ") + "), " + evs.length + " visits (" + (evs.join(", ") || "–") + ") and " + rf.edges.length + " of " + G.edges.length + " edges. Nothing outside this part of the graph can change ŷ; " +
       "the information part was read for " + inTrace.length + " of " + G.nodes.length + " vertices.",
-      "<b>Трасса решения для " + s.code + "</b> при K = " + eg.K + ": объектов " + objs.length + " (" + objs.join(", ") + "), событий " +
-      evs.length + " (" + (evs.join(", ") || "–") + ") и рёбер " + rf.edges.length + " из " + G.edges.length + ". Ничто вне этой части графа не может изменить ŷ; " +
+      "<b>Трасса решения для " + s.code + "</b> при K = " + eg.K + ": пациентов " + patients.length + " (" + (patients.join(", ") || "–") + "), исследований " +
+      studies.length + " (" + (studies.join(", ") || "–") + "), визитов " + evs.length + " (" + (evs.join(", ") || "–") + ") и рёбер " + rf.edges.length + " из " + G.edges.length + ". Ничто вне этой части графа не может изменить ŷ; " +
       "информационная часть прочитана для " + inTrace.length + " из " + G.nodes.length + " вершин.");
     $("p2-record").textContent = JSON.stringify({
       vertex: s.code, model: "GNN, " + eg.K + (eg.K === 1 ? " layer" : " layers"), decision: "ŷ = f_θ(X, A)[" + s.code + "]",
-      trace: { objects: objs, events: evs, edges: rf.edges.map(function (eid) { var e = G.edges[eid]; return [G.nodes[e.u].code, G.nodes[e.v].code, e.tau, e.omega]; }) },
+      trace: { objects: objs, patients: patients, studies: studies, events: evs, edges: rf.edges.map(function (eid) { var e = G.edges[eid]; return [G.nodes[e.u].code, G.nodes[e.v].code, e.tau, e.omega]; }) },
       information_part_read: inTrace.map(function (n) { return n.code; }),
       edge_check: "Δ_G = M(f(X, A)) − M(f(X, ∅)), measured separately (§ 4.7)"
     }, null, 1);
