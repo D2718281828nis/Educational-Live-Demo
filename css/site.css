@@ -461,6 +461,51 @@ tr.p2-dim td { color: var(--muted); }
 .p3-flag { font-weight: 700; }
 .p3-flag.bad { color: var(--bad); } .p3-flag.good { color: var(--good); }
 
+/* section 5 additions: flow diagram, rule cards, diffs, permalink */
+.p3-flow { margin-bottom: 12px; padding: 10px 14px; overflow-x: auto; }
+.p3-flow svg { display: block; width: 100%; min-width: 760px; height: auto; }
+.p3f-cap { font: 600 11px system-ui, sans-serif; fill: var(--muted); text-anchor: middle; }
+.p3f-box rect { fill: var(--surface); stroke: var(--axis); stroke-width: 1.2; }
+.p3f-box.hi rect { stroke: var(--series-1); stroke-width: 2; }
+.p3f-box.agents rect { stroke: var(--series-3); stroke-width: 2; }
+.p3f-t { font: 700 12.5px system-ui, sans-serif; fill: var(--ink); text-anchor: middle; dominant-baseline: central; }
+.p3f-sub { font-size: 10px; }
+.p3f-s { font: 500 10.5px system-ui, sans-serif; fill: var(--ink-2); text-anchor: middle; dominant-baseline: central; }
+.p3f-a { fill: none; stroke: var(--ink-2); stroke-width: 1.5; }
+.p3f-no { fill: none; stroke: var(--bad); stroke-width: 1.5; stroke-dasharray: 5 4; opacity: 0.85; }
+.p3f-no-t { font: 600 11px system-ui, sans-serif; fill: var(--bad); text-anchor: middle; }
+.p3f-head { fill: var(--ink-2); }
+.p3f-head.red { fill: var(--bad); }
+.p3f-note { font: 500 11px system-ui, sans-serif; fill: var(--ink-2); }
+.p3-rules { margin-bottom: 12px; padding: 12px 14px; }
+.p3-rules-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.p3-rule {
+  display: inline-flex; flex-direction: column; align-items: flex-start; gap: 1px;
+  padding: 7px 11px; border-radius: 9px; border: 1px solid var(--border);
+  background: var(--surface-2); color: var(--ink-2); font: inherit; font-size: 12px; cursor: pointer; text-align: left;
+}
+.p3-rule b { color: var(--ink); font-size: 12px; }
+.p3-rule i { font-style: normal; color: var(--muted); font-size: 11px; }
+.p3-rule.on { border-color: var(--series-1); background: color-mix(in srgb, var(--series-1) 10%, var(--surface-2)); }
+.p3-rule:hover { filter: brightness(0.97); }
+.p3-links { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 10px 0 0; }
+.p3-stale { font-size: 13px; color: var(--series-2); font-weight: 600; }
+.p3-stale[hidden] { display: none; }
+.p3-diff { margin-top: 8px; font-size: 13px; color: var(--ink-2); background: var(--band); border-radius: 8px; padding: 8px 12px; }
+.p3-diff[hidden] { display: none; }
+.p3-diff b { color: var(--ink); }
+.p3-diff .mono { font-weight: 700; }
+.p3-glyph { font-size: 0.85em; font-weight: 700; margin-left: 1px; }
+.p3-num.ok .p3-glyph { color: var(--good); }
+.p3-num.bad .p3-glyph { color: var(--bad); }
+.p3-flash { animation: p3-flash 1.6s ease-out 1; border-radius: 8px; }
+@keyframes p3-flash {
+  0% { box-shadow: 0 0 0 3px color-mix(in srgb, var(--series-1) 55%, transparent); }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+tr.p3-dis td { background: color-mix(in srgb, var(--series-2) 12%, transparent); }
+@media (prefers-reduced-motion: reduce) { .p3-flash { animation: none; } }
+
 @media (max-width: 760px) {
   .p3-controls { grid-template-columns: 1fr; }
   .p2-facts { grid-template-columns: 1fr 1fr; }

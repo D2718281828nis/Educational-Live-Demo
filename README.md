@@ -88,6 +88,7 @@ node tests/port_check.js           # JS graph methods = Graph-EVT-agent build_gr
 node tests/experiments.js --check  # Monte Carlo 20 seeds × 4 sources + spec grid → results/onedim_summary.json
 node tests/p2_check.js             # Position 2 node types/K-hop trace and graph scores across four datasets
 node tests/p3_check.js             # Position 3 number checks, verdict parsing and agent fault scenarios
+node tests/p3_ui_check.js          # Position 3 UI helpers: draft diffs, permalink state, frozen-write probe
 ```
 
 | Number in the dissertation | Key in `results/onedim_summary.json` | Expected (`tests/fixtures/onedim_expected.json`) |
@@ -122,6 +123,7 @@ data/p2_datasets.json synthetic datasets for the Position 2 interactive lab
 tests/port_check.js           checks the JS graph methods against Graph-EVT-agent (Python): node tests/port_check.js
 tests/p2_check.js             checks Position 2 node types/K-hop trace and values against Python references
 tests/p3_check.js             checks Position 3 rules and fault scenarios
+tests/p3_ui_check.js          checks Position 3 UI helpers (draft diffs, permalink state)
 tests/make_graph_reference.py regenerates tests/fixtures/graph_methods_reference.json from Graph-EVT-agent
 tests/make_p2_reference.py    regenerates the Position 2 reference values
 tests/make_p3_reference.py    regenerates the Position 3 reference cases
@@ -222,6 +224,7 @@ node tests/port_check.js           # графовые методы JS = build_gr
 node tests/experiments.js --check  # Монте-Карло 20 затравок × 4 источника + сетка спецификаций → results/onedim_summary.json
 node tests/p2_check.js             # типы вершин, трасса K шагов и значения Положения 2 на четырёх наборах
 node tests/p3_check.js             # проверка чисел, разбор вердикта и сценарии ошибок агентов Положения 3
+node tests/p3_ui_check.js          # помощники интерфейса Положения 3: различия черновиков, permalink состояния
 ```
 
 | Число в диссертации | Ключ в `results/onedim_summary.json` | Ожидается (`tests/fixtures/onedim_expected.json`) |
@@ -252,11 +255,13 @@ js/site.js        переключатели языка и темы, миниа�
 js/onedim-core.js вычисления раздела 3 (генератор, 1-D EVT, структурный анализ, перенос n-D Graph-EVT-agent); работает и в Node
 js/p2-core.js     вычисления раздела 4 (трассировка графа «объекты – события» и ценность рёбер); работает и в Node
 js/p3-core.js     правила раздела 5 (проверка чисел, вердикты и консилиум-заглушка); работает и в Node
+js/p3-ui-core.js  вспомогательные функции раздела 5 (разбор отличий черновиков, permalink состояния); работает и в Node
 data/p2_datasets.json синтетические данные для интерактивного опыта Положения 2
 js/onedim.js      раздел 3: графики и элементы управления
 tests/port_check.js           сверка графовых методов JS с Graph-EVT-agent (Python)
 tests/p2_check.js             проверка типов вершин, трассы K шагов и значений Положения 2
 tests/p3_check.js             проверка правил и сценариев ошибок Положения 3
+tests/p3_ui_check.js          проверка помощников интерфейса Положения 3 (различия черновиков, permalink)
 tests/make_graph_reference.py заново строит tests/fixtures/graph_methods_reference.json по Graph-EVT-agent
 tests/make_p2_reference.py    заново строит эталонные значения Положения 2
 tests/make_p3_reference.py    заново строит эталонные случаи Положения 3

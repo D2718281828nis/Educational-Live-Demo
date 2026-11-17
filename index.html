@@ -892,6 +892,47 @@
     </div>
   </header>
 
+  <figure class="card p3-flow">
+    <svg viewBox="0 0 960 168" role="img" aria-label="Dataflow: X to y to frozen summary to consilium to checked conclusion; agents cannot write back">
+      <defs>
+        <marker id="p3f-head" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" class="p3f-head"/>
+        </marker>
+        <marker id="p3f-head-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" class="p3f-head red"/>
+        </marker>
+      </defs>
+      <text x="480" y="14" class="p3f-cap"><tspan lang="en">the only arrows the architecture allows — a write from the agents to a numerical step does not exist (Def. 5.1)</tspan><tspan lang="ru">единственные стрелки, которые позволяет архитектура, — записи от агентов к численному шагу не существует (опр. 5.1)</tspan></text>
+      <path class="p3f-no" d="M 761 62 L 761 30 L 203 30 L 203 56" marker-end="url(#p3f-head-red)"/>
+      <text x="482" y="26" class="p3f-no-t"><tspan lang="en">✗ agents → numerical step: impossible</tspan><tspan lang="ru">✗ агенты → численный шаг: невозможно</tspan></text>
+      <g class="p3f-box"><rect x="8" y="62" width="84" height="46" rx="8"/><text x="50" y="82" class="p3f-t">X</text><text x="50" y="98" class="p3f-s"><tspan lang="en">raw series</tspan><tspan lang="ru">сырой ряд</tspan></text></g>
+      <path class="p3f-a" d="M 92 85 L 124 85" marker-end="url(#p3f-head)"/>
+      <g class="p3f-box"><rect x="128" y="62" width="150" height="46" rx="8"/><text x="203" y="82" class="p3f-t">y = f<tspan dy="4" class="p3f-sub">θ</tspan><tspan dy="-4">(X)</tspan></text><text x="203" y="98" class="p3f-s"><tspan lang="en">numerical step (§ 3)</tspan><tspan lang="ru">численный шаг (§ 3)</tspan></text></g>
+      <path class="p3f-a" d="M 278 85 L 310 85" marker-end="url(#p3f-head)"/>
+      <g class="p3f-box hi"><rect x="314" y="62" width="172" height="46" rx="8"/><text x="400" y="82" class="p3f-t">freeze(y)</text><text x="400" y="98" class="p3f-s"><tspan lang="en">fingerprint FNV-1a</tspan><tspan lang="ru">отпечаток FNV-1a</tspan></text></g>
+      <path class="p3f-a" d="M 486 85 L 518 85" marker-end="url(#p3f-head)"/>
+      <g class="p3f-box"><rect x="522" y="62" width="128" height="46" rx="8"/><text x="586" y="82" class="p3f-t">s(y)</text><text x="586" y="98" class="p3f-s"><tspan lang="en">summary, not samples</tspan><tspan lang="ru">сводка, не отсчёты</tspan></text></g>
+      <path class="p3f-a" d="M 650 85 L 682 85" marker-end="url(#p3f-head)"/>
+      <g class="p3f-box agents"><rect x="686" y="62" width="150" height="46" rx="8"/><text x="761" y="82" class="p3f-t"><tspan lang="en">consilium</tspan><tspan lang="ru">консилиум</tspan></text><text x="761" y="98" class="p3f-s"><tspan lang="en">2 rounds · stub</tspan><tspan lang="ru">2 раунда · заглушка</tspan></text></g>
+      <path class="p3f-a" d="M 836 85 L 868 85" marker-end="url(#p3f-head)"/>
+      <g class="p3f-box"><rect x="872" y="62" width="84" height="46" rx="8"/><text x="914" y="82" class="p3f-t"><tspan lang="en">report</tspan><tspan lang="ru">заключение</tspan></text><text x="914" y="98" class="p3f-s"><tspan lang="en">M6 number check</tspan><tspan lang="ru">сверка чисел М6</tspan></text></g>
+      <text x="8" y="132" class="p3f-note"><tspan lang="en">Every number of the report is checked against s(y); the classifier’s verdict is stored next to the agents’ verdict with a disagreement mark (§ 5.3).</tspan><tspan lang="ru">Каждое число заключения сверяется с s(y); вердикт классификатора хранится рядом с вердиктом агентов и отметкой расхождения (§ 5.3).</tspan></text>
+      <text x="8" y="152" class="p3f-note"><tspan lang="en">Change anything in section 3 — the pipeline box reruns and the consilium restarts on the new frozen s(y).</tspan><tspan lang="ru">Измените что-либо в разделе 3 — блок конвейера пересчитается, и консилиум запустится заново на новой замороженной s(y).</tspan></text>
+    </svg>
+  </figure>
+
+  <div class="card p3-rules" id="p3-rules" role="group" aria-label="Guarantees of Position 3">
+    <div class="od-ctl-label"><span lang="en">Guarantees of Position 3 — click a card to see where it is enforced</span><span lang="ru">Гарантии Положения 3 — нажмите на карточку, чтобы увидеть, где она выполняется</span></div>
+    <div class="p3-rules-row">
+      <button type="button" class="p3-rule" data-rule="def51" data-target="p3-rest"><b>Def. 5.1</b><span lang="en">y frozen before the agents</span><span lang="ru">y заморожен до агентов</span><i>→ 1</i></button>
+      <button type="button" class="p3-rule" data-rule="rag" data-target="p3-refused"><b>RAG</b><span lang="en">separate bases per role</span><span lang="ru">раздельные базы у ролей</span><i>→ 2</i></button>
+      <button type="button" class="p3-rule" data-rule="rounds" data-target="p3-rounds"><b>H9</b><span lang="en">two rounds</span><span lang="ru">два раунда</span><i>→ 2</i></button>
+      <button type="button" class="p3-rule" data-rule="m6" data-target="p3-edit"><b>M6</b><span lang="en">every number checked</span><span lang="ru">каждое число сверено</span><i>→ 4</i></button>
+      <button type="button" class="p3-rule" data-rule="rewrite" data-target="p3-first-box"><b>§ 5.2</b><span lang="en">one rewrite</span><span lang="ru">одна переписка</span><i>→ 3</i></button>
+      <button type="button" class="p3-rule" data-rule="disagree" data-target="p3-verdicts"><b>§ 5.3</b><span lang="en">disagreement kept</span><span lang="ru">расхождение сохранено</span><i>→ 3</i></button>
+    </div>
+  </div>
+
   <div class="card od-controls p3-controls">
     <div class="od-ctl"><span class="od-ctl-label"><span lang="en">LLM provider (<code>--provider</code>)</span><span lang="ru">Провайдер LLM (<code>--provider</code>)</span></span>
       <div class="seg" id="p3-provider"><button type="button" data-v="a"><span lang="en">stub A · fractions</span><span lang="ru">заглушка A · доли</span></button><button type="button" data-v="b"><span lang="en">stub B · percent</span><span lang="ru">заглушка B · проценты</span></button></div></div>
@@ -899,8 +940,14 @@
       <div class="seg p3-faults" id="p3-fault"><button type="button" data-v="none"><span lang="en">none</span><span lang="ru">нет</span></button><button type="button" data-v="misquote"><span lang="en">misquoted number</span><span lang="ru">искажённое число</span></button><button type="button" data-v="stubborn"><span lang="en">misquoted twice</span><span lang="ru">искажено дважды</span></button><button type="button" data-v="disagree"><span lang="en">disputes the source</span><span lang="ru">оспаривает источник</span></button><button type="button" data-v="threshold"><span lang="en">proposes a new threshold</span><span lang="ru">предлагает новый порог</span></button></div></div>
   </div>
 
+  <div class="p3-links">
+    <a class="btn small" href="#s3"><span lang="en">Change the input in section 3 ↓</span><span lang="ru">Изменить вход в разделе 3 ↓</span></a>
+    <button type="button" class="btn small" id="p3-permalink"><span lang="en">Copy link to this state</span><span lang="ru">Скопировать ссылку на это состояние</span></button>
+    <span class="p3-stale" id="p3-stale" hidden></span>
+  </div>
+
   <ol class="od-steps">
-    <li class="od-step">
+    <li class="od-step" id="p3-step1">
       <div class="od-step-head"><span class="od-n">1</span><div>
         <h3><span lang="en">Level 1 · REST API: data and the classifier’s verdict from the processing server</span><span lang="ru">Уровень 1 · REST API: данные и вердикт классификатора от сервера обработки</span></h3>
         <span class="od-tags">§ 5.2 · [P21] · <span lang="en">Def. 5.1</span><span lang="ru">опр. 5.1</span></span>
@@ -914,7 +961,7 @@
         <div><div class="panel-label"><span lang="en">Summary s(y) — the only thing the agents see (no raw samples)</span><span lang="ru">Сводка s(y) — всё, что видят агенты (без сырых отсчётов)</span></div><pre class="od-pre p3-log" id="p3-evidence"></pre></div>
       </div>
     </li>
-    <li class="od-step">
+    <li class="od-step" id="p3-step2">
       <div class="od-step-head"><span class="od-n">2</span><div>
         <h3><span lang="en">Level 2 · Consilium: roles, separate knowledge bases, two rounds</span><span lang="ru">Уровень 2 · Консилиум: роли, раздельные базы знаний, два раунда</span></h3>
         <span class="od-tags">§ 5.2 · H9 · RAG</span>
@@ -928,7 +975,7 @@
       <div class="table-scroll"><table class="p3-rounds" id="p3-rounds"></table></div>
       <div class="readout" id="p3-refused"></div>
     </li>
-    <li class="od-step">
+    <li class="od-step" id="p3-step3">
       <div class="od-step-head"><span class="od-n">3</span><div>
         <h3><span lang="en">Level 3 · Conclusion in Markdown and JSON, checked and kept next to the verdict</span><span lang="ru">Уровень 3 · Заключение в Markdown и JSON, сверенное и сохранённое рядом с вердиктом</span></h3>
         <span class="od-tags">§§ 5.1, 5.3, 5.4 · M6</span>
@@ -937,6 +984,7 @@
         <div>
           <div class="panel-label"><span lang="en">Chair’s conclusion (numbers: green — found in s(y), red — not found)</span><span lang="ru">Заключение председателя (числа: зелёные — есть в s(y), красные — нет)</span></div>
           <div class="p3-md" id="p3-final"></div>
+          <div class="p3-diff" id="p3-diff" hidden></div>
           <details class="table-view" id="p3-first-box"><summary><span lang="en">First draft, before the one allowed rewrite</span><span lang="ru">Первый вариант до единственной переписки</span></summary><div class="p3-md" id="p3-first"></div></details>
         </div>
         <div>
@@ -949,7 +997,7 @@
         y = f<sub>θ</sub>(X) <span lang="en">does not depend on</span><span lang="ru">не зависит от</span> L, &nbsp; A = L(s(y)); &nbsp;
         ∀a ∈ N(A) ∃e ∈ N(s(y)): |a − e| ≤ ε<sub>round</sub>; &nbsp; A ⊇ {ŷ<sub>clf</sub>, ŷ<sub>agents</sub>, 𝟙[ŷ<sub>agents</sub> ≠ ŷ<sub>clf</sub>]}</div>
     </li>
-    <li class="od-step">
+    <li class="od-step" id="p3-step4">
       <div class="od-step-head"><span class="od-n">4</span><div>
         <h3><span lang="en">Try the number check yourself</span><span lang="ru">Проверьте сверку чисел сами</span></h3>
         <span class="od-tags">§ 5.4 · <code>verify_numbers</code></span>
@@ -1239,6 +1287,7 @@
 <script src="js/p2-core.js"></script>
 <script src="js/p2.js"></script>
 <script src="js/p3-core.js"></script>
+<script src="js/p3-ui-core.js"></script>
 <script src="js/p3.js"></script>
 <script src="js/site.js"></script>
 </body>

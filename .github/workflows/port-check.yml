@@ -7,9 +7,9 @@ name: JS port check
 
 on:
   push:
-    paths: ["js/onedim-core.js", "js/onedim.js", "js/p2-core.js", "js/p2.js", "js/p3-core.js", "js/p3.js", "data/p2_datasets.json", "tests/**", ".github/workflows/port-check.yml"]
+    paths: ["js/onedim-core.js", "js/onedim.js", "js/p2-core.js", "js/p2.js", "js/p3-core.js", "js/p3-ui-core.js", "js/p3.js", "data/p2_datasets.json", "tests/**", ".github/workflows/port-check.yml"]
   pull_request:
-    paths: ["js/onedim-core.js", "js/onedim.js", "js/p2-core.js", "js/p2.js", "js/p3-core.js", "js/p3.js", "data/p2_datasets.json", "tests/**", ".github/workflows/port-check.yml"]
+    paths: ["js/onedim-core.js", "js/onedim.js", "js/p2-core.js", "js/p2.js", "js/p3-core.js", "js/p3-ui-core.js", "js/p3.js", "data/p2_datasets.json", "tests/**", ".github/workflows/port-check.yml"]
   workflow_dispatch:
 
 permissions:
@@ -27,5 +27,7 @@ jobs:
       - run: node tests/experiments.js --check
       - run: node tests/p2_check.js
       - run: node tests/p3_check.js
+      - run: node tests/p3_ui_check.js
       - run: node --check js/p2.js
       - run: node --check js/p3.js
+      - run: node --check js/p3-ui-core.js

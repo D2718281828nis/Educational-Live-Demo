@@ -5,8 +5,9 @@
   "use strict";
 
   var C = window.P3Core;
+  var U = window.P3UICore;
   var root = document.documentElement;
-  if (!C || !document.getElementById("p3")) return;
+  if (!C || !U || !document.getElementById("p3")) return;
 
   function $(id) { return document.getElementById(id); }
   function ru() { return root.getAttribute("data-lang") === "ru"; }
@@ -17,8 +18,11 @@
   }
   function num(v) { return ru() ? String(v).replace(".", ",") : String(v); }
 
-  var st = { provider: "a", fault: "none", edited: null };
-  var IN = null, EV = null, OUT = null, FP0 = null, FP1 = null, OTHER = null, WRITE = null;
+  var FAULTS = ["none", "misquote", "stubborn", "disagree", "threshold"];
+  var PROVIDERS = ["a", "b"];
+  var urlState = U.stateFromURL(location.search, FAULTS, PROVIDERS);
+  var st = { provider: urlState.provider || "a", fault: urlState.fault || "none", edited: null };
+  var IN = null, EV = null, OUT = null, FP0 = null, FP1 = null, OTHER = null, WRITE = null, LAST_FP = null, staleTimer = null;
 
   // Text with every number marked by its status against s(y); light Markdown (### heading, - item, **bold**, ```json).
   function marked(line) {
@@ -26,7 +30,8 @@
     parts.forEach(function (n) {
       html += esc(line.slice(at, n.index));
       var title = n.status === "ok" ? "= " + n.match + (n.percent ? " × 100" : "") + "  (|a − e| ≤ " + n.tol.toPrecision(2) + ")" : n.status === "bad" ? L("not in s(y)", "нет в s(y)") : L("integer below 10: not checked", "целое меньше 10: не проверяется");
-      html += '<span class="p3-num ' + n.status + '" title="' + esc(title) + '">' + esc(n.raw) + "</span>";
+      html += '<span class="p3-num ' + n.status + '" title="' + esc(title) + '">' + esc(n.raw) +
+        (n.status === "ok" || n.status === "bad" ? '<span class="p3-glyph" aria-hidden="true">' + (n.status === "ok" ? "✓" : "✗") + "</span>" : "") + "</span>";
       at = n.index + n.raw.length;
     });
     html += esc(line.slice(at));
@@ -70,7 +75,9 @@
       "GET  /api/v1/session/" + sid + "  →  200 " + JSON.stringify({ status: "running" }),
       "GET  /api/v1/session/" + sid + "  →  200 " + JSON.stringify({ status: "done", verdict: verdict }),
       "",
-      L("freeze(s(y)) · fingerprint y = ", "freeze(s(y)) · отпечаток y = ") + FP0
+      L("freeze(s(y)) · fingerprint y = ", "freeze(s(y)) · отпечаток y = ") + FP0,
+      "",
+      U.probeLine(ru() ? "ru" : "en")
     ].join("\n");
     $("p3-evidence").textContent = JSON.stringify(ev, null, 1);
 
@@ -88,6 +95,23 @@
     $("p3-final").innerHTML = md(OUT.final);
     $("p3-first-box").hidden = !OUT.rewritten;
     $("p3-first").innerHTML = md(OUT.first);
+
+    // what the injected fault did: numbers fixed by the rewrite, and numbers still unverified
+    var diffBox = $("p3-diff");
+    if (OUT.rewritten) {
+      var d = U.diffNumbers(OUT.first, OUT.final);
+      var parts = d.pairs.map(function (p) { return "<span class=\"mono\">" + esc(p.from) + " → " + esc(p.to) + "</span>"; });
+      var pairedFrom = {};
+      d.pairs.forEach(function (p) { pairedFrom[String(p.from)] = true; });
+      (OUT.unverified.final || []).forEach(function (raw) {
+        if (!pairedFrom[String(raw)]) parts.push("<span class=\"mono\">" + esc(raw) + "</span>");
+      });
+      diffBox.innerHTML = (parts.length
+        ? L("<b>What the fault changed.</b> Numbers of the first draft vs the final: ", "<b>Что изменила ошибка.</b> Числа первого варианта и итога: ") + parts.join(" · ") +
+          (d.pairs.length ? L(" — fixed by the one allowed rewrite.", " — исправлено единственной перепиской.") : L(" — after the rewrite these still fail the number check and are kept with a mark (M6).", " — после переписки эти числа всё ещё не проходят сверку и сохраняются с отметкой (М6)."))
+        : L("<b>What the fault changed.</b> The rewrite produced the same text: the fault had no numerical effect.", "<b>Что изменила ошибка.</b> Переписка дала тот же текст: численного эффекта ошибка не имела."));
+      diffBox.hidden = false;
+    } else diffBox.hidden = true;
     var checks = [];
     checks.push([FP0 === FP1 ? "good" : "bad", L("<b>Invariance (Def. 5.1).</b> Fingerprint of y before the agent layer " + FP0 + ", after " + FP1 + (FP0 === FP1 ? " — unchanged." : " — CHANGED."),
       "<b>Инвариантность (опр. 5.1).</b> Отпечаток y до агентного слоя " + FP0 + ", после — " + FP1 + (FP0 === FP1 ? " — не изменился." : " — ИЗМЕНИЛСЯ."))]);
@@ -112,12 +136,51 @@
     $("p3-verdicts").innerHTML = "<thead><tr><th></th><th>event_detected</th><th>source</th></tr></thead><tbody>" +
       "<tr><td>ŷ<sub>clf</sub> · " + L("pipeline", "конвейер") + "</td>" + cell(pv.event_detected) + cell(pv.source) + "</tr>" +
       "<tr><td>ŷ<sub>agents</sub></td>" + cell(av.event_detected) + cell(av.source) + "</tr>" +
-      "<tr><td>𝟙[ŷ<sub>agents</sub> ≠ ŷ<sub>clf</sub>]</td>" + mark("event_detected") + mark("source") + "</tr></tbody>";
+      '<tr id="p3-dis-row"' + (anyDis ? ' class="p3-dis"' : "") + "><td>𝟙[ŷ<sub>agents</sub> ≠ ŷ<sub>clf</sub>]</td>" + mark("event_detected") + mark("source") + "</tr></tbody>";
+    if (anyDis) flash("p3-dis-row");
 
     if (st.edited === null) $("p3-edit").value = OUT.final;
     renderEdit();
     press("#p3-provider", st.provider); press("#p3-fault", st.fault);
+    updateRules();
   }
+
+  // brief highlight of an element a rule card points to
+  function flash(id) {
+    var el = $(id);
+    if (!el) return;
+    el.classList.remove("p3-flash");
+    void el.offsetWidth;                       // restart the animation
+    el.classList.add("p3-flash");
+  }
+
+  // which guarantees are being demonstrated right now
+  function updateRules() {
+    var dis = OUT.disagreement || {};
+    var active = {
+      def51: true,
+      rag: true,
+      rounds: true,
+      m6: st.fault === "misquote" || st.fault === "stubborn" || st.fault === "threshold",
+      rewrite: !!OUT.rewritten,
+      disagree: Object.keys(dis).some(function (k) { return dis[k]; })
+    };
+    document.querySelectorAll("#p3-rules [data-rule]").forEach(function (b) {
+      var on = !!active[b.getAttribute("data-rule")];
+      b.classList.toggle("on", on);
+      b.setAttribute("aria-pressed", String(on));
+    });
+  }
+
+  document.querySelectorAll("#p3-rules [data-rule]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var target = $(b.getAttribute("data-target"));
+      if (!target) return;
+      target.scrollIntoView({ behavior: "smooth", block: "center" });
+      flash(target.id);
+      if (target.id === "p3-verdicts") flash("p3-dis-row");
+    });
+  });
 
   function renderEdit() {
     var text = $("p3-edit").value, list = C.checkNumbers(text, EV);
@@ -135,7 +198,35 @@
   $("p3-edit").addEventListener("input", function () { st.edited = this.value; renderEdit(); });
   $("p3-edit-reset").addEventListener("click", function () { st.edited = null; if (OUT) { $("p3-edit").value = OUT.final; renderEdit(); } });
 
-  // Section 3 publishes its summary on every recomputation (and on a language switch, after which the texts are rebuilt).
-  document.addEventListener("eld:od-result", function (e) { IN = e.detail; run(); });
-  if (window.ELD_OD_RESULT) { IN = window.ELD_OD_RESULT; run(); }
+  // The consilium restarts whenever section 3 publishes a new result; say so when the input actually changed.
+  function takeInput(detail) {
+    IN = detail;
+    var fp = C.fingerprint(JSON.parse(JSON.stringify(detail.summary)));
+    if (LAST_FP !== null && fp !== LAST_FP) {
+      var note = $("p3-stale");
+      note.textContent = L("Input changed in section 3 — the consilium has rerun on the new frozen s(y). New fingerprint: " + fp,
+        "Вход изменился в разделе 3 — консилиум пересчитан на новой замороженной s(y). Новый отпечаток: " + fp);
+      note.hidden = false;
+      clearTimeout(staleTimer);
+      staleTimer = setTimeout(function () { note.hidden = true; }, 8000);
+    }
+    LAST_FP = fp;
+    run();
+  }
+  document.addEventListener("eld:od-result", function (e) { takeInput(e.detail); });
+  if (window.ELD_OD_RESULT) takeInput(window.ELD_OD_RESULT);
+
+  // Permalink to the current fault/provider state (for slides and classroom).
+  $("p3-permalink").addEventListener("click", function () {
+    var btn = this, url = U.stateURL(location.href, st.fault, st.provider);
+    var done = function () {
+      btn.querySelectorAll("[lang]").forEach(function (s) { s.textContent = s.getAttribute("lang") === "ru" ? "Ссылка скопирована" : "Link copied"; });
+      setTimeout(function () { renderBtnLabel(); }, 1600);
+    };
+    var renderBtnLabel = function () {
+      btn.querySelectorAll("[lang]").forEach(function (s) { s.textContent = s.getAttribute("lang") === "ru" ? "Скопировать ссылку на это состояние" : "Copy link to this state"; });
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done, function () { window.prompt(L("Copy the link:", "Скопируйте ссылку:"), url); });
+    else window.prompt(L("Copy the link:", "Скопируйте ссылку:"), url);
+  });
 })();
