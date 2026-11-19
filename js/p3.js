@@ -61,6 +61,10 @@
     }
     FP1 = C.fingerprint(EV);
     render();
+    // the agent emulator (js/p3-agent.js) replays this run step by step
+    var detail = { ev: EV, out: OUT, meta: IN.meta, fault: st.fault, provider: st.provider, write: WRITE, fp0: FP0, fp1: FP1 };
+    window.ELD_P3_RUN = detail;
+    document.dispatchEvent(new CustomEvent("eld:p3-run", { detail: detail }));
   }
 
   function render() {
@@ -214,6 +218,8 @@
     run();
   }
   document.addEventListener("eld:od-result", function (e) { takeInput(e.detail); });
+  document.addEventListener("eld:lang", function () { if (IN) run(); });
+  window.P3View = { md: md };
   if (window.ELD_OD_RESULT) takeInput(window.ELD_OD_RESULT);
 
   // Permalink to the current fault/provider state (for slides and classroom).

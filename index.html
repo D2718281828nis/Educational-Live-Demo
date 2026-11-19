@@ -116,7 +116,7 @@
   <div class="grid-3">
     <article class="card">
       <span class="tag"><span lang="en">Position 1 · shown in <a href="#s3">section 3</a> and the labs</span><span lang="ru">Положение 1 · показано в <a href="#s3">разделе 3</a> и лабораториях</span></span>
-      <h3><span lang="en">Software for detecting extreme states without labels</span><span lang="ru">Программное обеспечение выявления экстремальных состояний без разметки</span></h3>
+      <h3><span lang="en">Algorithmic and software support of an intelligent system for detecting extreme states of a complex system without labels</span><span lang="ru">Алгоритмическое и программное обеспечение интеллектуальной системы выявления экстремальных состояний сложной системы без разметки</span></h3>
       <p lang="en">One software pipeline whose handlers are tuned only on the object’s own background and return a testable hypothesis. The
         feature space (spectral power and its principal components, wavelets, long-range-correlation indices) is chosen before training by
         testable criteria — a heavy tail of the feature and the between-class distance. The alarm is raised by unsupervised outlier detectors
@@ -135,7 +135,7 @@
     </article>
     <article class="card">
       <span class="tag"><span lang="en">Position 2 · shown in <a href="#p2">section 4</a></span><span lang="ru">Положение 2 · показано в <a href="#p2">разделе 4</a></span></span>
-      <h3><span lang="en">Architecture of transparent AI on the “objects – events” graph</span><span lang="ru">Архитектура прозрачного ИИ на графовой модели «объекты – события»</span></h3>
+      <h3><span lang="en">Architecture of a software system of transparent artificial intelligence based on the “objects – events” graph model</span><span lang="ru">Архитектура программной системы прозрачного искусственного интеллекта на основе графовой модели «объекты – события»</span></h3>
       <p lang="en">Data about objects and events are an “objects – events” multigraph (objects are nodes, time-stamped weighted events are edges);
         a graph neural network classifies nodes. Stores of inference results, of graph and neural models and a vertex-code dictionary (index and
         information parts kept apart) sit on the graph-oriented computing system “Teragraph”. The graph builder is a parameterised software
@@ -150,7 +150,7 @@
     </article>
     <article class="card">
       <span class="tag"><span lang="en">Position 3 · shown in <a href="#p3">section 5</a></span><span lang="ru">Положение 3 · показано в <a href="#p3">разделе 5</a></span></span>
-      <h3><span lang="en">Interaction model of a multi-agent LLM decision-support system</span><span lang="ru">Модель взаимодействия компонентов мультиагентной СППР на основе LLM</span></h3>
+      <h3><span lang="en">Model and architecture of interaction of the software components of a multi-agent decision-support system</span><span lang="ru">Модель и архитектура взаимодействия программных компонентов мультиагентной системы поддержки принятия решений</span></h3>
       <p lang="en">A three-level pipeline: data and the automatic classifier’s verdict arrive from the processing server over a REST API; a
         consilium of agents with different roles, separate knowledge bases (RAG) and two rounds of discussion; a structured conclusion in
         Markdown and JSON. The numerical result is computed before the agent layer and is not an input to any numerical step; every number of
@@ -396,6 +396,7 @@
   <header class="sec-head">
     <span class="num">3</span>
     <div>
+      <p class="sec-pos"><span lang="en">Positive control of Position 1 · Algorithmic and software support of an intelligent system for detecting extreme states of a complex system without labels</span><span lang="ru">Положительный контроль Положения 1 · Алгоритмическое и программное обеспечение интеллектуальной системы выявления экстремальных состояний сложной системы без разметки</span></p>
       <h2><span lang="en">One sensor, five nodes: from a 1-D series to “when — where”</span><span lang="ru">Один датчик, пять узлов: от одномерного ряда к ответу «когда — где»</span></h2>
       <p lang="en">An extreme event starts in one of the nodes A–D and spreads along the graph. Only node E is measured: one series (<i>p</i> = 1).
         By Theorem 6.1 (auxiliary) one sensor cannot tell the source, so the harness goes in two stages: <b>1-D EVT</b> decides that an extreme event
@@ -744,7 +745,8 @@
   <header class="sec-head">
     <span class="num">4</span>
     <div>
-      <h2><span lang="en">Position 2 · A graph you can check: traced decisions, edges measured separately</span><span lang="ru">Положение 2 · Проверяемый граф: прослеживаемое решение, вклад рёбер отдельно</span></h2>
+      <h2><span lang="en">Position 2 · Architecture of a software system of transparent artificial intelligence based on the “objects – events” graph model</span><span lang="ru">Положение 2 · Архитектура программной системы прозрачного искусственного интеллекта на основе графовой модели «объекты – события»</span></h2>
+      <p class="sec-tagline"><span lang="en">A graph you can check: traced decisions, edges measured separately</span><span lang="ru">Проверяемый граф: прослеживаемое решение, вклад рёбер отдельно</span></p>
       <p lang="en">Position 2 claims an <b>architecture</b> and <b>transparency</b>, not higher accuracy. Data about objects and events are an
         “objects – events” multigraph; a decision of the graph network is traced to the nodes, edges and events it used; the graph
         builder is a parameterised interface; and the contribution of the edges is measured on its own, by the same model with the graph
@@ -876,24 +878,89 @@
   <header class="sec-head">
     <span class="num">5</span>
     <div>
-      <h2><span lang="en">Position 3 · A consilium of agents that cannot change the numbers</span><span lang="ru">Положение 3 · Консилиум агентов, который не может изменить числа</span></h2>
+      <h2><span lang="en">Position 3 · Model and architecture of interaction of the software components of a multi-agent decision-support system</span><span lang="ru">Положение 3 · Модель и архитектура взаимодействия программных компонентов мультиагентной системы поддержки принятия решений</span></h2>
+      <p class="sec-tagline"><span lang="en">A consilium of agents that cannot change the numbers</span><span lang="ru">Консилиум агентов, который не может изменить числа</span></p>
       <p lang="en">Position 3 is a model of how software components interact: the numerical result y = f<sub>θ</sub>(X) is computed <b>before</b>
         the agent layer and is never an input to a numerical step; agents with different roles and separate knowledge bases discuss a bounded
         summary s(y) in two rounds; every number of their conclusion is checked against s(y); the classifier’s verdict is kept next to the
-        agents’ verdict with a mark of disagreement. Below, the input is the <b>live result of section 3</b> — change anything there and the
-        consilium reruns. The agents are a stub client, as in the R3 tests: no language model runs on this page, so you can inject faults and watch
-        each rule catch them.</p>
+        agents’ verdict with a mark of disagreement. Below, <b>5.1</b> explains what an agent is, <b>5.2</b> replays the whole pipeline step by step,
+        and <b>5.3</b> shows each level in detail. The input is the <b>live result of section 3</b> — change anything there and the consilium reruns.
+        No language model runs on this page and no tokens are spent: the agents are a replay client with the interface of R3, so you can inject
+        faults and watch each rule catch them.</p>
       <p lang="ru">Положение 3 — модель взаимодействия программных компонентов: численный результат y = f<sub>θ</sub>(X) вычисляется <b>до</b>
         агентного слоя и не служит входом ни одного численного шага; агенты с разными ролями и раздельными базами знаний обсуждают
         ограниченную сводку s(y) в два раунда; каждое число заключения сверяется с s(y); вердикт классификатора хранится рядом с вердиктом
-        агентов и отметкой расхождения. Ниже вход — <b>текущий результат раздела 3</b>: измените что-либо там, и консилиум пересчитается.
-        Агенты — подставной клиент, как в тестах R3: языковая модель на странице не работает, поэтому можно вносить ошибки и смотреть, как
-        каждое правило их ловит.</p>
+        агентов и отметкой расхождения. Ниже: <b>5.1</b> — что такое агент, <b>5.2</b> — весь конвейер шаг за шагом, <b>5.3</b> — каждый уровень
+        подробно. Вход — <b>текущий результат раздела 3</b>: измените что-либо там, и консилиум пересчитается. Языковая модель на странице не
+        работает и токены не расходуются: агенты — воспроизводящий клиент с интерфейсом R3, поэтому можно вносить ошибки и смотреть, как каждое
+        правило их ловит.</p>
     </div>
   </header>
 
+  <!-- 5.1 what an agent is -->
+  <h3 class="rv-sub"><span class="rv-n">5.1</span><span lang="en">What an agent is and how it works</span><span lang="ru">Что такое агент и как он работает</span></h3>
+  <p class="rv-lede" lang="en">A language model on its own only continues text. An <b>agent</b> is a program that wraps the model in a loop and gives it
+    four things: a <b>role</b> (the system prompt), a <b>context window</b> (everything it has been shown), <b>tools</b> it may call (search a knowledge
+    base, read a field) and a <b>loop</b> — perceive, recall, reason, act, check, and again. A <b>multi-agent system</b> is several such agents with
+    different roles that exchange messages; a coordinator merges their texts. Click a phase of the loop.</p>
+  <p class="rv-lede" lang="ru">Языковая модель сама по себе лишь продолжает текст. <b>Агент</b> — программа, которая помещает модель в цикл и даёт ей
+    четыре вещи: <b>роль</b> (системный промпт), <b>окно контекста</b> (всё, что ей показали), <b>инструменты</b>, которые она может вызвать (поиск по базе
+    знаний, чтение поля), и <b>цикл</b> — восприятие, память, рассуждение, действие, проверка и снова. <b>Мультиагентная система</b> — несколько таких
+    агентов с разными ролями, обменивающихся сообщениями; координатор сводит их тексты. Нажмите на фазу цикла.</p>
+  <div class="card p3-agent">
+    <div class="p3-agent-grid">
+      <svg class="p3-loop" id="p3-loop" viewBox="0 0 340 290" role="group" aria-label="Agent loop: perceive, recall, reason, act, check">
+        <defs><marker id="p3l-head" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="p3l-head"/></marker></defs>
+        <path class="p3l-arc" d="M209.4 52.7 A105 105 0 0 1 250.4 82.5" marker-end="url(#p3l-head)"/>
+        <path class="p3l-arc" d="M274.8 157.3 A105 105 0 0 1 259.0 205.6" marker-end="url(#p3l-head)"/>
+        <path class="p3l-arc" d="M195.4 251.9 A105 105 0 0 1 144.6 251.9" marker-end="url(#p3l-head)"/>
+        <path class="p3l-arc" d="M81.0 205.6 A105 105 0 0 1 65.2 157.3" marker-end="url(#p3l-head)"/>
+        <path class="p3l-arc" d="M89.6 82.5 A105 105 0 0 1 130.6 52.7" marker-end="url(#p3l-head)"/>
+        <text x="170" y="134" class="p3l-c">LLM</text>
+        <text x="170" y="152" class="p3l-cs"><tspan lang="en">role · context · tools</tspan><tspan lang="ru">роль · контекст · инструменты</tspan></text>
+        <text x="170" y="167" class="p3l-cs"><tspan lang="en">here: replay client, 0 tokens</tspan><tspan lang="ru">здесь: воспроизведение, 0 токенов</tspan></text>
+        <g class="p3l-node" data-phase="perceive" tabindex="0" role="button"><circle cx="170" cy="45" r="38"/><text x="170" y="38" class="p3l-n">1</text><text x="170" y="53" class="p3l-t"><tspan lang="en">Perceive</tspan><tspan lang="ru">Восприятие</tspan></text></g>
+        <g class="p3l-node" data-phase="recall" tabindex="0" role="button"><circle cx="269.9" cy="117.6" r="38"/><text x="269.9" y="110.6" class="p3l-n">2</text><text x="269.9" y="125.6" class="p3l-t"><tspan lang="en">Recall · RAG</tspan><tspan lang="ru">Память · RAG</tspan></text></g>
+        <g class="p3l-node" data-phase="reason" tabindex="0" role="button"><circle cx="231.7" cy="234.9" r="38"/><text x="231.7" y="227.9" class="p3l-n">3</text><text x="231.7" y="242.9" class="p3l-t"><tspan lang="en">Reason</tspan><tspan lang="ru">Рассуждение</tspan></text></g>
+        <g class="p3l-node" data-phase="act" tabindex="0" role="button"><circle cx="108.3" cy="234.9" r="38"/><text x="108.3" y="227.9" class="p3l-n">4</text><text x="108.3" y="242.9" class="p3l-t"><tspan lang="en">Act</tspan><tspan lang="ru">Действие</tspan></text></g>
+        <g class="p3l-node" data-phase="check" tabindex="0" role="button"><circle cx="70.1" cy="117.6" r="38"/><text x="70.1" y="110.6" class="p3l-n">5</text><text x="70.1" y="125.6" class="p3l-t"><tspan lang="en">Check</tspan><tspan lang="ru">Проверка</tspan></text></g>
+      </svg>
+      <div class="p3-loop-detail" id="p3-loop-detail" aria-live="polite"></div>
+    </div>
+    <div class="table-scroll" style="margin-top:12px">
+      <table class="p3-vs">
+        <thead><tr><th></th><th><span class="p3e-dot comp"></span><span lang="en">Program component</span><span lang="ru">Программный компонент</span><br><span class="muted"><span lang="en">server, number check, store</span><span lang="ru">сервер, сверка чисел, хранилище</span></span></th><th><span class="p3e-dot agent"></span><span lang="en">Agent</span><span lang="ru">Агент</span><br><span class="muted"><span lang="en">three reviewers, chair</span><span lang="ru">три рецензента, председатель</span></span></th></tr></thead>
+        <tbody>
+          <tr><td><span lang="en">Output</span><span lang="ru">Выход</span></td><td><span lang="en">the same input gives the same output</span><span lang="ru">один и тот же вход — один и тот же выход</span></td><td><span lang="en">text; may differ between runs and providers</span><span lang="ru">текст; может отличаться между запусками и провайдерами</span></td></tr>
+          <tr><td><span lang="en">What it may change</span><span lang="ru">Что может изменить</span></td><td><span lang="en">computes y, freezes it, stores the report</span><span lang="ru">вычисляет y, замораживает, хранит заключение</span></td><td><span lang="en">nothing numerical: it only returns text</span><span lang="ru">ничего численного: только возвращает текст</span></td></tr>
+          <tr><td><span lang="en">How it is trusted</span><span lang="ru">Почему ему доверяют</span></td><td><span lang="en">tested against the Python reference in CI</span><span lang="ru">сверен с эталоном на Python в CI</span></td><td><span lang="en">every message is checked by M6; the verdict is compared with the classifier</span><span lang="ru">каждое сообщение проверяет М6; вердикт сравнивается с классификатором</span></td></tr>
+          <tr><td><span lang="en">Interface</span><span lang="ru">Интерфейс</span></td><td><code>POST /api/v1/…</code>, <code>verify_numbers</code>, <code>parse_verdict</code></td><td><code>client.complete(system, user) → text</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="p3-emul-note">
+      <span lang="en"><b>How the agents are emulated without tokens.</b> In R3 every agent is one call of
+        <code>ChatClient.complete(system, user) → str</code> (Mistral in production, a stub in the tests). Here the same calls are built — the same
+        system prompt with the guard “rely only on the JSON, do not change the numerical results”, the same summary, the same retrieved chunks — and
+        the response is <b>replayed</b> by a deterministic stub. You see every prompt and the tokens a real model would be sent; none are spent. A real
+        model would write other words; the guarantees would not change, because none of them relies on the model.</span>
+      <span lang="ru"><b>Как агенты эмулируются без токенов.</b> В R3 каждый агент — один вызов <code>ChatClient.complete(system, user) → str</code>
+        (Mistral в работе, заглушка в тестах). Здесь строятся те же вызовы — тот же системный промпт с ограничением «опирайся только на JSON, не изменяй
+        численные результаты», та же сводка, те же найденные фрагменты, — а ответ <b>воспроизводит</b> детерминированная заглушка. Видно каждый промпт и
+        сколько токенов получила бы настоящая модель; не расходуется ни одного. Настоящая модель написала бы другие слова; гарантии бы не изменились,
+        потому что ни одна из них не опирается на модель.</span>
+    </div>
+  </div>
+
+  <!-- 5.2 the pipeline, step by step -->
+  <h3 class="rv-sub"><span class="rv-n">5.2</span><span lang="en">The pipeline at work: step through the consilium</span><span lang="ru">Конвейер в работе: консилиум шаг за шагом</span></h3>
+  <p class="rv-lede" lang="en">Press <b>Play</b> or step with the arrows (← → on the keyboard, space to pause). Click a box of the diagram to jump to that
+    stage, or a line of the transcript to reopen it. Inject a fault below and the player jumps to the step where the fault acts — and to the rule that catches it.</p>
+  <p class="rv-lede" lang="ru">Нажмите <b>Пуск</b> или идите по шагам стрелками (← → на клавиатуре, пробел — пауза). Нажмите на блок схемы, чтобы перейти к
+    этому этапу, или на строку протокола, чтобы открыть её снова. Внесите ошибку ниже — проигрыватель перейдёт к шагу, где она действует, и к правилу, которое её ловит.</p>
+
   <figure class="card p3-flow">
-    <svg viewBox="0 0 960 168" role="img" aria-label="Dataflow: X to y to frozen summary to consilium to checked conclusion; agents cannot write back">
+    <svg viewBox="0 0 960 188" role="group" aria-label="Dataflow: X to y to frozen summary to consilium to checked conclusion; agents cannot write back. Click a box to jump to that stage.">
       <defs>
         <marker id="p3f-head" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
           <path d="M 0 0 L 10 5 L 0 10 z" class="p3f-head"/>
@@ -903,24 +970,62 @@
         </marker>
       </defs>
       <text x="480" y="14" class="p3f-cap"><tspan lang="en">the only arrows the architecture allows — a write from the agents to a numerical step does not exist (Def. 5.1)</tspan><tspan lang="ru">единственные стрелки, которые позволяет архитектура, — записи от агентов к численному шагу не существует (опр. 5.1)</tspan></text>
-      <path class="p3f-no" d="M 761 62 L 761 30 L 203 30 L 203 56" marker-end="url(#p3f-head-red)"/>
+      <path class="p3f-no" id="p3f-no" d="M 761 62 L 761 30 L 203 30 L 203 56" marker-end="url(#p3f-head-red)"/>
       <text x="482" y="26" class="p3f-no-t"><tspan lang="en">✗ agents → numerical step: impossible</tspan><tspan lang="ru">✗ агенты → численный шаг: невозможно</tspan></text>
-      <g class="p3f-box"><rect x="8" y="62" width="84" height="46" rx="8"/><text x="50" y="82" class="p3f-t">X</text><text x="50" y="98" class="p3f-s"><tspan lang="en">raw series</tspan><tspan lang="ru">сырой ряд</tspan></text></g>
-      <path class="p3f-a" d="M 92 85 L 124 85" marker-end="url(#p3f-head)"/>
-      <g class="p3f-box"><rect x="128" y="62" width="150" height="46" rx="8"/><text x="203" y="82" class="p3f-t">y = f<tspan dy="4" class="p3f-sub">θ</tspan><tspan dy="-4">(X)</tspan></text><text x="203" y="98" class="p3f-s"><tspan lang="en">numerical step (§ 3)</tspan><tspan lang="ru">численный шаг (§ 3)</tspan></text></g>
-      <path class="p3f-a" d="M 278 85 L 310 85" marker-end="url(#p3f-head)"/>
-      <g class="p3f-box hi"><rect x="314" y="62" width="172" height="46" rx="8"/><text x="400" y="82" class="p3f-t">freeze(y)</text><text x="400" y="98" class="p3f-s"><tspan lang="en">fingerprint FNV-1a</tspan><tspan lang="ru">отпечаток FNV-1a</tspan></text></g>
-      <path class="p3f-a" d="M 486 85 L 518 85" marker-end="url(#p3f-head)"/>
-      <g class="p3f-box"><rect x="522" y="62" width="128" height="46" rx="8"/><text x="586" y="82" class="p3f-t">s(y)</text><text x="586" y="98" class="p3f-s"><tspan lang="en">summary, not samples</tspan><tspan lang="ru">сводка, не отсчёты</tspan></text></g>
-      <path class="p3f-a" d="M 650 85 L 682 85" marker-end="url(#p3f-head)"/>
-      <g class="p3f-box agents"><rect x="686" y="62" width="150" height="46" rx="8"/><text x="761" y="82" class="p3f-t"><tspan lang="en">consilium</tspan><tspan lang="ru">консилиум</tspan></text><text x="761" y="98" class="p3f-s"><tspan lang="en">2 rounds · stub</tspan><tspan lang="ru">2 раунда · заглушка</tspan></text></g>
-      <path class="p3f-a" d="M 836 85 L 868 85" marker-end="url(#p3f-head)"/>
-      <g class="p3f-box"><rect x="872" y="62" width="84" height="46" rx="8"/><text x="914" y="82" class="p3f-t"><tspan lang="en">report</tspan><tspan lang="ru">заключение</tspan></text><text x="914" y="98" class="p3f-s"><tspan lang="en">M6 number check</tspan><tspan lang="ru">сверка чисел М6</tspan></text></g>
-      <text x="8" y="132" class="p3f-note"><tspan lang="en">Every number of the report is checked against s(y); the classifier’s verdict is stored next to the agents’ verdict with a disagreement mark (§ 5.3).</tspan><tspan lang="ru">Каждое число заключения сверяется с s(y); вердикт классификатора хранится рядом с вердиктом агентов и отметкой расхождения (§ 5.3).</tspan></text>
-      <text x="8" y="152" class="p3f-note"><tspan lang="en">Change anything in section 3 — the pipeline box reruns and the consilium restarts on the new frozen s(y).</tspan><tspan lang="ru">Измените что-либо в разделе 3 — блок конвейера пересчитается, и консилиум запустится заново на новой замороженной s(y).</tspan></text>
+      <g class="p3f-box" data-stage="x" tabindex="0" role="button"><rect x="8" y="62" width="84" height="46" rx="8"/><text x="50" y="82" class="p3f-t">X</text><text x="50" y="98" class="p3f-s"><tspan lang="en">raw series</tspan><tspan lang="ru">сырой ряд</tspan></text></g>
+      <path class="p3f-a" data-to="f" d="M 92 85 L 124 85" marker-end="url(#p3f-head)"/>
+      <g class="p3f-box" data-stage="f" tabindex="0" role="button"><rect x="128" y="62" width="150" height="46" rx="8"/><text x="203" y="82" class="p3f-t">y = f<tspan dy="4" class="p3f-sub">θ</tspan><tspan dy="-4">(X)</tspan></text><text x="203" y="98" class="p3f-s"><tspan lang="en">numerical step (§ 3)</tspan><tspan lang="ru">численный шаг (§ 3)</tspan></text></g>
+      <path class="p3f-a" data-to="freeze" d="M 278 85 L 310 85" marker-end="url(#p3f-head)"/>
+      <g class="p3f-box hi" data-stage="freeze" tabindex="0" role="button"><rect x="314" y="62" width="172" height="46" rx="8"/><text x="400" y="82" class="p3f-t">freeze(y)</text><text x="400" y="98" class="p3f-s"><tspan lang="en">fingerprint FNV-1a</tspan><tspan lang="ru">отпечаток FNV-1a</tspan></text></g>
+      <path class="p3f-a" data-to="s" d="M 486 85 L 518 85" marker-end="url(#p3f-head)"/>
+      <g class="p3f-box" data-stage="s" tabindex="0" role="button"><rect x="522" y="62" width="128" height="46" rx="8"/><text x="586" y="82" class="p3f-t">s(y)</text><text x="586" y="98" class="p3f-s"><tspan lang="en">summary, not samples</tspan><tspan lang="ru">сводка, не отсчёты</tspan></text></g>
+      <path class="p3f-a" data-to="consilium" d="M 650 85 L 682 85" marker-end="url(#p3f-head)"/>
+      <g class="p3f-box agents" data-stage="consilium" tabindex="0" role="button"><rect x="686" y="62" width="150" height="46" rx="8"/><text x="761" y="82" class="p3f-t"><tspan lang="en">consilium</tspan><tspan lang="ru">консилиум</tspan></text><text x="761" y="98" class="p3f-s"><tspan lang="en">2 rounds · replay</tspan><tspan lang="ru">2 раунда · воспроизв.</tspan></text></g>
+      <path class="p3f-a" data-to="report" d="M 836 85 L 868 85" marker-end="url(#p3f-head)"/>
+      <g class="p3f-box" data-stage="report" tabindex="0" role="button"><rect x="872" y="62" width="84" height="46" rx="8"/><text x="914" y="82" class="p3f-t"><tspan lang="en">report</tspan><tspan lang="ru">заключение</tspan></text><text x="914" y="98" class="p3f-s"><tspan lang="en">M6 number check</tspan><tspan lang="ru">сверка чисел М6</tspan></text></g>
+      <g class="p3f-cursor" id="p3f-cursor"><path d="M -6 0 L 6 0 L 0 -8 z"/><text y="12" id="p3f-live" class="p3f-live"></text></g>
+      <text x="8" y="162" class="p3f-note"><tspan lang="en">Every number of the report is checked against s(y); the classifier’s verdict is stored next to the agents’ verdict with a disagreement mark (§ 5.3).</tspan><tspan lang="ru">Каждое число заключения сверяется с s(y); вердикт классификатора хранится рядом с вердиктом агентов и отметкой расхождения (§ 5.3).</tspan></text>
+      <text x="8" y="180" class="p3f-note"><tspan lang="en">Change anything in section 3 — the pipeline reruns and the consilium restarts on the new frozen s(y).</tspan><tspan lang="ru">Измените что-либо в разделе 3 — конвейер пересчитается, и консилиум запустится заново на новой замороженной s(y).</tspan></text>
     </svg>
   </figure>
 
+  <div class="card od-controls p3-controls">
+    <div class="od-ctl"><span class="od-ctl-label"><span lang="en">LLM provider (<code>--provider</code>)</span><span lang="ru">Провайдер LLM (<code>--provider</code>)</span></span>
+      <div class="seg" id="p3-provider"><button type="button" data-v="a"><span lang="en">stub A · fractions</span><span lang="ru">заглушка A · доли</span></button><button type="button" data-v="b"><span lang="en">stub B · percent</span><span lang="ru">заглушка B · проценты</span></button></div></div>
+    <div class="od-ctl"><span class="od-ctl-label"><span lang="en">Inject a fault into the agents</span><span lang="ru">Внести ошибку в работу агентов</span></span>
+      <div class="seg p3-faults" id="p3-fault"><button type="button" data-v="none"><span lang="en">none</span><span lang="ru">нет</span></button><button type="button" data-v="misquote"><span lang="en">misquoted number</span><span lang="ru">искажённое число</span></button><button type="button" data-v="stubborn"><span lang="en">misquoted twice</span><span lang="ru">искажено дважды</span></button><button type="button" data-v="disagree"><span lang="en">disputes the source</span><span lang="ru">оспаривает источник</span></button><button type="button" data-v="threshold"><span lang="en">proposes a new threshold</span><span lang="ru">предлагает новый порог</span></button></div></div>
+  </div>
+
+  <div class="card p3-emu" id="p3-emu" tabindex="-1" aria-label="Agent emulator">
+    <div class="p3e-bar">
+      <div class="seg" role="group" aria-label="Playback">
+        <button type="button" id="p3e-restart" aria-label="Restart" title="Restart / С начала">⏮</button>
+        <button type="button" id="p3e-back" aria-label="Step back" title="← Step back / Шаг назад">◀</button>
+        <button type="button" id="p3e-play" class="p3e-play"></button>
+        <button type="button" id="p3e-next" aria-label="Step forward" title="→ Step forward / Шаг вперёд">▶|</button>
+        <button type="button" id="p3e-end" aria-label="Go to the end" title="To the end / В конец">⏭</button>
+      </div>
+      <div class="seg small" id="p3e-speed" role="group" aria-label="Speed"><button type="button" data-v="0.5">0.5×</button><button type="button" data-v="1">1×</button><button type="button" data-v="2">2×</button><button type="button" data-v="4">4×</button></div>
+      <label class="p3e-opt"><input type="checkbox" id="p3e-stream"> <span lang="en">stream the text like a model</span><span lang="ru">печатать текст, как модель</span></label>
+    </div>
+    <input type="range" class="p3e-scrub" id="p3e-scrub" min="0" max="0" value="0" aria-label="Step">
+    <div class="p3e-pos" id="p3e-pos"></div>
+    <div class="p3e-actors" id="p3e-actors"></div>
+    <div class="od-two wide-left">
+      <div><div class="panel-label"><span lang="en">Transcript — what happened, in order</span><span lang="ru">Протокол — что произошло, по порядку</span></div><ol class="p3e-log" id="p3e-log"></ol></div>
+      <div><div class="panel-label"><span lang="en">Inside the current step</span><span lang="ru">Внутри текущего шага</span></div><div class="p3e-inspect" id="p3e-inspect" aria-live="polite"></div></div>
+    </div>
+    <div class="p3e-totals" id="p3e-totals"></div>
+  </div>
+
+  <div class="p3-links">
+    <a class="btn small" href="#s3"><span lang="en">Change the input in section 3 ↓</span><span lang="ru">Изменить вход в разделе 3 ↓</span></a>
+    <button type="button" class="btn small" id="p3-permalink"><span lang="en">Copy link to this state</span><span lang="ru">Скопировать ссылку на это состояние</span></button>
+    <span class="p3-stale" id="p3-stale" hidden></span>
+  </div>
+
+  <!-- 5.3 the three levels in detail -->
+  <h3 class="rv-sub"><span class="rv-n">5.3</span><span lang="en">The three levels in detail and the guarantees</span><span lang="ru">Три уровня подробно и гарантии</span></h3>
   <div class="card p3-rules" id="p3-rules" role="group" aria-label="Guarantees of Position 3">
     <div class="od-ctl-label"><span lang="en">Guarantees of Position 3 — click a card to see where it is enforced</span><span lang="ru">Гарантии Положения 3 — нажмите на карточку, чтобы увидеть, где она выполняется</span></div>
     <div class="p3-rules-row">
@@ -931,19 +1036,6 @@
       <button type="button" class="p3-rule" data-rule="rewrite" data-target="p3-first-box"><b>§ 5.2</b><span lang="en">one rewrite</span><span lang="ru">одна переписка</span><i>→ 3</i></button>
       <button type="button" class="p3-rule" data-rule="disagree" data-target="p3-verdicts"><b>§ 5.3</b><span lang="en">disagreement kept</span><span lang="ru">расхождение сохранено</span><i>→ 3</i></button>
     </div>
-  </div>
-
-  <div class="card od-controls p3-controls">
-    <div class="od-ctl"><span class="od-ctl-label"><span lang="en">LLM provider (<code>--provider</code>)</span><span lang="ru">Провайдер LLM (<code>--provider</code>)</span></span>
-      <div class="seg" id="p3-provider"><button type="button" data-v="a"><span lang="en">stub A · fractions</span><span lang="ru">заглушка A · доли</span></button><button type="button" data-v="b"><span lang="en">stub B · percent</span><span lang="ru">заглушка B · проценты</span></button></div></div>
-    <div class="od-ctl"><span class="od-ctl-label"><span lang="en">Inject a fault into the agents</span><span lang="ru">Внести ошибку в работу агентов</span></span>
-      <div class="seg p3-faults" id="p3-fault"><button type="button" data-v="none"><span lang="en">none</span><span lang="ru">нет</span></button><button type="button" data-v="misquote"><span lang="en">misquoted number</span><span lang="ru">искажённое число</span></button><button type="button" data-v="stubborn"><span lang="en">misquoted twice</span><span lang="ru">искажено дважды</span></button><button type="button" data-v="disagree"><span lang="en">disputes the source</span><span lang="ru">оспаривает источник</span></button><button type="button" data-v="threshold"><span lang="en">proposes a new threshold</span><span lang="ru">предлагает новый порог</span></button></div></div>
-  </div>
-
-  <div class="p3-links">
-    <a class="btn small" href="#s3"><span lang="en">Change the input in section 3 ↓</span><span lang="ru">Изменить вход в разделе 3 ↓</span></a>
-    <button type="button" class="btn small" id="p3-permalink"><span lang="en">Copy link to this state</span><span lang="ru">Скопировать ссылку на это состояние</span></button>
-    <span class="p3-stale" id="p3-stale" hidden></span>
   </div>
 
   <ol class="od-steps">
@@ -1288,7 +1380,9 @@
 <script src="js/p2.js"></script>
 <script src="js/p3-core.js"></script>
 <script src="js/p3-ui-core.js"></script>
+<script src="js/p3-agent-core.js"></script>
 <script src="js/p3.js"></script>
+<script src="js/p3-agent.js"></script>
 <script src="js/site.js"></script>
 </body>
 </html>

@@ -89,6 +89,7 @@ node tests/experiments.js --check  # Monte Carlo 20 seeds × 4 sources + spec gr
 node tests/p2_check.js             # Position 2 node types/K-hop trace and graph scores across four datasets
 node tests/p3_check.js             # Position 3 number checks, verdict parsing and agent fault scenarios
 node tests/p3_ui_check.js          # Position 3 UI helpers: draft diffs, permalink state, frozen-write probe
+node tests/p3_agent_check.js       # Position 3 agent emulator: replayed calls, 0 tokens, y unchanged, faults flagged
 ```
 
 | Number in the dissertation | Key in `results/onedim_summary.json` | Expected (`tests/fixtures/onedim_expected.json`) |
@@ -119,11 +120,14 @@ js/site.js        language/theme switches and the Kuramoto card thumbnail
 js/onedim-core.js numerics of section 3 (generator, 1-D EVT, structural analysis, n-D Graph-EVT-agent port); runs in Node too
 js/p2-core.js     numerics of section 4 (objects–events graph trace and edge-value examples); runs in Node too
 js/p3-core.js     rules of section 5 (number checks, verdicts and stub consilium); runs in Node too
+js/p3-agent-core.js agent emulator of section 5: the consilium as a step trace of complete(system, user) calls; runs in Node too
+js/p3-agent.js    section 5.1–5.2: agent-loop explainer, interactive pipeline and step-by-step emulator
 data/p2_datasets.json synthetic datasets for the Position 2 interactive lab
 tests/port_check.js           checks the JS graph methods against Graph-EVT-agent (Python): node tests/port_check.js
 tests/p2_check.js             checks Position 2 node types/K-hop trace and values against Python references
 tests/p3_check.js             checks Position 3 rules and fault scenarios
 tests/p3_ui_check.js          checks Position 3 UI helpers (draft diffs, permalink state)
+tests/p3_agent_check.js       checks the Position 3 agent emulator trace
 tests/make_graph_reference.py regenerates tests/fixtures/graph_methods_reference.json from Graph-EVT-agent
 tests/make_p2_reference.py    regenerates the Position 2 reference values
 tests/make_p3_reference.py    regenerates the Position 3 reference cases
@@ -225,6 +229,7 @@ node tests/experiments.js --check  # Монте-Карло 20 затравок �
 node tests/p2_check.js             # типы вершин, трасса K шагов и значения Положения 2 на четырёх наборах
 node tests/p3_check.js             # проверка чисел, разбор вердикта и сценарии ошибок агентов Положения 3
 node tests/p3_ui_check.js          # помощники интерфейса Положения 3: различия черновиков, permalink состояния
+node tests/p3_agent_check.js       # эмулятор агентов Положения 3: воспроизведённые вызовы, 0 токенов, y неизменен, ошибки помечены
 ```
 
 | Число в диссертации | Ключ в `results/onedim_summary.json` | Ожидается (`tests/fixtures/onedim_expected.json`) |
@@ -256,12 +261,15 @@ js/onedim-core.js вычисления раздела 3 (генератор, 1-D
 js/p2-core.js     вычисления раздела 4 (трассировка графа «объекты – события» и ценность рёбер); работает и в Node
 js/p3-core.js     правила раздела 5 (проверка чисел, вердикты и консилиум-заглушка); работает и в Node
 js/p3-ui-core.js  вспомогательные функции раздела 5 (разбор отличий черновиков, permalink состояния); работает и в Node
+js/p3-agent-core.js эмулятор агентов раздела 5: консилиум как трасса вызовов complete(system, user); работает и в Node
+js/p3-agent.js    раздел 5.1–5.2: схема цикла агента, интерактивный конвейер и пошаговый эмулятор
 data/p2_datasets.json синтетические данные для интерактивного опыта Положения 2
 js/onedim.js      раздел 3: графики и элементы управления
 tests/port_check.js           сверка графовых методов JS с Graph-EVT-agent (Python)
 tests/p2_check.js             проверка типов вершин, трассы K шагов и значений Положения 2
 tests/p3_check.js             проверка правил и сценариев ошибок Положения 3
 tests/p3_ui_check.js          проверка помощников интерфейса Положения 3 (различия черновиков, permalink)
+tests/p3_agent_check.js       проверка трассы эмулятора агентов Положения 3
 tests/make_graph_reference.py заново строит tests/fixtures/graph_methods_reference.json по Graph-EVT-agent
 tests/make_p2_reference.py    заново строит эталонные значения Положения 2
 tests/make_p3_reference.py    заново строит эталонные случаи Положения 3
