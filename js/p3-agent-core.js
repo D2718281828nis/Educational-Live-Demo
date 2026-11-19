@@ -18,11 +18,11 @@
     en: "Rely only on the JSON. Do not change the numerical results. Separate statistical rarity from causality and state limitations explicitly."
   };
   var ACTORS = {
-    server: { en: "Processing server", ru: "Сервер обработки", agent: false },
-    evt: { en: "EVT reviewer", ru: "Рецензент EVT", agent: true },
-    graph: { en: "Graph reviewer", ru: "Рецензент графа", agent: true },
-    loc: { en: "Localization reviewer", ru: "Рецензент локализации", agent: true },
-    chair: { en: "Chair", ru: "Председатель", agent: true },
+    planner: { en: "Planner agent", ru: "Агент-планировщик", agent: true, policy: "rules" },
+    evt: { en: "EVT reviewer", ru: "Рецензент EVT", agent: true, policy: "llm" },
+    graph: { en: "Graph reviewer", ru: "Рецензент графа", agent: true, policy: "llm" },
+    loc: { en: "Localization reviewer", ru: "Рецензент локализации", agent: true, policy: "llm" },
+    chair: { en: "Chair", ru: "Председатель", agent: true, policy: "llm" },
     checker: { en: "Number check (M6)", ru: "Сверка чисел (М6)", agent: false },
     store: { en: "Result store", ru: "Хранилище результата", agent: false }
   };
@@ -88,27 +88,28 @@
       });
     }
 
-    // ---------------------------------------------------------------- level 1: deterministic components, no agent
-    push({ stage: "x", actor: "server", phase: null, round: 0,
+    // ---------------------------------------------------------------- level 1: the planner agent (rules policy) runs the numerical tools
+    push({ stage: "x", actor: "planner", phase: "perceive", round: 0,
       title: "POST /api/v1/files/",
-      body: L("The raw series x(t) of section 3 is uploaded: n = " + meta.n + ", fingerprint of the series " + meta.series_fnv1a + ". Agents never see these samples.",
-        "Загружается сырой ряд x(t) раздела 3: n = " + meta.n + ", отпечаток ряда " + meta.series_fnv1a + ". Агенты этих отсчётов не видят.") });
-    push({ stage: "f", actor: "server", phase: null, round: 0,
+      body: L("The planner agent receives the raw series x(t) of section 3: n = " + meta.n + ", fingerprint of the series " + meta.series_fnv1a + ". The LLM agents never see these samples.",
+        "Агент-планировщик получает сырой ряд x(t) раздела 3: n = " + meta.n + ", отпечаток ряда " + meta.series_fnv1a + ". LLM-агенты этих отсчётов не видят.") });
+    push({ stage: "f", actor: "planner", phase: "act", round: 0,
+      tool: { name: "detect_evt → build_baseline_graph → rank_source", args: { route: "1-D → structural → n-D" }, ok: true, result: "y" },
       title: "y = fθ(X)",
       body: det.detected
-        ? L("The numerical step runs: 1-D alarm at sample " + det.alarm_1d + ", n-D onset t̂ = " + det.t_hat + (rk ? ", top node " + rk.node_ids[0] : "") + ". This is the answer; the agents only explain it.",
-            "Выполняется численный шаг: одномерная тревога — отсчёт " + det.alarm_1d + ", начало по n-D t̂ = " + det.t_hat + (rk ? ", первый узел " + rk.node_ids[0] : "") + ". Это и есть ответ; агенты его только объясняют.")
-        : L("The numerical step runs: no extreme event (the run rule was not met). This is the answer; the agents only explain it.",
-            "Выполняется численный шаг: экстремального события нет (правило серии не выполнено). Это и есть ответ; агенты его только объясняют.") });
-    push({ stage: "freeze", actor: "server", phase: null, round: 0, status: "good",
+        ? L("The planner calls its numerical tools: 1-D alarm at sample " + det.alarm_1d + ", n-D onset t̂ = " + det.t_hat + (rk ? ", top node " + rk.node_ids[0] : "") + ". This is the answer; the LLM agents only explain it.",
+            "Планировщик вызывает численные инструменты: одномерная тревога — отсчёт " + det.alarm_1d + ", начало по n-D t̂ = " + det.t_hat + (rk ? ", первый узел " + rk.node_ids[0] : "") + ". Это и есть ответ; LLM-агенты его только объясняют.")
+        : L("The planner calls detect_evt: no extreme event (the run rule was not met) — it stops with no_evt_detected. This is the answer; the LLM agents only explain it.",
+            "Планировщик вызывает detect_evt: экстремального события нет (правило серии не выполнено) — остановка no_evt_detected. Это и есть ответ; LLM-агенты его только объясняют.") });
+    push({ stage: "freeze", actor: "planner", phase: "check", round: 0, status: "good",
       title: "freeze(y) · FNV-1a = " + fp,
-      body: L("The result is deep-frozen (Object.freeze) and fingerprinted before any agent starts. Any later write to it throws.",
-        "Результат глубоко замораживается (Object.freeze) и получает отпечаток до запуска любого агента. Любая запись в него дальше вызывает ошибку."),
+      body: L("The planner observes that its plan is complete; the result is deep-frozen (Object.freeze) and fingerprinted before any LLM agent starts. Any later write to it throws — the planner’s too.",
+        "Планировщик видит, что план выполнен; результат глубоко замораживается (Object.freeze) и получает отпечаток до запуска любого LLM-агента. Любая запись в него дальше вызывает ошибку — и запись планировщика тоже."),
       context: [{ k: L("fingerprint before the agents", "отпечаток до агентов"), v: fp }] });
-    push({ stage: "s", actor: "server", phase: null, round: 0,
+    push({ stage: "s", actor: "planner", phase: "act", round: 0,
       title: L("s(y): bounded summary", "s(y): ограниченная сводка"),
-      body: L("Only a summary of " + evJSON.length + " characters is handed on — decisions to audit, not samples. It is the whole “world” of the agents.",
-        "Дальше передаётся только сводка в " + evJSON.length + " символов — решения для проверки, а не отсчёты. Это весь «мир» агентов."),
+      body: L("Hand-off: only a summary of " + evJSON.length + " characters goes to the LLM agents — decisions to audit, not samples. It is their whole “world”.",
+        "Передача: LLM-агентам уходит только сводка в " + evJSON.length + " символов — решения для проверки, а не отсчёты. Это весь их «мир»."),
       context: [{ k: "s(y)", v: JSON.stringify(ev, null, 1) }] });
 
     // ---------------------------------------------------------------- level 2, round 1: independent reviews
@@ -240,7 +241,98 @@
     return { calls: calls.length, tokens: calls.reduce(function (a, s) { return a + s.call.tokens; }, 0), spent: 0 };
   }
 
-  var api = { PHASES: PHASES, ACTORS: ACTORS, GUARD: GUARD, estTokens: estTokens, trace: trace, totals: totals };
+
+  // ---------------------------------------------------------------- 5.4: one agentic architecture
+  // The planner agent of section 3 as a plan → act → observe loop (Graph-EVT-agent PipelinePlanner, page route H7:
+  // 1-D → structural → n-D). ev: the summary s(y); what: { noAlarm: force "no 1-D alarm", noStructural: skip the
+  // structural analysis (the library's plain 1-D route) }. Returns { plan, steps, stop, result }.
+  function plannerRun(ev, what, lang) {
+    var ru = lang === "ru", L = function (en, r) { return ru ? r : en; };
+    what = what || {};
+    var det = ev.detection, rk = ev.ranking, gr = ev.graph;
+    var alarm = what.noAlarm ? -1 : det.alarm_1d;
+    var plan = what.noStructural
+      ? ["inspect_input", "detect_evt_1d", "handoff"]
+      : ["inspect_input", "detect_evt_1d", "structural_analysis", "build_baseline_graph", "detect_evt_nd", "rank_source", "handoff"];
+    var steps = [], done = [], stop = null;
+    function step(phase, action, text, status, result) {
+      if (action && phase === "act") done.push(action);
+      steps.push({ phase: phase, action: action, text: text, status: status || null, result: result === undefined ? null : result, completed: done.slice() });
+    }
+    step("perceive", "inspect_input", L("Input: one series, p = 1, background [1, T_b) known to be normal. Route: 1-D.", "Вход: один ряд, p = 1, фон [1, T_b) заведомо нормален. Маршрут: 1-D."), null, { p: 1 });
+    step("reason", null, L("Plan: " + plan.join(" → ") + (what.noStructural ? " (structural analysis switched off)." : "."), "План: " + plan.join(" → ") + (what.noStructural ? " (структурный анализ выключен)." : ".")));
+    step("act", "detect_evt_1d", L("Tool detect_evt on the 1-D series: POT/GPD threshold from the background, r = " + ev.spec.r + " in a row.", "Инструмент detect_evt на одномерном ряде: порог POT/GPD по фону, r = " + ev.spec.r + " подряд."));
+    if (alarm < 0 || alarm === null) {
+      stop = "no_evt_detected";
+      step("check", null, L("Observation: no 1-D alarm. Stop: no_evt_detected — nothing to localize.", "Наблюдение: одномерной тревоги нет. Остановка: no_evt_detected — локализовать нечего."), "warn", { alarm_1d: null });
+    } else {
+      step("check", null, L("Observation: 1-D alarm at sample " + alarm + " — an extreme event happened.", "Наблюдение: одномерная тревога на отсчёте " + alarm + " — экстремальное событие произошло."), "good", { alarm_1d: alarm });
+      if (what.noStructural) {
+        stop = "single_channel_cannot_localize";
+        step("check", null, L("One sensor cannot tell the source (Theorem 6.1). Stop: single_channel_cannot_localize — “when” only.", "Один датчик не различает источник (теорема 6.1). Остановка: single_channel_cannot_localize — только «когда»."), "warn");
+      } else {
+        step("act", "structural_analysis", L("Tool structural analysis: nodes from the spectral peaks of the background, one envelope per node → an n-D series.", "Инструмент структурного анализа: узлы — спектральные пики фона, огибающая на узел → n-D-ряд."), null, { nodes: gr.nodes });
+        step("check", null, L("Observation: " + gr.nodes.length + " nodes (" + gr.nodes.join(", ") + "). The route switches to n-D.", "Наблюдение: " + gr.nodes.length + " узлов (" + gr.nodes.join(", ") + "). Маршрут переключается на n-D."), "good");
+        step("act", "build_baseline_graph", L("Tool build_baseline_graph: method " + gr.method + ", background only.", "Инструмент build_baseline_graph: метод " + gr.method + ", только фон."), null, { method: gr.method, functional_edges: gr.functional_edges });
+        step("check", null, L("Observation: " + gr.functional_edges + " functional edges — the estimated structure, a hypothesis to test against the empty graph.", "Наблюдение: функциональных рёбер " + gr.functional_edges + " — оценённая структура, гипотеза для проверки против пустого графа."), "good");
+        step("act", "detect_evt_nd", L("Tool detect_evt on the n-D series: robust z → top-k → POT/GPD → r in a row.", "Инструмент detect_evt на n-D-ряде: робастный z → top-k → POT/GPD → r подряд."));
+        if (!det.detected) {
+          stop = "no_evt_detected";
+          step("check", null, L("Observation: no persistent n-D alarm. Stop: no_evt_detected.", "Наблюдение: устойчивой n-D-тревоги нет. Остановка: no_evt_detected."), "warn", { t_hat: null });
+        } else {
+          step("check", null, L("Observation: onset t̂ = " + det.t_hat + ".", "Наблюдение: начало t̂ = " + det.t_hat + "."), "good", { t_hat: det.t_hat });
+          step("act", "rank_source", L("Tool rank_source: P(ŝ = v) over the nodes; the arrival fit is kept beside it.", "Инструмент rank_source: P(ŝ = v) по узлам; подгонка приходов сохраняется рядом."));
+          step("check", null, rk ? L("Observation: top node " + rk.node_ids[0] + ", P = " + rk.probabilities[0] + "; arrival fit " + (ev.arrival_fit || "–") + ".", "Наблюдение: первый узел " + rk.node_ids[0] + ", P = " + rk.probabilities[0] + "; подгонка приходов — " + (ev.arrival_fit || "–") + ".")
+            : L("Observation: no ranking.", "Наблюдение: ранжирования нет."), "good", rk ? { source: rk.node_ids[0], p: rk.probabilities[0] } : null);
+        }
+      }
+    }
+    var result = {
+      when: alarm >= 0 && alarm !== null ? (what.noStructural ? alarm : (det.detected ? det.t_hat : null)) : null,
+      where: !stop && rk ? rk.node_ids[0] : null,
+      edges: !what.noStructural && alarm >= 0 && alarm !== null ? gr.functional_edges : null,
+      stop: stop
+    };
+    step("act", "handoff", L("Hand-off: freeze(y), fingerprint, bounded summary s(y) → the LLM agents" + (stop ? " (with the stop reason " + stop + ")." : "."),
+      "Передача: freeze(y), отпечаток, ограниченная сводка s(y) → LLM-агентам" + (stop ? " (с причиной остановки " + stop + ")." : ".")), "good", result);
+    return { plan: plan, steps: steps, stop: stop, result: result };
+  }
+
+  // Which tools each agent of the architecture is given. Same agent abstraction; what differs is the tool set.
+  var TOOLS = ["detect_evt", "build_baseline_graph", "rank_source", "retrieve_own", "retrieve_other", "complete", "write_y"];
+  var BASE_OF = { evt: "evt_db", graph: "graph_db", loc: "dict_db" };
+  function tryTool(agent, tool, ev, lang) {
+    var ru = lang === "ru", L = function (en, r) { return ru ? r : en; };
+    var numeric = tool === "detect_evt" || tool === "build_baseline_graph" || tool === "rank_source";
+    var llm = A_LLM.indexOf(agent) >= 0;
+    if (tool === "write_y") {
+      return agent === "planner"
+        ? { allowed: "before", reason: L("Only before freeze(y): the planner writes y while it runs its plan; after the hand-off the write throws (TypeError), its own too.", "Только до freeze(y): планировщик записывает y, пока выполняет план; после передачи запись вызывает ошибку (TypeError), и его собственная тоже.") }
+        : { allowed: false, reason: L("No agent with an LLM policy has a tool that writes y; it can only return text. A write attempt hits the freeze (403).", "Ни у одного агента с LLM-политикой нет инструмента записи в y; он может только вернуть текст. Попытка записи упирается в заморозку (403).") };
+    }
+    if (agent === "planner") {
+      if (numeric) {
+        var r = tool === "detect_evt" ? "t̂ = " + ev.detection.t_hat : tool === "build_baseline_graph" ? ev.graph.functional_edges + L(" edges (", " рёбер (") + ev.graph.method + ")"
+          : ev.ranking ? ev.ranking.node_ids[0] + ", P = " + ev.ranking.probabilities[0] : L("no ranking", "ранжирования нет");
+        return { allowed: true, result: r, reason: L("A numerical tool of the planner; its result goes into y.", "Численный инструмент планировщика; его результат входит в y.") };
+      }
+      return { allowed: false, reason: tool === "complete" ? L("The planner’s policy is fixed rules: it calls no language model, so its run is reproducible.", "Политика планировщика — фиксированные правила: он не вызывает языковую модель, поэтому его прогон воспроизводим.")
+        : L("The planner has no knowledge base: it decides by rules over observations.", "У планировщика нет базы знаний: он решает по правилам над наблюдениями.") };
+    }
+    if (llm || agent === "chair") {
+      if (numeric) return { allowed: false, reason: L("Numerical tools are given only to the planner. An LLM agent receives the frozen summary s(y), not the series.", "Численные инструменты выданы только планировщику. LLM-агент получает замороженную сводку s(y), а не ряд.") };
+      if (tool === "complete") return { allowed: true, result: L("text", "текст"), reason: L("Its only way to act: return text through client.complete(system, user); every number in it is checked (M6).", "Единственный способ действовать — вернуть текст через client.complete(system, user); каждое число в нём сверяется (М6).") };
+      if (tool === "retrieve_own") return agent === "chair"
+        ? { allowed: false, reason: L("The chair has no base of its own: it only composes the reviews.", "У председателя нет своей базы: он только сводит отзывы.") }
+        : { allowed: true, result: BASE_OF[agent] + " · " + C.BASES[BASE_OF[agent]].length + L(" chunks", " фрагм."), reason: L("RAG over its own base only.", "RAG только по своей базе.") };
+      if (tool === "retrieve_other") return { allowed: false, reason: L("A role queries only its own base, so the opinions stay independent.", "Роль обращается только к своей базе, поэтому мнения независимы.") };
+    }
+    return { allowed: false, reason: "" };
+  }
+  var A_LLM = ["evt", "graph", "loc"];
+
+  var api = { PHASES: PHASES, ACTORS: ACTORS, GUARD: GUARD, estTokens: estTokens, trace: trace, totals: totals,
+    plannerRun: plannerRun, TOOLS: TOOLS, tryTool: tryTool };
   global.P3AgentCore = api;
   if (typeof module !== "undefined" && module.exports) module.exports = api;
 })(typeof window !== "undefined" ? window : globalThis);

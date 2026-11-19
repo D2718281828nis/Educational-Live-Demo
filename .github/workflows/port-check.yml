@@ -7,9 +7,9 @@ name: JS port check
 
 on:
   push:
-    paths: ["js/onedim-core.js", "js/onedim.js", "js/p2-core.js", "js/p2.js", "js/p2-data.js", "js/p3-core.js", "js/p3-ui-core.js", "js/p3-agent-core.js", "js/p3.js", "js/p3-agent.js", "data/p2_datasets.json", "tests/**", ".github/workflows/port-check.yml"]
+    paths: ["js/onedim-core.js", "js/onedim.js", "js/p2-core.js", "js/p2.js", "js/p2-data.js", "js/p3-core.js", "js/p3-ui-core.js", "js/p3-agent-core.js", "js/p3.js", "js/p3-agent.js", "js/p3-arch.js", "js/conclusion.js", "data/p2_datasets.json", "tests/**", ".github/workflows/port-check.yml"]
   pull_request:
-    paths: ["js/onedim-core.js", "js/onedim.js", "js/p2-core.js", "js/p2.js", "js/p2-data.js", "js/p3-core.js", "js/p3-ui-core.js", "js/p3-agent-core.js", "js/p3.js", "js/p3-agent.js", "data/p2_datasets.json", "tests/**", ".github/workflows/port-check.yml"]
+    paths: ["js/onedim-core.js", "js/onedim.js", "js/p2-core.js", "js/p2.js", "js/p2-data.js", "js/p3-core.js", "js/p3-ui-core.js", "js/p3-agent-core.js", "js/p3.js", "js/p3-agent.js", "js/p3-arch.js", "js/conclusion.js", "data/p2_datasets.json", "tests/**", ".github/workflows/port-check.yml"]
   workflow_dispatch:
 
 permissions:
@@ -35,3 +35,5 @@ jobs:
       - run: node --check js/p3-ui-core.js
       - run: node --check js/p3-agent-core.js
       - run: node --check js/p3-agent.js
+      - run: node --check js/p3-arch.js
+      - run: node --check js/conclusion.js

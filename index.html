@@ -29,9 +29,10 @@
     <a href="#s3"><b>3</b><span lang="en">One sensor</span><span lang="ru">Один датчик</span></a>
     <a href="#p2"><b>4</b><span lang="en">Position 2 · graph</span><span lang="ru">Положение 2 · граф</span></a>
     <a href="#p3"><b>5</b><span lang="en">Position 3 · agents</span><span lang="ru">Положение 3 · агенты</span></a>
-    <a href="#s4"><b>6</b><span lang="en">Labs</span><span lang="ru">Лаборатории</span></a>
-    <a href="#s5"><b>7</b><span lang="en">Role in the thesis</span><span lang="ru">Место в диссертации</span></a>
-    <a href="#s6"><b>8</b><span lang="en">Repositories</span><span lang="ru">Репозитории</span></a>
+    <a href="#concl"><b>6</b><span lang="en">Conclusion</span><span lang="ru">Заключение</span></a>
+    <a href="#s4"><b>7</b><span lang="en">Labs</span><span lang="ru">Лаборатории</span></a>
+    <a href="#s5"><b>8</b><span lang="en">Role in the thesis</span><span lang="ru">Место в диссертации</span></a>
+    <a href="#s6"><b>9</b><span lang="en">Repositories</span><span lang="ru">Репозитории</span></a>
   </div>
   <div class="nav-tools">
     <div class="seg small" role="group" aria-label="Language / Язык">
@@ -83,6 +84,7 @@
       <a class="btn" href="#s2"><span lang="en">Task, methods, harness</span><span lang="ru">Постановка, методы, средства</span></a>
       <a class="btn" href="#s3"><span lang="en">From one sensor to when — where</span><span lang="ru">От одного датчика к «когда — где»</span></a>
       <a class="btn" href="#p2"><span lang="en">Positions 2 and 3, interactive</span><span lang="ru">Положения 2 и 3 интерактивно</span></a>
+      <a class="btn" href="#concl"><span lang="en">Conclusion: who computes what</span><span lang="ru">Заключение: кто что вычисляет</span></a>
       <a class="btn" href="https://ai-is-out-there.github.io/#library"><span lang="en">Catalog of all labs ↗</span><span lang="ru">Каталог лабораторий ↗</span></a>
     </div>
   </div>
@@ -516,7 +518,7 @@
   </li>
 
   <!-- 4 -->
-  <li class="od-step">
+  <li class="od-step" id="od-when">
     <div class="od-step-head"><span class="od-n">4</span><div>
       <h3><span lang="en">Stage 1 · 1-D EVT: did an extreme event happen?</span><span lang="ru">Этап 1 · одномерная EVT: было ли экстремальное событие?</span></h3>
       <span class="od-tags">H7 · H0 · H1 · M1</span>
@@ -571,7 +573,7 @@
   </li>
 
   <!-- 7 -->
-  <li class="od-step">
+  <li class="od-step" id="od-edges">
     <div class="od-step-head"><span class="od-n">7</span><div>
       <h3><span lang="en">Structural analysis · edges: finding the structure</span><span lang="ru">Структурный анализ · рёбра: поиск структуры</span></h3>
       <span class="od-tags">H2 · M4 · <span lang="en">Positions 1–2</span><span lang="ru">Положения 1–2</span></span>
@@ -640,7 +642,7 @@
   </li>
 
   <!-- 9 -->
-  <li class="od-step">
+  <li class="od-step" id="od-rank">
     <div class="od-step-head"><span class="od-n">9</span><div>
       <h3><span lang="en">n-D Graph-EVT-agent: <code>rank_source</code> — the answer</span><span lang="ru">n-D Graph-EVT-agent: <code>rank_source</code> — ответ</span></h3>
       <span class="od-tags">H3 · M2 · M5 · <span lang="en">St.</span><span lang="ru">утв.</span> 6.1 · <span lang="en">auxiliary</span><span lang="ru">вспомогательно</span></span>
@@ -884,14 +886,14 @@
         the agent layer and is never an input to a numerical step; agents with different roles and separate knowledge bases discuss a bounded
         summary s(y) in two rounds; every number of their conclusion is checked against s(y); the classifier’s verdict is kept next to the
         agents’ verdict with a mark of disagreement. Below, <b>5.1</b> explains what an agent is, <b>5.2</b> replays the whole pipeline step by step,
-        and <b>5.3</b> shows each level in detail. The input is the <b>live result of section 3</b> — change anything there and the consilium reruns.
+        <b>5.3</b> shows each level in detail, and <b>5.4</b> shows the numerical planner and the LLM agents as agents of one architecture. The input is the <b>live result of section 3</b> — change anything there and the consilium reruns.
         No language model runs on this page and no tokens are spent: the agents are a replay client with the interface of R3, so you can inject
         faults and watch each rule catch them.</p>
       <p lang="ru">Положение 3 — модель взаимодействия программных компонентов: численный результат y = f<sub>θ</sub>(X) вычисляется <b>до</b>
         агентного слоя и не служит входом ни одного численного шага; агенты с разными ролями и раздельными базами знаний обсуждают
         ограниченную сводку s(y) в два раунда; каждое число заключения сверяется с s(y); вердикт классификатора хранится рядом с вердиктом
         агентов и отметкой расхождения. Ниже: <b>5.1</b> — что такое агент, <b>5.2</b> — весь конвейер шаг за шагом, <b>5.3</b> — каждый уровень
-        подробно. Вход — <b>текущий результат раздела 3</b>: измените что-либо там, и консилиум пересчитается. Языковая модель на странице не
+        подробно, <b>5.4</b> — численный планировщик и LLM-агенты как агенты одной архитектуры. Вход — <b>текущий результат раздела 3</b>: измените что-либо там, и консилиум пересчитается. Языковая модель на странице не
         работает и токены не расходуются: агенты — воспроизводящий клиент с интерфейсом R3, поэтому можно вносить ошибки и смотреть, как каждое
         правило их ловит.</p>
     </div>
@@ -899,14 +901,18 @@
 
   <!-- 5.1 what an agent is -->
   <h3 class="rv-sub"><span class="rv-n">5.1</span><span lang="en">What an agent is and how it works</span><span lang="ru">Что такое агент и как он работает</span></h3>
-  <p class="rv-lede" lang="en">A language model on its own only continues text. An <b>agent</b> is a program that wraps the model in a loop and gives it
-    four things: a <b>role</b> (the system prompt), a <b>context window</b> (everything it has been shown), <b>tools</b> it may call (search a knowledge
-    base, read a field) and a <b>loop</b> — perceive, recall, reason, act, check, and again. A <b>multi-agent system</b> is several such agents with
-    different roles that exchange messages; a coordinator merges their texts. Click a phase of the loop.</p>
-  <p class="rv-lede" lang="ru">Языковая модель сама по себе лишь продолжает текст. <b>Агент</b> — программа, которая помещает модель в цикл и даёт ей
-    четыре вещи: <b>роль</b> (системный промпт), <b>окно контекста</b> (всё, что ей показали), <b>инструменты</b>, которые она может вызвать (поиск по базе
-    знаний, чтение поля), и <b>цикл</b> — восприятие, память, рассуждение, действие, проверка и снова. <b>Мультиагентная система</b> — несколько таких
-    агентов с разными ролями, обменивающихся сообщениями; координатор сводит их тексты. Нажмите на фазу цикла.</p>
+  <p class="rv-lede" lang="en">An <b>agent</b> is a program that runs a <b>loop</b> — perceive, recall, reason, act, check, and again — and acts on the
+    world only through the <b>tools</b> it is given. It has a <b>role</b>, a <b>context</b> (everything it has observed) and a <b>policy</b> that decides
+    the next action. The policy can be <b>fixed rules</b> — the numerical planner of Graph-EVT-agent, a plan → act → observe agent that calls
+    <code>detect_evt</code>, <code>build_baseline_graph</code> and <code>rank_source</code> — or a <b>language model</b> — the reviewers and the chair,
+    whose role is a system prompt. A <b>multi-agent system</b> is several such agents with different roles and tools that exchange messages.
+    Click a phase of the loop.</p>
+  <p class="rv-lede" lang="ru"><b>Агент</b> — программа, которая выполняет <b>цикл</b> — восприятие, память, рассуждение, действие, проверка и снова — и
+    действует на мир только через выданные ей <b>инструменты</b>. У агента есть <b>роль</b>, <b>контекст</b> (всё, что он наблюдал) и <b>политика</b>,
+    выбирающая следующее действие. Политика может быть <b>фиксированными правилами</b> — численный планировщик Graph-EVT-agent, агент «план → действие →
+    наблюдение», вызывающий <code>detect_evt</code>, <code>build_baseline_graph</code> и <code>rank_source</code>, — или <b>языковой моделью</b> —
+    рецензенты и председатель, роль которых задаёт системный промпт. <b>Мультиагентная система</b> — несколько таких агентов с разными ролями и
+    инструментами, обменивающихся сообщениями. Нажмите на фазу цикла.</p>
   <div class="card p3-agent">
     <div class="p3-agent-grid">
       <svg class="p3-loop" id="p3-loop" viewBox="0 0 340 290" role="group" aria-label="Agent loop: perceive, recall, reason, act, check">
@@ -916,9 +922,9 @@
         <path class="p3l-arc" d="M195.4 251.9 A105 105 0 0 1 144.6 251.9" marker-end="url(#p3l-head)"/>
         <path class="p3l-arc" d="M81.0 205.6 A105 105 0 0 1 65.2 157.3" marker-end="url(#p3l-head)"/>
         <path class="p3l-arc" d="M89.6 82.5 A105 105 0 0 1 130.6 52.7" marker-end="url(#p3l-head)"/>
-        <text x="170" y="134" class="p3l-c">LLM</text>
-        <text x="170" y="152" class="p3l-cs"><tspan lang="en">role · context · tools</tspan><tspan lang="ru">роль · контекст · инструменты</tspan></text>
-        <text x="170" y="167" class="p3l-cs"><tspan lang="en">here: replay client, 0 tokens</tspan><tspan lang="ru">здесь: воспроизведение, 0 токенов</tspan></text>
+        <text x="170" y="132" class="p3l-c"><tspan lang="en">policy</tspan><tspan lang="ru">политика</tspan></text>
+        <text x="170" y="152" class="p3l-cs"><tspan lang="en">rules (planner) or LLM</tspan><tspan lang="ru">правила (планировщик) или LLM</tspan></text>
+        <text x="170" y="167" class="p3l-cs"><tspan lang="en">role · context · tools</tspan><tspan lang="ru">роль · контекст · инструменты</tspan></text>
         <g class="p3l-node" data-phase="perceive" tabindex="0" role="button"><circle cx="170" cy="45" r="38"/><text x="170" y="38" class="p3l-n">1</text><text x="170" y="53" class="p3l-t"><tspan lang="en">Perceive</tspan><tspan lang="ru">Восприятие</tspan></text></g>
         <g class="p3l-node" data-phase="recall" tabindex="0" role="button"><circle cx="269.9" cy="117.6" r="38"/><text x="269.9" y="110.6" class="p3l-n">2</text><text x="269.9" y="125.6" class="p3l-t"><tspan lang="en">Recall · RAG</tspan><tspan lang="ru">Память · RAG</tspan></text></g>
         <g class="p3l-node" data-phase="reason" tabindex="0" role="button"><circle cx="231.7" cy="234.9" r="38"/><text x="231.7" y="227.9" class="p3l-n">3</text><text x="231.7" y="242.9" class="p3l-t"><tspan lang="en">Reason</tspan><tspan lang="ru">Рассуждение</tspan></text></g>
@@ -929,12 +935,15 @@
     </div>
     <div class="table-scroll" style="margin-top:12px">
       <table class="p3-vs">
-        <thead><tr><th></th><th><span class="p3e-dot comp"></span><span lang="en">Program component</span><span lang="ru">Программный компонент</span><br><span class="muted"><span lang="en">server, number check, store</span><span lang="ru">сервер, сверка чисел, хранилище</span></span></th><th><span class="p3e-dot agent"></span><span lang="en">Agent</span><span lang="ru">Агент</span><br><span class="muted"><span lang="en">three reviewers, chair</span><span lang="ru">три рецензента, председатель</span></span></th></tr></thead>
+        <thead><tr><th></th>
+          <th><span class="p3e-dot comp"></span><span lang="en">Program component</span><span lang="ru">Программный компонент</span><br><span class="muted"><span lang="en">freeze, number check, store</span><span lang="ru">заморозка, сверка чисел, хранилище</span></span></th>
+          <th><span class="p3e-dot agent rules"></span><span lang="en">Agent · rules policy</span><span lang="ru">Агент · политика-правила</span><br><span class="muted"><span lang="en">numerical planner</span><span lang="ru">численный планировщик</span></span></th>
+          <th><span class="p3e-dot agent"></span><span lang="en">Agent · LLM policy</span><span lang="ru">Агент · LLM-политика</span><br><span class="muted"><span lang="en">three reviewers, chair</span><span lang="ru">три рецензента, председатель</span></span></th></tr></thead>
         <tbody>
-          <tr><td><span lang="en">Output</span><span lang="ru">Выход</span></td><td><span lang="en">the same input gives the same output</span><span lang="ru">один и тот же вход — один и тот же выход</span></td><td><span lang="en">text; may differ between runs and providers</span><span lang="ru">текст; может отличаться между запусками и провайдерами</span></td></tr>
-          <tr><td><span lang="en">What it may change</span><span lang="ru">Что может изменить</span></td><td><span lang="en">computes y, freezes it, stores the report</span><span lang="ru">вычисляет y, замораживает, хранит заключение</span></td><td><span lang="en">nothing numerical: it only returns text</span><span lang="ru">ничего численного: только возвращает текст</span></td></tr>
-          <tr><td><span lang="en">How it is trusted</span><span lang="ru">Почему ему доверяют</span></td><td><span lang="en">tested against the Python reference in CI</span><span lang="ru">сверен с эталоном на Python в CI</span></td><td><span lang="en">every message is checked by M6; the verdict is compared with the classifier</span><span lang="ru">каждое сообщение проверяет М6; вердикт сравнивается с классификатором</span></td></tr>
-          <tr><td><span lang="en">Interface</span><span lang="ru">Интерфейс</span></td><td><code>POST /api/v1/…</code>, <code>verify_numbers</code>, <code>parse_verdict</code></td><td><code>client.complete(system, user) → text</code></td></tr>
+          <tr><td><span lang="en">Output</span><span lang="ru">Выход</span></td><td><span lang="en">the same input gives the same output</span><span lang="ru">один и тот же вход — один и тот же выход</span></td><td><span lang="en">y = {t̂, edges, P(ŝ = v)}; the same input gives the same plan and y</span><span lang="ru">y = {t̂, рёбра, P(ŝ = v)}; один и тот же вход — тот же план и y</span></td><td><span lang="en">text; may differ between runs and providers</span><span lang="ru">текст; может отличаться между запусками и провайдерами</span></td></tr>
+          <tr><td><span lang="en">Tools</span><span lang="ru">Инструменты</span></td><td>–</td><td><code>detect_evt</code>, <code>build_baseline_graph</code>, <code>rank_source</code></td><td><span lang="en">retrieve from its own base; </span><span lang="ru">поиск в своей базе; </span><code>complete(system, user)</code></td></tr>
+          <tr><td><span lang="en">What it may change</span><span lang="ru">Что может изменить</span></td><td><span lang="en">freezes y, checks numbers, stores the report</span><span lang="ru">замораживает y, сверяет числа, хранит заключение</span></td><td><span lang="en">writes y — only before freeze(y)</span><span lang="ru">записывает y — только до freeze(y)</span></td><td><span lang="en">nothing numerical: it only returns text</span><span lang="ru">ничего численного: только возвращает текст</span></td></tr>
+          <tr><td><span lang="en">How it is trusted</span><span lang="ru">Почему ему доверяют</span></td><td><span lang="en">tested against the Python reference in CI</span><span lang="ru">сверен с эталоном на Python в CI</span></td><td><span lang="en">its tools are a JS port of Graph-EVT-agent, checked in CI; positive control with known t*, s*</span><span lang="ru">его инструменты — перенос Graph-EVT-agent на JS, сверенный в CI; положительный контроль с известными t*, s*</span></td><td><span lang="en">every message is checked by M6; the verdict is compared with the classifier</span><span lang="ru">каждое сообщение проверяет М6; вердикт сравнивается с классификатором</span></td></tr>
         </tbody>
       </table>
     </div>
@@ -1110,6 +1119,42 @@
     </li>
   </ol>
 
+  <!-- 5.4 one agentic architecture -->
+  <h3 class="rv-sub"><span class="rv-n">5.4</span><span lang="en">One agentic architecture: the numerical planner and the LLM agents</span><span lang="ru">Одна агентная архитектура: численный планировщик и LLM-агенты</span></h3>
+  <p class="rv-lede" lang="en">Generalise the term: the numerical planner of Graph-EVT-agent and the LLM reviewers are <b>the same kind of thing — an agent</b>
+    with a role, observations, a policy and tools. What makes the system safe is not that some parts are “not agents”, but <b>which tools each
+    agent is given</b> and <b>when</b>: the planner alone holds the numerical tools and writes y before the freeze; the LLM agents hold only
+    retrieval and text. Pick an agent, run the planner with “what-if” observations, and try any tool from any agent.</p>
+  <p class="rv-lede" lang="ru">Обобщим термин: численный планировщик Graph-EVT-agent и LLM-рецензенты — <b>одно и то же — агенты</b> с ролью,
+    наблюдениями, политикой и инструментами. Безопасность системы держится не на том, что часть компонентов «не агенты», а на том, <b>какие
+    инструменты выданы каждому агенту</b> и <b>когда</b>: только у планировщика есть численные инструменты, и он записывает y до заморозки; у
+    LLM-агентов — только поиск и текст. Выберите агента, запустите планировщик с наблюдениями «что если» и попробуйте любой инструмент от имени любого агента.</p>
+
+  <div class="card p3-arch" id="p3-arch">
+    <div class="panel-label strong"><span lang="en">A · Agent passport — the same schema for every agent</span><span lang="ru">A · Паспорт агента — одна схема для всех агентов</span></div>
+    <div class="seg p3a-agents" id="p3a-agent" role="group" aria-label="Agent"></div>
+    <div class="p3a-passport" id="p3a-passport" aria-live="polite"></div>
+
+    <div class="panel-label strong" style="margin-top:16px"><span lang="en">B · The planner agent at work: plan → act → observe (route H7: 1-D → structural → n-D)</span><span lang="ru">B · Агент-планировщик в работе: план → действие → наблюдение (маршрут H7: 1-D → структура → n-D)</span></div>
+    <div class="p3a-whatif">
+      <div class="od-ctl"><span class="od-ctl-label"><span lang="en">What the 1-D detector observes</span><span lang="ru">Что видит одномерный детектор</span></span>
+        <div class="seg" id="p3a-alarm"><button type="button" data-v="live"><span lang="en">live result of § 3</span><span lang="ru">текущий результат § 3</span></button><button type="button" data-v="none"><span lang="en">what if: no alarm</span><span lang="ru">что если: тревоги нет</span></button></div></div>
+      <div class="od-ctl"><span class="od-ctl-label"><span lang="en">Structural analysis tool</span><span lang="ru">Инструмент структурного анализа</span></span>
+        <div class="seg" id="p3a-struct"><button type="button" data-v="on"><span lang="en">given</span><span lang="ru">выдан</span></button><button type="button" data-v="off"><span lang="en">what if: not given</span><span lang="ru">что если: не выдан</span></button></div></div>
+      <div class="od-ctl"><span class="od-ctl-label"><span lang="en">Step through</span><span lang="ru">По шагам</span></span>
+        <div class="seg"><button type="button" id="p3a-reset" title="Restart / С начала">⏮</button><button type="button" id="p3a-play"></button><button type="button" id="p3a-next" title="Step / Шаг">▶|</button><button type="button" id="p3a-end" title="End / В конец">⏭</button></div></div>
+    </div>
+    <div class="od-two">
+      <div><div class="panel-label"><span lang="en">Plan — actions declared, done, skipped</span><span lang="ru">План — заявленные, выполненные, пропущенные действия</span></div><ol class="p3a-plan" id="p3a-plan"></ol>
+        <div class="p3a-result" id="p3a-result"></div></div>
+      <div><div class="panel-label"><span lang="en">Loop log</span><span lang="ru">Журнал цикла</span></div><ol class="p3e-log p3a-log" id="p3a-log"></ol></div>
+    </div>
+
+    <div class="panel-label strong" style="margin-top:16px"><span lang="en">C · Tools by agent — click a cell to try the call</span><span lang="ru">C · Инструменты по агентам — нажмите на ячейку, чтобы попробовать вызов</span></div>
+    <div class="table-scroll"><table class="p3a-matrix" id="p3a-matrix"></table></div>
+    <div class="readout p3a-try" id="p3a-try" aria-live="polite"></div>
+  </div>
+
   <div class="callout">
     <span lang="en"><b>Why it works and where it stops.</b> Invariance does not depend on the agents behaving well: y is computed and frozen before them and
       no numerical step reads their output, so any provider — including a broken one — leaves y unchanged (try the faults). The number check
@@ -1124,10 +1169,71 @@
   </div>
 </section>
 
+<!-- ============================================================== 6 CONCLUSION -->
+<section id="concl">
+  <header class="sec-head">
+    <span class="num">6</span>
+    <div>
+      <h2><span lang="en">Conclusion: who computes what</span><span lang="ru">Заключение: кто что вычисляет</span></h2>
+      <p lang="en">One agentic architecture answers the task of section 2. The <b>planner agent</b> of Graph-EVT-agent (a plan → act → observe agent
+        with a rules policy) calls the numerical tools and computes <b>when</b>, the <b>edges</b> and <b>where</b>; the result y is frozen; the
+        <b>LLM agents</b> review it and write a conclusion whose every number is checked. On this page the planner’s tools are the JS port of
+        Graph-EVT-agent (<code>detect</code>, <code>build_baseline_graph</code>, <code>rank_source</code>, checked against Python in CI), so the values
+        below are live: change anything in section 3 and they follow. Click a row for the details.</p>
+      <p lang="ru">Задачу раздела 2 решает одна агентная архитектура. <b>Агент-планировщик</b> Graph-EVT-agent (агент «план → действие → наблюдение»
+        с политикой-правилами) вызывает численные инструменты и вычисляет <b>«когда»</b>, <b>рёбра</b> и <b>«где»</b>; результат y замораживается;
+        <b>LLM-агенты</b> проверяют его и пишут заключение, каждое число которого сверяется. На странице инструменты планировщика — перенос
+        Graph-EVT-agent на JS (<code>detect</code>, <code>build_baseline_graph</code>, <code>rank_source</code>, сверены с Python в CI), поэтому значения
+        ниже живые: измените что-либо в разделе 3, и они изменятся. Нажмите на строку, чтобы открыть подробности.</p>
+    </div>
+  </header>
+
+  <div class="card cc-chain" aria-label="Chain">
+    <span class="cc-node agent"><span class="p3e-dot agent rules"></span>PipelinePlanner</span><span class="cc-arr">→</span>
+    <span class="cc-node"><code>detect_evt</code> · t̂</span><span class="cc-arr">→</span>
+    <span class="cc-node"><code>build_baseline_graph</code> · <span lang="en">edges</span><span lang="ru">рёбра</span></span><span class="cc-arr">→</span>
+    <span class="cc-node"><code>rank_source</code> · P(ŝ = v)</span><span class="cc-arr">→</span>
+    <span class="cc-node frz">freeze(y)</span><span class="cc-arr">→</span>
+    <span class="cc-node agent"><span class="p3e-dot agent"></span>EVTAgentTeam</span><span class="cc-arr">→</span>
+    <span class="cc-node"><span lang="en">checked conclusion</span><span lang="ru">сверенное заключение</span></span>
+  </div>
+
+  <div class="card">
+    <div class="table-scroll">
+      <table class="cc-table" id="cc-table">
+        <thead><tr>
+          <th><span lang="en">Question</span><span lang="ru">Вопрос</span></th>
+          <th><span lang="en">Agent · action</span><span lang="ru">Агент · действие</span></th>
+          <th>Graph-EVT-agent</th>
+          <th><span lang="en">Output</span><span lang="ru">Выход</span></th>
+          <th><span lang="en">Live value (§ 3)</span><span lang="ru">Текущее значение (§ 3)</span></th>
+        </tr></thead>
+        <tbody>
+          <tr data-k="when" tabindex="0"><td><b><span lang="en">when</span><span lang="ru">когда</span></b></td><td><span lang="en">planner</span><span lang="ru">планировщик</span> · <code>detect_evt</code></td><td><code>evt.detect</code>, <code>evt.find_events</code></td><td><span lang="en">the onset moment t̂</span><span lang="ru">момент начала t̂</span></td><td class="mono" data-live="when">–</td></tr>
+          <tr data-k="graph" tabindex="0"><td><b><span lang="en">graph</span><span lang="ru">граф</span></b></td><td><span lang="en">planner</span><span lang="ru">планировщик</span> · <code>build_baseline_graph</code></td><td><code>graph.build_graph</code></td><td><span lang="en">the edges: estimated structure (structural / functional analysis)</span><span lang="ru">рёбра: оценённая структура (структурный / функциональный анализ)</span></td><td class="mono" data-live="graph">–</td></tr>
+          <tr data-k="where" tabindex="0"><td><b><span lang="en">where</span><span lang="ru">где</span></b></td><td><span lang="en">planner</span><span lang="ru">планировщик</span> · <code>rank_source</code></td><td><code>localization.rank_sources</code></td><td><span lang="en">P(ŝ = v) over the nodes, not a single point</span><span lang="ru">P(ŝ = v) по узлам, а не одна точка</span></td><td class="mono" data-live="where">–</td></tr>
+          <tr data-k="report" tabindex="0"><td><b><span lang="en">conclusion</span><span lang="ru">заключение</span></b></td><td><span lang="en">LLM agents</span><span lang="ru">LLM-агенты</span> · <code>complete</code></td><td><code>agents.EVTAgentTeam</code></td><td><code>AgentReport</code>: <span lang="en">text, verdict, disagreement, unverified numbers</span><span lang="ru">текст, вердикт, расхождение, непроверенные числа</span></td><td class="mono" data-live="report">–</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="cc-detail" id="cc-detail" aria-live="polite"></div>
+  </div>
+
+  <div class="callout">
+    <span lang="en"><b>In one sentence.</b> The planner agent finds when (t̂), how the graph looks (the edges) and where (P(ŝ = v)) with deterministic
+      tools; the LLM agents explain that frozen result and cannot change it. The edges are the estimated structure and are tested against the empty
+      graph; localization is an auxiliary result, not put forward for defence.</span>
+    <span lang="ru"><b>Одной фразой.</b> Агент-планировщик детерминированными инструментами находит «когда» (t̂), как выглядит граф (рёбра) и «где»
+      (P(ŝ = v)); LLM-агенты объясняют этот замороженный результат и не могут его изменить. Рёбра — оценённая структура, проверяемая против пустого
+      графа; локализация — вспомогательный результат, на защиту не выносится.</span>
+  </div>
+</section>
+
+
 <!-- ============================================================== 6 LABS -->
 <section id="s4">
   <header class="sec-head">
-    <span class="num">6</span>
+    <span class="num">7</span>
     <div>
       <h2><span lang="en">The labs</span><span lang="ru">Лаборатории</span></h2>
       <p lang="en">Each lab is a static page on GitHub Pages: open it, move the sliders, every number is recomputed in the browser.</p>
@@ -1241,7 +1347,7 @@
 <!-- ============================================================== 7 ROLE -->
 <section id="s5">
   <header class="sec-head">
-    <span class="num">7</span>
+    <span class="num">8</span>
     <div>
       <h2><span lang="en">Role in the dissertation</span><span lang="ru">Место в диссертации</span></h2>
       <p lang="en">The labs are one of the dissertation’s software artifacts. This is how the artifact table of the dissertation describes them.</p>
@@ -1324,7 +1430,7 @@
 <!-- ============================================================== 8 REPOSITORIES -->
 <section id="s6">
   <header class="sec-head">
-    <span class="num">8</span>
+    <span class="num">9</span>
     <div>
       <h2><span lang="en">Related repositories</span><span lang="ru">Связанные репозитории</span></h2>
       <p lang="en">The labs are built on the author’s open code. Commits are the ones cited in the dissertation.</p>
@@ -1379,6 +1485,8 @@
 <script src="js/p3-agent-core.js"></script>
 <script src="js/p3.js"></script>
 <script src="js/p3-agent.js"></script>
+<script src="js/p3-arch.js"></script>
+<script src="js/conclusion.js"></script>
 <script src="js/site.js"></script>
 </body>
 </html>

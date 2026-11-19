@@ -23,8 +23,8 @@
       name: ["Perceive", "Восприятие"],
       gen: ["The agent receives its input: the task, the data, the messages of other agents. Everything it “knows” about the case is what is in its context window — it has no other access to the world.",
         "Агент получает вход: задачу, данные, сообщения других агентов. Всё, что он «знает» о случае, — это содержимое его окна контекста; другого доступа к миру у него нет."],
-      here: ["The bounded summary s(y) — decisions to audit, not samples — and, in round 2, the texts of the other reviewers. The raw series never reaches an agent.",
-        "Ограниченная сводка s(y) — решения для проверки, а не отсчёты — и во втором раунде тексты остальных рецензентов. Сырой ряд до агента не доходит."]
+      here: ["The planner perceives the raw series and its shape (p channels, the background). The LLM agents perceive only the bounded summary s(y) — decisions to audit, not samples — and, in round 2, the texts of the other reviewers.",
+        "Планировщик воспринимает сырой ряд и его форму (p каналов, фон). LLM-агенты воспринимают только ограниченную сводку s(y) — решения для проверки, а не отсчёты — и во втором раунде тексты остальных рецензентов."]
     },
     recall: {
       name: ["Recall · RAG", "Память · RAG"],
@@ -35,28 +35,29 @@
     },
     reason: {
       name: ["Reason", "Рассуждение"],
-      gen: ["The language model reads the whole context and decides what to do next: answer, call a tool, ask another agent. It predicts text token by token; it does not run the numerical method.",
-        "Языковая модель читает весь контекст и решает, что делать дальше: ответить, вызвать инструмент, спросить другого агента. Она предсказывает текст по токенам и не выполняет численный метод."],
-      here: ["The replay client stands in for the model. The plan is visible: which fields of s(y) the role quotes and which chunks it cites. Numbers are copied, never recomputed.",
-        "Вместо модели работает воспроизводящий клиент. План виден: какие поля s(y) роль цитирует и на какие фрагменты ссылается. Числа копируются, а не пересчитываются."]
+      gen: ["The policy reads the context and decides what to do next: call a tool, answer, ask another agent, or stop. A policy can be fixed rules (reproducible) or a language model, which predicts text token by token.",
+        "Политика читает контекст и решает, что делать дальше: вызвать инструмент, ответить, спросить другого агента или остановиться. Политика может быть фиксированными правилами (воспроизводимо) или языковой моделью, которая предсказывает текст по токенам."],
+      here: ["The planner reasons by rules: 1-D or n-D route, which tool next, when to stop (no_evt_detected, single_channel_cannot_localize). For the LLM agents the replay client stands in for the model: which fields of s(y) to quote, which chunks to cite. Numbers are copied, never recomputed.",
+        "Планировщик рассуждает по правилам: маршрут 1-D или n-D, какой инструмент следующий, когда остановиться (no_evt_detected, single_channel_cannot_localize). У LLM-агентов вместо модели работает воспроизводящий клиент: какие поля s(y) цитировать, на какие фрагменты ссылаться. Числа копируются, а не пересчитываются."]
     },
     act: {
       name: ["Act", "Действие"],
       gen: ["The agent acts through tools or by writing a message. What it can do is exactly the set of tools it is given — this is where the safety of an agent system is designed.",
         "Агент действует через инструменты или пишет сообщение. Он может ровно то, что позволяют выданные ему инструменты, — здесь и проектируется безопасность агентной системы."],
-      here: ["Only two actions exist: retrieve from its own base and return text through client.complete(system, user). No tool writes to y; a write attempt hits the freeze (403).",
-        "Действий только два: поиск в своей базе и возврат текста через client.complete(system, user). Ни один инструмент не пишет в y; попытка записи упирается в заморозку (403)."]
+      here: ["The planner acts with the numerical tools detect_evt, build_baseline_graph, rank_source — this is where “when”, the edges and “where” are computed. An LLM agent has only two actions: retrieve from its own base and return text through client.complete(system, user); none of its tools writes to y (403).",
+        "Планировщик действует численными инструментами detect_evt, build_baseline_graph, rank_source — здесь и вычисляются «когда», рёбра и «где». У LLM-агента действий только два: поиск в своей базе и возврат текста через client.complete(system, user); ни один его инструмент не пишет в y (403)."]
     },
     check: {
       name: ["Check", "Проверка"],
       gen: ["The result of the action is observed and checked, and the loop repeats until the task is done or a limit is reached. Good systems check outside the model, in code.",
         "Результат действия наблюдается и проверяется, и цикл повторяется, пока задача не решена или не исчерпан лимит. Надёжные системы проверяют вне модели — кодом."],
-      here: ["verify_numbers — a program component, not an agent — checks every number against s(y); one rewrite is allowed and what remains is marked; parse_verdict compares the agents’ verdict with the classifier’s.",
-        "verify_numbers — программный компонент, а не агент — сверяет каждое число с s(y); разрешена одна переписка, остаток помечается; parse_verdict сравнивает вердикт агентов с вердиктом классификатора."]
+      here: ["The planner observes each tool result and decides the next step or a stop. For the LLM agents, verify_numbers — a program component, not an agent — checks every number against s(y); one rewrite is allowed and what remains is marked; parse_verdict compares the agents’ verdict with the classifier’s.",
+        "Планировщик наблюдает результат каждого инструмента и выбирает следующий шаг или остановку. У LLM-агентов verify_numbers — программный компонент, а не агент — сверяет каждое число с s(y); разрешена одна переписка, остаток помечается; parse_verdict сравнивает вердикт агентов с вердиктом классификатора."]
     }
   };
   var loopSel = "perceive";
   function stepPhase(s) { return s ? (s.phase || (s.actor === "checker" ? "check" : null)) : null; }
+  window.P3Phases = PHASE;
   function renderLoop() {
     var cur = stepPhase(S.steps[S.cur]);
     document.querySelectorAll("#p3-loop [data-phase]").forEach(function (g) {
@@ -86,10 +87,15 @@
   var S = { steps: [], cur: -1, playing: false, speed: 1, stream: !reduceMotion, typed: -1, timer: null, typer: null, key: null };
   var STAGE_X = { x: 50, f: 203, freeze: 400, s: 586, consilium: 761, report: 914 };
   var STAGES = ["x", "f", "freeze", "s", "consilium", "report"];
-  var ACTOR_ORDER = ["server", "evt", "graph", "loc", "chair", "checker", "store"];
+  var ACTOR_ORDER = ["planner", "evt", "graph", "loc", "chair", "checker", "store"];
   function actorName(id) { var a = A.ACTORS[id]; return a ? (ru() ? a.ru : a.en) : id; }
   function phaseName(ph) { return ph ? PHASE[ph].name[ru() ? 1 : 0] : L("program step", "программный шаг"); }
-  function chip(id) { return '<span class="p3e-chip a-' + id + '"><span class="p3e-dot ' + (A.ACTORS[id].agent ? "agent" : "comp") + '"></span>' + esc(actorName(id)) + "</span>"; }
+  function chip(id) { return '<span class="p3e-chip a-' + id + '"><span class="p3e-dot ' + (A.ACTORS[id].agent ? "agent" + (A.ACTORS[id].policy === "rules" ? " rules" : "") : "comp") + '"></span>' + esc(actorName(id)) + "</span>"; }
+  function kind(id) {
+    var a = A.ACTORS[id];
+    if (!a.agent) return L("program component — deterministic", "программный компонент — детерминирован");
+    return a.policy === "rules" ? L("agent · rules policy — deterministic", "агент · политика-правила — детерминирован") : L("agent · LLM policy — replayed here", "агент · LLM-политика — здесь воспроизведение");
+  }
 
   function stopTimers() { clearTimeout(S.timer); clearInterval(S.typer); S.timer = null; S.typer = null; }
   function pause() { S.playing = false; stopTimers(); S.typed = -1; render(); }
@@ -137,7 +143,7 @@
     S.steps.slice(0, S.cur + 1).forEach(function (x) { seen[x.actor] = true; });
     $("p3e-actors").innerHTML = ACTOR_ORDER.map(function (id) {
       return '<span class="p3e-actor' + (id === s.actor ? " now" : "") + (seen[id] ? " seen" : "") + '">' + chip(id) + "</span>";
-    }).join("") + '<span class="p3e-legend"><span class="p3e-dot agent"></span>' + L("agent", "агент") + ' <span class="p3e-dot comp"></span>' + L("program component", "программный компонент") + "</span>";
+    }).join("") + '<span class="p3e-legend"><span class="p3e-dot agent rules"></span>' + L("agent · rules", "агент · правила") + ' <span class="p3e-dot agent"></span>' + L("agent · LLM", "агент · LLM") + ' <span class="p3e-dot comp"></span>' + L("program component", "программный компонент") + "</span>";
   }
 
   function rowHTML(s, k) {
@@ -163,7 +169,7 @@
 
   function renderInspect() {
     var s = S.steps[S.cur], h = "";
-    h += '<div class="p3e-ihead">' + chip(s.actor) + '<span class="p3e-kind">' + (A.ACTORS[s.actor].agent ? L("agent", "агент") : L("program component — deterministic", "программный компонент — детерминирован")) + "</span>" +
+    h += '<div class="p3e-ihead">' + chip(s.actor) + '<span class="p3e-kind">' + kind(s.actor) + "</span>" +
       '<span class="p3e-ph">' + esc(phaseName(stepPhase(s))) + "</span></div>";
     h += '<h4 class="p3e-ititle">' + esc(s.title) + "</h4><p>" + esc(s.body) + "</p>";
     if (s.tool) {
@@ -204,6 +210,7 @@
     cur.setAttribute("transform", "translate(" + STAGE_X[s.stage] + ",118)");
     cur.classList.toggle("agent", A.ACTORS[s.actor].agent);
     $("p3f-live").textContent = actorName(s.actor);
+    cur.classList.toggle("rules", A.ACTORS[s.actor].policy === "rules");
   }
 
   function renderTotals() {

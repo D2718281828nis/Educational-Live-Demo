@@ -78,6 +78,40 @@ var ev0 = C.deepFreeze({ detection: { detected: false, alarm_1d: -1, t_hat: null
 var t0 = A.trace(ev0, C.consilium(ev0, { provider: "a", fault: "none" }, "en"), meta, { fault: "none" }, "en");
 report(t0.length > 10 && t0[t0.length - 1].status === "good", "no-event input", t0.length, "> 10 steps");
 
+// --- 5.4: the planner agent (rules policy) and the tool matrix of the one agentic architecture
+var evP = C.deepFreeze(JSON.parse(JSON.stringify(base)));
+["en", "ru"].forEach(function (lang) {
+  var full = A.plannerRun(evP, {}, lang);
+  report(full.stop === null && full.result.when === base.detection.t_hat && full.result.where === "B" && full.result.edges === 4,
+    "planner full route: when, where, edges " + lang, full.result);
+  report(full.plan.join() === "inspect_input,detect_evt_1d,structural_analysis,build_baseline_graph,detect_evt_nd,rank_source,handoff" &&
+    full.steps[full.steps.length - 1].completed.join() === "detect_evt_1d,structural_analysis,build_baseline_graph,detect_evt_nd,rank_source,handoff",
+    "planner completes its plan in order " + lang, full.steps[full.steps.length - 1].completed);
+  report(full.steps.every(function (s) { return A.PHASES.indexOf(s.phase) >= 0; }), "planner steps are loop phases " + lang);
+  var noA = A.plannerRun(evP, { noAlarm: true }, lang);
+  report(noA.stop === "no_evt_detected" && noA.result.when === null && noA.result.where === null && noA.result.edges === null, "planner stop: no_evt_detected " + lang, noA.result);
+  var noS = A.plannerRun(evP, { noStructural: true }, lang);
+  report(noS.stop === "single_channel_cannot_localize" && noS.result.when === base.detection.alarm_1d && noS.result.where === null, "planner stop: single_channel_cannot_localize " + lang, noS.result);
+  var evN = C.deepFreeze(Object.assign(JSON.parse(JSON.stringify(base)), { detection: { detected: false, alarm_1d: 412, t_hat: null }, ranking: null }));
+  report(A.plannerRun(evN, {}, lang).stop === "no_evt_detected", "planner stop after the n-D detect " + lang);
+
+  // tool matrix: numerical tools only for the planner; nobody but the planner (and only before freeze) writes y
+  var agents = ["planner", "evt", "graph", "loc", "chair"];
+  var okMatrix = agents.every(function (a) {
+    return A.TOOLS.every(function (t) {
+      var r = A.tryTool(a, t, evP, lang);
+      if (!r.reason) return false;
+      if (t === "detect_evt" || t === "build_baseline_graph" || t === "rank_source") return (r.allowed === true) === (a === "planner");
+      if (t === "write_y") return a === "planner" ? r.allowed === "before" : r.allowed === false;
+      if (t === "complete") return (r.allowed === true) === (a !== "planner");
+      if (t === "retrieve_own") return (r.allowed === true) === (a === "evt" || a === "graph" || a === "loc");
+      if (t === "retrieve_other") return r.allowed === false;
+      return false;
+    });
+  });
+  report(okMatrix, "tool matrix: one abstraction, different tools " + lang);
+});
+
 report(A.estTokens("") === 0 && A.estTokens("abcd") === 1 && A.estTokens("абв") === 2, "token estimate");
 
 console.log(failures ? failures + " of " + total + " checks differ" : "all " + total + " checks match");

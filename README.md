@@ -89,7 +89,7 @@ node tests/experiments.js --check  # Monte Carlo 20 seeds × 4 sources + spec gr
 node tests/p2_check.js             # Position 2 node types/K-hop trace and graph scores across four datasets
 node tests/p3_check.js             # Position 3 number checks, verdict parsing and agent fault scenarios
 node tests/p3_ui_check.js          # Position 3 UI helpers: draft diffs, permalink state, frozen-write probe
-node tests/p3_agent_check.js       # Position 3 agent emulator: replayed calls, 0 tokens, y unchanged, faults flagged
+node tests/p3_agent_check.js       # Position 3 agents: replayed calls, 0 tokens, y unchanged, faults flagged; planner stops, tool matrix
 ```
 
 | Number in the dissertation | Key in `results/onedim_summary.json` | Expected (`tests/fixtures/onedim_expected.json`) |
@@ -122,6 +122,8 @@ js/p2-core.js     numerics of section 4 (objects–events graph trace and edge-v
 js/p3-core.js     rules of section 5 (number checks, verdicts and stub consilium); runs in Node too
 js/p3-agent-core.js agent emulator of section 5: the consilium as a step trace of complete(system, user) calls; runs in Node too
 js/p3-agent.js    section 5.1–5.2: agent-loop explainer, interactive pipeline and step-by-step emulator
+js/p3-arch.js     section 5.4: one agentic architecture — agent passports, the planner agent's plan → act → observe loop, tool matrix
+js/conclusion.js  section 6: conclusion — who computes what, with live values from sections 3 and 5
 data/p2_datasets.json synthetic datasets for the Position 2 interactive lab
 js/p2-data.js     the same datasets as a script, so section 4.2 works from file:// (node tests/build_p2_data.js)
 tests/port_check.js           checks the JS graph methods against Graph-EVT-agent (Python): node tests/port_check.js
@@ -230,7 +232,7 @@ node tests/experiments.js --check  # Монте-Карло 20 затравок �
 node tests/p2_check.js             # типы вершин, трасса K шагов и значения Положения 2 на четырёх наборах
 node tests/p3_check.js             # проверка чисел, разбор вердикта и сценарии ошибок агентов Положения 3
 node tests/p3_ui_check.js          # помощники интерфейса Положения 3: различия черновиков, permalink состояния
-node tests/p3_agent_check.js       # эмулятор агентов Положения 3: воспроизведённые вызовы, 0 токенов, y неизменен, ошибки помечены
+node tests/p3_agent_check.js       # агенты Положения 3: воспроизведённые вызовы, 0 токенов, y неизменен, ошибки помечены; остановки планировщика, матрица инструментов
 ```
 
 | Число в диссертации | Ключ в `results/onedim_summary.json` | Ожидается (`tests/fixtures/onedim_expected.json`) |
@@ -264,6 +266,8 @@ js/p3-core.js     правила раздела 5 (проверка чисел, 
 js/p3-ui-core.js  вспомогательные функции раздела 5 (разбор отличий черновиков, permalink состояния); работает и в Node
 js/p3-agent-core.js эмулятор агентов раздела 5: консилиум как трасса вызовов complete(system, user); работает и в Node
 js/p3-agent.js    раздел 5.1–5.2: схема цикла агента, интерактивный конвейер и пошаговый эмулятор
+js/p3-arch.js     раздел 5.4: одна агентная архитектура — паспорта агентов, цикл агента-планировщика, матрица инструментов
+js/conclusion.js  раздел 6: заключение — кто что вычисляет, с текущими значениями разделов 3 и 5
 data/p2_datasets.json синтетические данные для интерактивного опыта Положения 2
 js/p2-data.js     те же данные в виде скрипта, чтобы раздел 4.2 работал из file:// (node tests/build_p2_data.js)
 js/onedim.js      раздел 3: графики и элементы управления
