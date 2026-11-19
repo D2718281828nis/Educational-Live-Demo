@@ -336,10 +336,14 @@
 
   renderEG();
   sync();
-  $("p2-pick").textContent = L("Loading the data…", "Загрузка данных…");
-  fetch("data/p2_datasets.json").then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }).then(function (j) {
-    DATA = j.datasets; refresh(); lastW = canvas.parentNode.clientWidth;
-  }).catch(function () {
-    $("p2-pick").textContent = L("Could not load data/p2_datasets.json. Open the page over http (python3 -m http.server).", "Не удалось загрузить data/p2_datasets.json. Откройте страницу через http (python3 -m http.server).");
-  });
+  // The datasets ship as js/p2-data.js (window.ELD_P2_DATA), so the lab also works when the page is opened as a local
+  // file; data/p2_datasets.json stays the source and is fetched only if the script is missing.
+  function start(j) { DATA = j.datasets; refresh(); lastW = canvas.parentNode.clientWidth; }
+  if (window.ELD_P2_DATA && window.ELD_P2_DATA.datasets) start(window.ELD_P2_DATA);
+  else {
+    $("p2-pick").textContent = L("Loading the data…", "Загрузка данных…");
+    fetch("data/p2_datasets.json").then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }).then(start).catch(function () {
+      $("p2-pick").textContent = L("Could not load the datasets of section 4.2 (js/p2-data.js).", "Не удалось загрузить данные раздела 4.2 (js/p2-data.js).");
+    });
+  }
 })();

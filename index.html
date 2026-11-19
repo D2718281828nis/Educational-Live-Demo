@@ -1110,11 +1110,6 @@
     </li>
   </ol>
 
-  <div class="facts p2-real">
-    <div class="fact"><div class="v">REST · 2 <span lang="en">rounds</span><span lang="ru">раунда</span></div><div class="k"><span lang="en">[P21]: EDF upload <code>POST /api/v1/files/</code>, session <code>POST /api/v1/session/</code>, status polling; four agents, two ChromaDB bases (<code>kr_db</code> for the neurologist only, <code>textbook_db</code> for the professor only), conclusion in Markdown and JSON</span><span lang="ru">[P21]: загрузка EDF <code>POST /api/v1/files/</code>, сессия <code>POST /api/v1/session/</code>, опрос статуса; четыре агента, две базы ChromaDB (<code>kr_db</code> — только неврологу, <code>textbook_db</code> — только профессору), заключение в Markdown и JSON</span></div></div>
-    <div class="fact"><div class="v">no_epilepsy <span class="muted">≠</span> <span lang="en">medium</span><span lang="ru">средний</span></div><div class="k"><span lang="en">the case of [P21]: the classifier said “no_epilepsy”, the consilium rated the risk as medium; the disagreement was recorded, not resolved by the agents (§ 5.3)</span><span lang="ru">случай [P21]: классификатор — «no_epilepsy», консилиум оценил риск как средний; расхождение зафиксировано, а не разрешено агентами (§ 5.3)</span></div></div>
-    <div class="fact"><div class="v"><span lang="en">0.99 / 0.96 · 0.81 / 0.78</span><span lang="ru">0,99 / 0,96 · 0,81 / 0,78</span></div><div class="k"><span lang="en">R8: precision / recall of extracting the blocks and the arrows of a doctor’s algorithm from Appendix B of a clinical guideline, shown next to the source (§ 5.5)</span><span lang="ru">R8: точность / полнота извлечения блоков и стрелок алгоритма действий врача из «Приложения Б» клинической рекомендации, показанного рядом с источником (§ 5.5)</span></div></div>
-  </div>
   <div class="callout">
     <span lang="en"><b>Why it works and where it stops.</b> Invariance does not depend on the agents behaving well: y is computed and frozen before them and
       no numerical step reads their output, so any provider — including a broken one — leaves y unchanged (try the faults). The number check
@@ -1377,6 +1372,7 @@
 <script src="js/onedim-core.js"></script>
 <script src="js/onedim.js"></script>
 <script src="js/p2-core.js"></script>
+<script src="js/p2-data.js"></script>
 <script src="js/p2.js"></script>
 <script src="js/p3-core.js"></script>
 <script src="js/p3-ui-core.js"></script>

@@ -123,6 +123,7 @@ js/p3-core.js     rules of section 5 (number checks, verdicts and stub consilium
 js/p3-agent-core.js agent emulator of section 5: the consilium as a step trace of complete(system, user) calls; runs in Node too
 js/p3-agent.js    section 5.1–5.2: agent-loop explainer, interactive pipeline and step-by-step emulator
 data/p2_datasets.json synthetic datasets for the Position 2 interactive lab
+js/p2-data.js     the same datasets as a script, so section 4.2 works from file:// (node tests/build_p2_data.js)
 tests/port_check.js           checks the JS graph methods against Graph-EVT-agent (Python): node tests/port_check.js
 tests/p2_check.js             checks Position 2 node types/K-hop trace and values against Python references
 tests/p3_check.js             checks Position 3 rules and fault scenarios
@@ -264,6 +265,7 @@ js/p3-ui-core.js  вспомогательные функции раздела 5
 js/p3-agent-core.js эмулятор агентов раздела 5: консилиум как трасса вызовов complete(system, user); работает и в Node
 js/p3-agent.js    раздел 5.1–5.2: схема цикла агента, интерактивный конвейер и пошаговый эмулятор
 data/p2_datasets.json синтетические данные для интерактивного опыта Положения 2
+js/p2-data.js     те же данные в виде скрипта, чтобы раздел 4.2 работал из file:// (node tests/build_p2_data.js)
 js/onedim.js      раздел 3: графики и элементы управления
 tests/port_check.js           сверка графовых методов JS с Graph-EVT-agent (Python)
 tests/p2_check.js             проверка типов вершин, трассы K шагов и значений Положения 2
