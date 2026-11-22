@@ -16,6 +16,7 @@ on:
       - "ru/**"
       - "css/**"
       - "js/**"
+      - "data/**"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
     inputs:
@@ -54,7 +55,7 @@ jobs:
       - name: Assemble site
         run: |
           mkdir -p _site
-          cp -r index.html ru css js _site/
+          cp -r index.html ru css js data _site/
           cp version.json _site/
           touch _site/.nojekyll
       - uses: actions/configure-pages@v6

@@ -90,6 +90,9 @@ node tests/p2_check.js             # Position 2 node types/K-hop trace and graph
 node tests/p3_check.js             # Position 3 number checks, verdict parsing and agent fault scenarios
 node tests/p3_ui_check.js          # Position 3 UI helpers: draft diffs, permalink state, frozen-write probe
 node tests/p3_agent_check.js       # Position 3 agents: replayed calls, 0 tokens, y unchanged, faults flagged; planner stops, tool matrix
+node tests/literature_check.js     # 227 sources, citation direction, metadata and ordinary/hyperbolic layouts
+npm ci && npx playwright install chromium --no-shell
+npm run test:literature            # static checks + real Chromium UI, subpaths, mobile, EN/RU and themes
 ```
 
 | Number in the dissertation | Key in `results/onedim_summary.json` | Expected (`tests/fixtures/onedim_expected.json`) |
@@ -124,6 +127,11 @@ js/p3-agent-core.js agent emulator of section 5: the consilium as a step trace o
 js/p3-agent.js    section 5.1–5.2: agent-loop explainer, interactive pipeline and step-by-step emulator
 js/p3-arch.js     section 5.4: one agentic architecture — agent passports, the planner agent's plan → act → observe loop, tool matrix
 js/conclusion.js  section 6: conclusion — who computes what, with live values from sections 3 and 5
+js/literature-core.js deterministic hierarchy/radial/hyperbolic layouts, filters, Möbius transform and geodesics
+js/literature.js    Canvas visualisers, shared controls, keyboard access and lazy paged source details
+scripts/export_literature_graph.py validates the prepared graph and exports the two static JSON files (stdlib only)
+data/literature-graph.json 231 nodes, 609 hierarchy/citation edges and short source metadata
+data/literature-details.json full abstracts and 22,999 references, fetched only on source selection
 data/p2_datasets.json synthetic datasets for the Position 2 interactive lab
 js/p2-data.js     the same datasets as a script, so section 4.2 works from file:// (node tests/build_p2_data.js)
 tests/port_check.js           checks the JS graph methods against Graph-EVT-agent (Python): node tests/port_check.js
@@ -131,6 +139,8 @@ tests/p2_check.js             checks Position 2 node types/K-hop trace and value
 tests/p3_check.js             checks Position 3 rules and fault scenarios
 tests/p3_ui_check.js          checks Position 3 UI helpers (draft diffs, permalink state)
 tests/p3_agent_check.js       checks the Position 3 agent emulator trace
+tests/literature_check.js     checks literature schema, metadata, citation direction and layouts
+tests/literature_browser_check.js checks the literature UI end to end in Chromium
 tests/make_graph_reference.py regenerates tests/fixtures/graph_methods_reference.json from Graph-EVT-agent
 tests/make_p2_reference.py    regenerates the Position 2 reference values
 tests/make_p3_reference.py    regenerates the Position 3 reference cases
@@ -140,11 +150,12 @@ results/onedim_summary.json   output of tests/experiments.js
 js/onedim.js      section 3: charts and controls
 .github/workflows/pages.yml       deploys the site to GitHub Pages (manual run can publish another branch; writes version.json)
 .github/workflows/port-check.yml  runs all reference, experiment and interactive-protocol checks
+.github/workflows/literature-check.yml runs literature data and Chromium UI checks
 ```
 
 Run locally: `python3 -m http.server` in the repository root, then open http://localhost:8000/.
 
-All data are synthetic. The labs illustrate the method and are not intended for engineering, financial or clinical decisions.
+Numerical lab data are synthetic; the literature section uses the prepared Zotero bibliography metadata. The labs illustrate the method and are not intended for engineering, financial or clinical decisions.
 
 ---
 
@@ -233,6 +244,9 @@ node tests/p2_check.js             # типы вершин, трасса K ша�
 node tests/p3_check.js             # проверка чисел, разбор вердикта и сценарии ошибок агентов Положения 3
 node tests/p3_ui_check.js          # помощники интерфейса Положения 3: различия черновиков, permalink состояния
 node tests/p3_agent_check.js       # агенты Положения 3: воспроизведённые вызовы, 0 токенов, y неизменен, ошибки помечены; остановки планировщика, матрица инструментов
+node tests/literature_check.js     # 227 источников, направления цитирований, метаданные и обычные/гиперболические раскладки
+npm ci && npx playwright install chromium --no-shell
+npm run test:literature            # статические проверки + Chromium UI, относительные пути, mobile, EN/RU и темы
 ```
 
 | Число в диссертации | Ключ в `results/onedim_summary.json` | Ожидается (`tests/fixtures/onedim_expected.json`) |
@@ -268,6 +282,11 @@ js/p3-agent-core.js эмулятор агентов раздела 5: конси
 js/p3-agent.js    раздел 5.1–5.2: схема цикла агента, интерактивный конвейер и пошаговый эмулятор
 js/p3-arch.js     раздел 5.4: одна агентная архитектура — паспорта агентов, цикл агента-планировщика, матрица инструментов
 js/conclusion.js  раздел 6: заключение — кто что вычисляет, с текущими значениями разделов 3 и 5
+js/literature-core.js детерминированные иерархические/радиальные/гиперболические раскладки, фильтры, преобразование Мёбиуса и геодезические
+js/literature.js    Canvas-визуализаторы, общие фильтры, клавиатура и ленивая постраничная карточка источника
+scripts/export_literature_graph.py проверка подготовленного графа и экспорт двух статических JSON (только stdlib)
+data/literature-graph.json 231 узел, 609 иерархических/citation-рёбер и краткие метаданные источников
+data/literature-details.json полные аннотации и 22 999 ссылок, загружаются только при выборе источника
 data/p2_datasets.json синтетические данные для интерактивного опыта Положения 2
 js/p2-data.js     те же данные в виде скрипта, чтобы раздел 4.2 работал из file:// (node tests/build_p2_data.js)
 js/onedim.js      раздел 3: графики и элементы управления
@@ -276,6 +295,8 @@ tests/p2_check.js             проверка типов вершин, трас
 tests/p3_check.js             проверка правил и сценариев ошибок Положения 3
 tests/p3_ui_check.js          проверка помощников интерфейса Положения 3 (различия черновиков, permalink)
 tests/p3_agent_check.js       проверка трассы эмулятора агентов Положения 3
+tests/literature_check.js     проверка схемы, метаданных, цитат и раскладок графа литературы
+tests/literature_browser_check.js end-to-end проверки нового раздела в Chromium
 tests/make_graph_reference.py заново строит tests/fixtures/graph_methods_reference.json по Graph-EVT-agent
 tests/make_p2_reference.py    заново строит эталонные значения Положения 2
 tests/make_p3_reference.py    заново строит эталонные случаи Положения 3
@@ -283,11 +304,12 @@ tests/experiments.js          Монте-Карло и сетка специфи
 tests/fixtures/               эталон графовых методов Python; числа, которые приводит диссертация (onedim_expected.json)
 .github/workflows/pages.yml       публикация на GitHub Pages (ручной запуск может опубликовать другую ветку; пишет version.json)
 .github/workflows/port-check.yml  запуск эталонных проверок, экспериментов и интерактивных протоколов
+.github/workflows/literature-check.yml проверки данных и браузерные сценарии графа литературы
 ```
 
 Локальный запуск: `python3 -m http.server` в корне репозитория, затем откройте http://localhost:8000/.
 
-Все данные синтетические. Лаборатории иллюстрируют метод и не предназначены для инженерных, финансовых или клинических решений.
+Численные данные лабораторий синтетические; раздел литературы использует подготовленные библиографические метаданные Zotero. Лаборатории иллюстрируют метод и не предназначены для инженерных, финансовых или клинических решений.
 
 ---
 

@@ -1,0 +1,12 @@
+{
+  "name": "educational-live-demo-checks",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Development-only browser checks; the published site has no package runtime.",
+  "scripts": {
+    "test:literature": "node tests/literature_check.js && node tests/literature_browser_check.js"
+  },
+  "devDependencies": {
+    "playwright": "1.56.1"
+  }
+}

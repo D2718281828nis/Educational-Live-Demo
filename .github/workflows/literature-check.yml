@@ -1,0 +1,28 @@
+name: Literature graph checks
+
+on:
+  push:
+    paths: ["index.html", "ru/**", "css/site.css", "js/literature*.js", "data/literature-*.json", "scripts/export_literature_graph.py", "tests/literature*", "package*.json", ".github/workflows/literature-check.yml"]
+  pull_request:
+    paths: ["index.html", "ru/**", "css/site.css", "js/literature*.js", "data/literature-*.json", "scripts/export_literature_graph.py", "tests/literature*", "package*.json", ".github/workflows/literature-check.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  literature-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npx playwright install --with-deps chromium --no-shell
+      - run: node tests/literature_check.js
+      - run: node tests/literature_browser_check.js
+      - run: node --check js/literature-core.js
+      - run: node --check js/literature.js
+      - run: python3 -m py_compile scripts/export_literature_graph.py
