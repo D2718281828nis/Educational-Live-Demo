@@ -59,12 +59,15 @@ async function test(name, fn) {
     await page.locator('#lg-mode button[data-v="hyper"]').click();
     await page.waitForFunction(function () { return document.getElementById("lg-canvas").dataset.mode === "hyper"; });
     assert(await page.locator("#lg-layout-control").isHidden());
+    assert(await page.locator("#lg-hyper-note").isVisible());
+    assert((await page.locator("#lg-hyper-note").textContent()).indexOf("rank(year)") >= 0);
     var rect = await page.locator("#lg-canvas").boundingBox();
     await page.mouse.move(rect.x + rect.width / 2, rect.y + rect.height / 2);
     await page.mouse.down(); await page.mouse.move(rect.x + rect.width / 2 + 60, rect.y + 30, { steps: 5 }); await page.mouse.up();
     await page.locator("#lg-reset").click();
     await page.locator('#lg-mode button[data-v="normal"]').click();
     assert.strictEqual(await page.locator("#lg-canvas").getAttribute("data-mode"), "normal");
+    assert(await page.locator("#lg-hyper-note").isHidden());
   });
   await test("search, filters, citation visibility and direction update live", async function () {
     await page.locator("#lg-search").fill(sample.title.slice(0, 24));

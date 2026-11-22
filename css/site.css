@@ -735,6 +735,8 @@ tr.p3-dis td { background: color-mix(in srgb, var(--series-2) 12%, transparent);
 .lg-key.p1 { background: var(--series-1); }
 .lg-key.p2 { background: var(--series-3); }
 .lg-key.p3 { background: var(--series-2); }
+.lg-key.size { width: 14px; height: 14px; border-radius: 50%; background: var(--ink-2); }
+.lg-hyper-note { margin: 5px 0; padding: 8px 10px; border-radius: 7px; background: var(--surface-2); color: var(--ink-2); }
 .lg-line { display: inline-block; width: 22px; height: 0; border-top: 2px solid var(--axis); }
 .lg-line.citation { border-top-color: var(--series-2); border-top-style: dashed; }
 .lg-selection-summary { min-height: 2.8em; margin: 4px 0 0; color: var(--ink-2); font-size: 13px; }

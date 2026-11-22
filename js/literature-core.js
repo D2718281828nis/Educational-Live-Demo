@@ -18,6 +18,10 @@
     return String(a.title).localeCompare(String(b.title), "en", { sensitivity: "base" });
   }
 
+  function sourceRadius(node) {
+    return 3 + 1.65 * Math.sqrt(Math.max(0, node.internal_incoming_count || 0));
+  }
+
   function sourceNodes(data) {
     return data.nodes.filter(function (n) { return n.type === "bibliography_source"; });
   }
@@ -122,12 +126,26 @@
 
   function hyperbolicLayout(data, visibleIds) {
     var radial = radialLayout(data, visibleIds), ell = 1.35;
+    var years = sourceNodes(data).filter(function (n) {
+      return visibleIds.has(n.id) && n.year != null;
+    }).map(function (n) { return n.year; });
+    years = Array.from(new Set(years)).sort(function (a, b) { return a - b; });
+    var yearRanks = new Map(years.map(function (year, index) {
+      return [year, years.length > 1 ? index / (years.length - 1) : 0.5];
+    }));
     var positions = {};
     Object.keys(radial.positions).forEach(function (id) {
-      var p = radial.positions[id], rho = Math.tanh(p.depth * ell / 2);
-      positions[id] = { x: rho * Math.cos(p.angle || 0), y: rho * Math.sin(p.angle || 0), depth: p.depth };
+      var p = radial.positions[id], node = data.nodeMap.get(id), depth = p.depth, yearRank = null;
+      if (node.type === "bibliography_source") {
+        yearRank = node.year == null ? null : yearRanks.get(node.year);
+        depth = node.year == null ? 2 : 1.55 + 0.9 * yearRank;
+      }
+      var rho = Math.tanh(depth * ell / 2);
+      positions[id] = { x: rho * Math.cos(p.angle || 0), y: rho * Math.sin(p.angle || 0),
+        depth: depth, yearRank: yearRank };
     });
-    return { positions: positions, tree: radial.tree, sectors: radial.sectors, ell: ell };
+    return { positions: positions, tree: radial.tree, sectors: radial.sectors, ell: ell,
+      yearRange: years.length ? [years[0], years[years.length - 1]] : [] };
   }
 
   function mobius(z, a) {
@@ -186,6 +204,7 @@
   return {
     normalize: normalize,
     sourceCompare: sourceCompare,
+    sourceRadius: sourceRadius,
     sourceNodes: sourceNodes,
     filterSources: filterSources,
     hierarchy: hierarchy,

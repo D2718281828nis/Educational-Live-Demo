@@ -213,8 +213,7 @@
   }
 
   function nodeRadius(node, scale) {
-    var base = node.type === "scientific_problem" ? 11 : node.type === "dissertation_position" ? 8 :
-      4.2 + Math.min(2.8, Math.log2(1 + node.internal_incoming_count) * 0.55);
+    var base = node.type === "scientific_problem" ? 11 : node.type === "dissertation_position" ? 8 : C.sourceRadius(node);
     return Math.max(base, 2.8 / (scale || 1));
   }
   function nodeColor(node, palette) {
@@ -320,10 +319,10 @@
       ctx.lineTo(x - dx * size + dy * size * 0.5, y - dy * size - dx * size * 0.5); ctx.closePath();
       ctx.fillStyle = citation ? palette.citation : palette.axis; ctx.fill();
     }
-    function hyperRadius(node, z) {
+    function hyperRadius(node) {
       if (node.type === "scientific_problem") return 10;
       if (node.type === "dissertation_position") return 7;
-      return Math.max(1.8, 6 * (1 - z[0] * z[0] - z[1] * z[1]));
+      return C.sourceRadius(node);
     }
     state.data.edges.forEach(function (e) {
       if (e.type !== "cites" && state.visibleIds.has(e.source) && state.visibleIds.has(e.target)) hyperEdge(e, false);
@@ -378,7 +377,10 @@
     var meta = node.type === "bibliography_source" ?
       esc((node.authors.join("; ") || t("Authors unavailable", "Авторы недоступны")) + (node.year ? " · " + node.year : "")) :
       esc(t("Dissertation hierarchy", "Иерархия диссертации"));
-    tooltip.innerHTML = '<div class="t">' + esc(node.title) + '</div><div class="lg-tip-meta">' + meta + '</div>';
+    var citations = node.type === "bibliography_source" ? '<div class="lg-tip-meta">' +
+      esc(t("Cited in the collection: ", "Цитируется в коллекции: ") + node.internal_incoming_count +
+        t(" · outgoing internal citations: ", " · исходящих внутренних цитирований: ") + node.internal_outgoing_count) + '</div>' : "";
+    tooltip.innerHTML = '<div class="t">' + esc(node.title) + '</div><div class="lg-tip-meta">' + meta + '</div>' + citations;
     tooltip.hidden = false;
     var left = Math.min(state.width - tooltip.offsetWidth - 8, Math.max(8, point.x + 12));
     var top = Math.min(state.height - tooltip.offsetHeight - 8, Math.max(8, point.y + 12));
@@ -538,6 +540,7 @@
       state.mode = button.dataset.v;
       this.querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b === button)); });
       byId("lg-layout-control").hidden = state.mode === "hyper";
+      byId("lg-hyper-note").hidden = state.mode !== "hyper";
       byId("lg-force-wrap").hidden = state.mode === "hyper" || state.layout !== "force";
       hideTooltip(); computeLayout(true);
     });

@@ -67,7 +67,13 @@ check("hierarchy is sorted by year, unknown year last, then full title", functio
   });
   assert(C.sourceCompare({ year: null, title: "A" }, { year: 2026, title: "Z" }) > 0);
 });
-check("hyperbolic sectors follow leaf counts and Poincare radii", function () {
+check("source radius grows with confirmed internal incoming citations", function () {
+  assert.strictEqual(C.sourceRadius({ internal_incoming_count: 0 }), 3);
+  assert.strictEqual(C.sourceRadius({ internal_incoming_count: 1 }), 4.65);
+  assert(C.sourceRadius({ internal_incoming_count: 4 }) < C.sourceRadius({ internal_incoming_count: 14 }));
+  assert.strictEqual(C.sourceRadius({ internal_incoming_count: 14 }), 3 + 1.65 * Math.sqrt(14));
+});
+check("hyperbolic sectors follow leaf counts and radii combine hierarchy with time", function () {
   var result = C.hyperbolicLayout(data, visible);
   assert.strictEqual(Object.keys(result.positions).length, 231);
   ["P1", "P2", "P3"].forEach(function (id) {
@@ -76,9 +82,22 @@ check("hyperbolic sectors follow leaf counts and Poincare radii", function () {
     var sector = result.sectors[id], leaves = result.tree.children[id].length;
     assert(Math.abs((sector[1] - sector[0]) / (Math.PI * 2) - leaves / 227) < 1e-12);
   });
+  var byYear = new Map();
   sources.forEach(function (n) {
-    var p = result.positions[n.id]; assert(Math.abs(Math.hypot(p.x, p.y) - Math.tanh(result.ell)) < 1e-12);
+    var p = result.positions[n.id], radius = Math.hypot(p.x, p.y);
+    assert(radius > Math.tanh(result.ell / 2) && radius < 1);
+    if (!byYear.has(n.year)) byYear.set(n.year, []);
+    byYear.get(n.year).push(radius);
   });
+  var years = Array.from(byYear.keys()).sort(function (a, b) { return a - b; });
+  years.forEach(function (year, index) {
+    var radii = byYear.get(year), expectedDepth = 1.55 + 0.9 * index / (years.length - 1);
+    radii.forEach(function (radius) {
+      assert(Math.abs(radius - Math.tanh(expectedDepth * result.ell / 2)) < 1e-12);
+    });
+    if (index) assert(radii[0] > byYear.get(years[index - 1])[0]);
+  });
+  assert.deepStrictEqual(result.yearRange, [years[0], years[years.length - 1]]);
 });
 check("Mobius focus and geodesics preserve disk geometry", function () {
   assert.deepStrictEqual(C.mobius([0.2, 0.3], [0, 0]), [0.2, 0.3]);
