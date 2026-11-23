@@ -301,13 +301,15 @@
       <div class="lg-keyboard">
         <label for="lg-node-select"><span lang="en">Keyboard node navigation</span><span lang="ru">Навигация по узлам с клавиатуры</span></label>
         <select id="lg-node-select"><option value="">—</option></select>
-        <p id="lg-keyboard-help" class="lang-note"><span lang="en">On the canvas: arrow keys select a node, Enter opens it, +/− zoom, 0 fits, Escape clears selection. Drag to pan; drag the hyperbolic disk to move its focus.</span><span lang="ru">На холсте: стрелки выбирают узел, Enter открывает его, +/− масштаб, 0 вписывает граф, Escape снимает выбор. Перетаскивание двигает обычный граф и меняет фокус гиперболического диска.</span></p>
+        <p id="lg-keyboard-help" class="lang-note"><span lang="en">On the canvas: arrow keys select and centre a node without rebuilding the layout, Enter opens it, +/− zoom, 0 fits, Escape clears selection. Drag to pan; drag the hyperbolic disk to move its focus. Reset rebuilds the currently selected layout.</span><span lang="ru">На холсте: стрелки выбирают и центрируют узел без перестроения раскладки, Enter открывает его, +/− масштаб, 0 вписывает граф, Escape снимает выбор. Перетаскивание двигает обычный граф и меняет фокус гиперболического диска. «Сброс» заново строит текущую раскладку.</span></p>
       </div>
       <div class="legend lg-legend" aria-label="Legend">
         <span class="key"><i class="lg-key problem"></i><span lang="en">Research problem</span><span lang="ru">Научная проблема</span></span>
         <span class="key"><i class="lg-key position"></i><span lang="en">Dissertation Position</span><span lang="ru">Положение</span></span>
         <span class="key"><i class="lg-key p2"></i><span lang="en">Task</span><span lang="ru">Задача</span></span><span class="key"><i class="lg-key p3"></i><span lang="en">Method</span><span lang="ru">Метод</span></span>
         <span class="key"><i class="lg-key p1"></i>P1</span><span class="key"><i class="lg-key p2"></i>P2</span><span class="key"><i class="lg-key p3"></i>P3</span>
+        <span class="key">★ <span lang="en">Author's work (including co-authorship)</span><span lang="ru">Работа автора (в том числе в соавторстве)</span></span>
+        <span class="key">■ <span lang="en">Terminal article: incoming citations, no outgoing</span><span lang="ru">Терминальная статья: есть входящие, нет исходящих</span></span>
         <span class="key"><i class="lg-line hierarchy"></i><span lang="en">hierarchy: parent → child</span><span lang="ru">иерархия: родитель → потомок</span></span>
         <span class="key"><i class="lg-line citation"></i>A cites B →</span>
         <span class="key"><i class="lg-key size"></i><span lang="en">Source size = 3 + 1.65√N, where N is internal incoming citations</span><span lang="ru">Размер источника = 3 + 1.65√N, где N — число внутренних входящих цитирований</span></span>

@@ -22,6 +22,18 @@
     return 3 + 1.65 * Math.sqrt(Math.max(0, node.internal_incoming_count || 0));
   }
 
+  function isAuthorWork(node) {
+    return node.type === "bibliography_source" && (node.authors || []).some(function (author) {
+      var name = normalize(author);
+      return name.indexOf("andrikov") >= 0 || name.indexOf("андриков") >= 0;
+    });
+  }
+
+  function isTerminalSource(node) {
+    return node.type === "bibliography_source" &&
+      (node.internal_incoming_count || 0) > 0 && (node.internal_outgoing_count || 0) === 0;
+  }
+
   function sourceNodes(data) {
     return data.nodes.filter(function (n) { return n.type === "bibliography_source"; });
   }
@@ -263,6 +275,8 @@
     normalize: normalize,
     sourceCompare: sourceCompare,
     sourceRadius: sourceRadius,
+    isAuthorWork: isAuthorWork,
+    isTerminalSource: isTerminalSource,
     sourceNodes: sourceNodes,
     filterSources: filterSources,
     hierarchy: hierarchy,

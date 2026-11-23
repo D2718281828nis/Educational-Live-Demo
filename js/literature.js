@@ -75,6 +75,9 @@
     }).length);
     canvas.dataset.mode = state.mode;
     canvas.dataset.layout = state.layout;
+    canvas.dataset.generation = String(state.generation);
+    canvas.dataset.authorWorks = String(state.visibleSources.filter(C.isAuthorWork).length);
+    canvas.dataset.terminalSources = String(state.visibleSources.filter(C.isTerminalSource).length);
     canvas.dataset.selected = state.selectedId || "";
   }
   function updateNodeOptions() {
@@ -85,7 +88,8 @@
     state.visibleOrder.forEach(function (id) {
       var node = state.data.nodeMap.get(id), option = document.createElement("option");
       option.value = id;
-      option.textContent = id + (node.year ? " · " + node.year : "") + " · " + node.title;
+      option.textContent = (C.isAuthorWork(node) ? "★ " : "") + (C.isTerminalSource(node) ? "■ " : "") +
+        id + (node.year ? " · " + node.year : "") + " · " + node.title;
       fragment.appendChild(option);
     });
     select.replaceChildren(fragment);
@@ -136,18 +140,19 @@
     stopForce();
     state.generation += 1;
     if (!state.data) return;
+    var layoutIds = new Set(state.data.nodes.map(function (node) { return node.id; }));
     if (state.mode === "hyper") {
-      var hyper = C.hyperbolicLayout(state.data, state.visibleIds);
+      var hyper = C.hyperbolicLayout(state.data, layoutIds);
       state.hyperBase = hyper.positions;
       if (fit) { state.hyperFocus = [0, 0]; state.hyperZoom = 1; }
     } else if (state.layout === "hierarchical") {
-      state.positions = C.hierarchicalLayout(state.data, state.visibleIds).positions;
+      state.positions = C.hierarchicalLayout(state.data, layoutIds).positions;
       if (fit) fitNormal();
     } else if (state.layout === "radial") {
-      state.positions = C.radialLayout(state.data, state.visibleIds).positions;
+      state.positions = C.radialLayout(state.data, layoutIds).positions;
       if (fit) fitNormal();
     } else {
-      var radial = C.radialLayout(state.data, state.visibleIds).positions;
+      var radial = C.radialLayout(state.data, layoutIds).positions;
       state.positions = {};
       Object.keys(radial).forEach(function (id, index) {
         var p = radial[id], jitter = ((index * 37) % 11 - 5) * 2.5;
@@ -160,7 +165,7 @@
     requestDraw();
   }
   function fitNormal() {
-    var ids = Object.keys(state.positions);
+    var ids = state.visibleOrder.filter(function (id) { return state.positions[id]; });
     if (!ids.length) return;
     var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
     ids.forEach(function (id) {
@@ -191,7 +196,7 @@
     state.forceTick = 0;
     updateForceButton();
     var generation = state.generation;
-    var ids = Object.keys(state.positions);
+    var ids = state.visibleOrder.filter(function (id) { return state.positions[id]; });
     var links = state.data.edges.filter(function (e) {
       return e.type !== "cites" && state.visibleIds.has(e.source) && state.visibleIds.has(e.target);
     }).concat(state.citationEdges);
@@ -271,7 +276,17 @@
   function shortLabel(node) {
     if (node.type !== "bibliography_source") return node.id;
     var author = node.authors.length ? String(node.authors[0]).split(",")[0] + " " : "";
-    return (author + (node.year || t("no year", "без года"))).slice(0, 30);
+    var marker = (C.isAuthorWork(node) ? "★ " : "") + (C.isTerminalSource(node) ? "■ " : "");
+    return (marker + author + (node.year || t("no year", "без года"))).slice(0, 34);
+  }
+  function drawAuthorStar(node, p, radius, scale, palette) {
+    if (!C.isAuthorWork(node)) return;
+    var size = Math.max(radius * 1.35, 7 / scale);
+    ctx.font = size + "px system-ui, sans-serif";
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.lineWidth = 2 / scale; ctx.strokeStyle = palette.surface;
+    var x = p.x + radius * 0.8, y = p.y - radius * 0.8;
+    ctx.strokeText("★", x, y); ctx.fillStyle = palette.position; ctx.fillText("★", x, y);
   }
   function drawNormal(palette) {
     var scale = state.scale;
@@ -300,13 +315,14 @@
       ctx.beginPath();
       if (node.type === "scientific_problem") {
         ctx.moveTo(p.x, p.y - radius); ctx.lineTo(p.x + radius, p.y); ctx.lineTo(p.x, p.y + radius); ctx.lineTo(p.x - radius, p.y); ctx.closePath();
-      } else if (node.type === "dissertation_position") ctx.rect(p.x - radius, p.y - radius, radius * 2, radius * 2);
+      } else if (node.type === "dissertation_position" || C.isTerminalSource(node)) ctx.rect(p.x - radius, p.y - radius, radius * 2, radius * 2);
       else ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
       ctx.fillStyle = nodeColor(node, palette); ctx.fill();
       if (id === state.selectedId || id === state.hoverId) {
         ctx.beginPath(); ctx.arc(p.x, p.y, radius + 3 / scale, 0, Math.PI * 2);
         ctx.strokeStyle = id === state.selectedId ? palette.ink : palette.muted; ctx.lineWidth = 2 / scale; ctx.stroke();
       }
+      drawAuthorStar(node, p, radius, scale, palette);
       if (node.type !== "bibliography_source" || scale > 1.35 || state.visibleSources.length < 35 || id === state.selectedId || id === state.hoverId) {
         ctx.font = (node.type === "bibliography_source" ? 10 : 12) / scale + "px system-ui, sans-serif";
         ctx.fillStyle = palette.ink2; ctx.textAlign = "left"; ctx.textBaseline = "middle";
@@ -361,12 +377,13 @@
       ctx.beginPath();
       if (node.type === "scientific_problem") {
         ctx.moveTo(p.x, p.y - r); ctx.lineTo(p.x + r, p.y); ctx.lineTo(p.x, p.y + r); ctx.lineTo(p.x - r, p.y); ctx.closePath();
-      } else if (node.type === "dissertation_position") ctx.rect(p.x - r, p.y - r, r * 2, r * 2);
+      } else if (node.type === "dissertation_position" || C.isTerminalSource(node)) ctx.rect(p.x - r, p.y - r, r * 2, r * 2);
       else ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
       ctx.fillStyle = nodeColor(node, palette); ctx.fill();
       if (id === state.selectedId || id === state.hoverId) {
         ctx.beginPath(); ctx.arc(p.x, p.y, r + 3, 0, Math.PI * 2); ctx.strokeStyle = palette.ink; ctx.lineWidth = 1.8; ctx.stroke();
       }
+      drawAuthorStar(node, p, r, 1, palette);
       if (node.type !== "bibliography_source" || id === state.selectedId || id === state.hoverId) {
         ctx.font = (node.type === "bibliography_source" ? 10 : 12) + "px system-ui, sans-serif";
         ctx.fillStyle = palette.ink2; ctx.textAlign = "left"; ctx.textBaseline = "middle";
@@ -423,6 +440,19 @@
       state.scale = next;
     }
     requestDraw();
+  }
+  function centerOnNode(id) {
+    stopForce();
+    if (state.mode === "hyper") {
+      var z = state.hyperBase[id];
+      if (z) state.hyperFocus = [-z.x, -z.y];
+    } else {
+      var p = state.positions[id];
+      if (p) {
+        state.panX = -p.x * state.scale;
+        state.panY = -p.y * state.scale;
+      }
+    }
   }
 
   function updateSummary() {
@@ -542,18 +572,16 @@
   function selectNode(id, reveal) {
     if (!state.data || !state.data.nodeMap.has(id)) return;
     if (reveal && !state.visibleIds.has(id)) {
-      byId("lg-search").value = ""; byId("lg-position").value = "all";
-      byId("lg-year-min").value = ""; byId("lg-year-max").value = "";
-      byId("lg-type").value = "all"; byId("lg-abstract").value = "all";
-      state.selectedId = id;
-      applyFilters();
+      clearFilters();
+      state.visibleSources = C.filterSources(state.data, currentFilters()).sort(C.sourceCompare);
     }
     state.selectedId = id;
     state.pages = { outgoing: 1, incoming: 1 };
     updateVisibleGraph();
-    computeLayout(true);
+    centerOnNode(id);
     updateNodeOptions();
     byId("lg-node-select").value = id;
+    hideTooltip();
     updateSummary(); updateCounters(); renderDetails(); requestDraw();
     var token = ++state.detailToken, node = state.data.nodeMap.get(id);
     if (node.type === "bibliography_source" && !state.details) {
@@ -594,9 +622,7 @@
     byId("lg-zoom-out").addEventListener("click", function () { zoom(0.8); });
     byId("lg-fit").addEventListener("click", function () { if (state.mode === "hyper") { state.hyperFocus = [0, 0]; state.hyperZoom = 1; } else fitNormal(); requestDraw(); });
     byId("lg-reset").addEventListener("click", function () {
-      if (state.mode === "hyper") { state.hyperFocus = [0, 0]; state.hyperZoom = 1; }
-      else fitNormal();
-      hideTooltip(); requestDraw();
+      hideTooltip(); computeLayout(true);
     });
     byId("lg-node-select").addEventListener("change", function () { if (this.value) selectNode(this.value); });
     detailsBody.addEventListener("click", function (event) {

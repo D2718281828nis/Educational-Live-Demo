@@ -87,6 +87,16 @@ check("source radius grows with confirmed internal incoming citations", function
   assert(C.sourceRadius({ internal_incoming_count: 4 }) < C.sourceRadius({ internal_incoming_count: 14 }));
   assert.strictEqual(C.sourceRadius({ internal_incoming_count: 14 }), 3 + 1.65 * Math.sqrt(14));
 });
+check("author works and terminal sources have explicit visual markers", function () {
+  assert.strictEqual(sources.filter(C.isAuthorWork).length, 26);
+  assert(C.isAuthorWork(data.nodeMap.get("__2026")), "Russian author spelling must be recognised");
+  assert(C.isAuthorWork(data.nodeMap.get("andrikov_situational_2026")));
+  assert(!C.isAuthorWork(data.nodeMap.get("bali_maxing_2011")));
+  assert.strictEqual(sources.filter(C.isTerminalSource).length, 48);
+  assert(C.isTerminalSource(data.nodeMap.get("jardine_review_2006")));
+  assert(!C.isTerminalSource(data.nodeMap.get("bali_maxing_2011")), "isolated sources are not terminal");
+  assert(!C.isTerminalSource(data.nodeMap.get("min_factscore_2023")), "outgoing citations exclude terminal sources");
+});
 check("hyperbolic radii put older articles farther from their Position", function () {
   var result = C.hyperbolicLayout(data, visible);
   assert.strictEqual(Object.keys(result.positions).length, 244);

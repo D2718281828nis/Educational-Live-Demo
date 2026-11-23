@@ -10,6 +10,8 @@ graph.nodeMap = new Map(graph.nodes.map(function (n) { return [n.id, n]; }));
 var sources = graph.nodes.filter(function (n) { return n.type === "bibliography_source"; });
 var sample = sources.find(function (n) { return n.internal_reference_ids.length && n.cited_by_internal_ids.length && n.doi; });
 var sampleChain = C.citationChain(graph, sample.id);
+var authorWork = sources.find(C.isAuthorWork);
+var terminalSource = sources.find(C.isTerminalSource);
 var mime = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".json": "application/json; charset=utf-8" };
 var server = http.createServer(function (request, response) {
   var pathname;
@@ -74,7 +76,15 @@ async function test(name, fn) {
   });
   await test("selecting an article reveals its complete recursive citation chain and hierarchy", async function () {
     assert.strictEqual(await page.locator("#lg-direction").inputValue(), "chain");
+    var selectionGeneration = await page.locator("#lg-canvas").getAttribute("data-generation");
     await page.locator("#lg-node-select").selectOption(sample.id);
+    assert.strictEqual(await page.locator("#lg-canvas").getAttribute("data-generation"), selectionGeneration,
+      "selection must not recompute layout coordinates");
+    await page.waitForTimeout(100);
+    var selectedRect = await page.locator("#lg-canvas").boundingBox();
+    await page.mouse.click(selectedRect.x + selectedRect.width / 2, selectedRect.y + selectedRect.height / 2);
+    assert.strictEqual(await page.locator("#lg-canvas").getAttribute("data-selected"), sample.id,
+      "the selected article must be centred");
     assert(sampleChain.sourceIds.size > sample.internal_reference_ids.length + sample.cited_by_internal_ids.length);
     assert.strictEqual(await page.locator("#lg-node-count").textContent(), sampleChain.nodeIds.size + " / 244");
     assert.strictEqual(await page.locator("#lg-citation-count").textContent(), sampleChain.edges.length + " / 379");
@@ -92,6 +102,30 @@ async function test(name, fn) {
     await page.locator("#lg-canvas").focus(); await page.keyboard.press("Escape");
     assert.strictEqual(await page.locator("#lg-node-count").textContent(), "244 / 244");
     assert.strictEqual(await page.locator("#lg-citation-count").textContent(), "0 / 379");
+  });
+  await test("author and terminal article markers appear in the accessible node list", async function () {
+    assert.strictEqual(await page.locator("#lg-canvas").getAttribute("data-author-works"), "26");
+    assert.strictEqual(await page.locator("#lg-canvas").getAttribute("data-terminal-sources"), "48");
+    assert((await page.locator('#lg-node-select option[value="' + authorWork.id + '"]').textContent()).indexOf("★ ") === 0);
+    assert((await page.locator('#lg-node-select option[value="' + terminalSource.id + '"]').textContent()).indexOf("■ ") === 0);
+  });
+  await test("Reset rebuilds the current ordinary or hyperbolic layout", async function () {
+    var generation = +(await page.locator("#lg-canvas").getAttribute("data-generation"));
+    await page.locator("#lg-reset").click();
+    assert.strictEqual(+(await page.locator("#lg-canvas").getAttribute("data-generation")), generation + 1);
+    assert.strictEqual(await page.locator("#lg-canvas").getAttribute("data-layout"), "hierarchical");
+    await page.locator("#lg-layout").selectOption("radial");
+    generation = +(await page.locator("#lg-canvas").getAttribute("data-generation"));
+    await page.locator("#lg-reset").click();
+    assert.strictEqual(+(await page.locator("#lg-canvas").getAttribute("data-generation")), generation + 1);
+    assert.strictEqual(await page.locator("#lg-canvas").getAttribute("data-layout"), "radial");
+    await page.locator('#lg-mode button[data-v="hyper"]').click();
+    generation = +(await page.locator("#lg-canvas").getAttribute("data-generation"));
+    await page.locator("#lg-reset").click();
+    assert.strictEqual(+(await page.locator("#lg-canvas").getAttribute("data-generation")), generation + 1);
+    assert.strictEqual(await page.locator("#lg-canvas").getAttribute("data-mode"), "hyper");
+    await page.locator('#lg-mode button[data-v="normal"]').click();
+    await page.locator("#lg-layout").selectOption("hierarchical");
   });
   await test("search, filters, citation visibility and direction update live", async function () {
     await page.locator("#lg-search").fill(sample.title.slice(0, 24));
