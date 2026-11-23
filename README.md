@@ -127,10 +127,10 @@ js/p3-agent-core.js agent emulator of section 5: the consilium as a step trace o
 js/p3-agent.js    section 5.1–5.2: agent-loop explainer, interactive pipeline and step-by-step emulator
 js/p3-arch.js     section 5.4: one agentic architecture — agent passports, the planner agent's plan → act → observe loop, tool matrix
 js/conclusion.js  section 6: conclusion — who computes what, with live values from sections 3 and 5
-js/literature-core.js deterministic hierarchy/radial/hyperbolic layouts, filters, Möbius transform and geodesics
+js/literature-core.js deterministic five-level hierarchy/radial/hyperbolic layouts, recursive citation chains, age-based article distances, filters, Möbius transform and geodesics
 js/literature.js    Canvas visualisers, shared controls, keyboard access and lazy paged source details
 scripts/export_literature_graph.py validates the prepared graph and exports the two static JSON files (stdlib only)
-data/literature-graph.json 231 nodes, 609 hierarchy/citation edges and short source metadata
+data/literature-graph.json 244 nodes (four tasks and nine methods), 664 hierarchy/citation edges and short source metadata
 data/literature-details.json full abstracts and 22,999 references, fetched only on source selection
 data/p2_datasets.json synthetic datasets for the Position 2 interactive lab
 js/p2-data.js     the same datasets as a script, so section 4.2 works from file:// (node tests/build_p2_data.js)
@@ -282,10 +282,10 @@ js/p3-agent-core.js эмулятор агентов раздела 5: конси
 js/p3-agent.js    раздел 5.1–5.2: схема цикла агента, интерактивный конвейер и пошаговый эмулятор
 js/p3-arch.js     раздел 5.4: одна агентная архитектура — паспорта агентов, цикл агента-планировщика, матрица инструментов
 js/conclusion.js  раздел 6: заключение — кто что вычисляет, с текущими значениями разделов 3 и 5
-js/literature-core.js детерминированные иерархические/радиальные/гиперболические раскладки, фильтры, преобразование Мёбиуса и геодезические
+js/literature-core.js детерминированные пятиуровневые иерархические/радиальные/гиперболические раскладки, рекурсивные цепочки цитирований, расстояния статей по возрасту, фильтры, преобразование Мёбиуса и геодезические
 js/literature.js    Canvas-визуализаторы, общие фильтры, клавиатура и ленивая постраничная карточка источника
 scripts/export_literature_graph.py проверка подготовленного графа и экспорт двух статических JSON (только stdlib)
-data/literature-graph.json 231 узел, 609 иерархических/citation-рёбер и краткие метаданные источников
+data/literature-graph.json 244 узла (четыре задачи и девять методов), 664 иерархических/citation-ребра и краткие метаданные источников
 data/literature-details.json полные аннотации и 22 999 ссылок, загружаются только при выборе источника
 data/p2_datasets.json синтетические данные для интерактивного опыта Положения 2
 js/p2-data.js     те же данные в виде скрипта, чтобы раздел 4.2 работал из file:// (node tests/build_p2_data.js)

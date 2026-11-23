@@ -41,18 +41,18 @@
   }
 
   function hierarchy(data, visibleIds) {
-    var children = { PROBLEM: [], P1: [], P2: [], P3: [] };
-    var parents = {};
+    var children = {}, parents = {};
+    data.nodes.forEach(function (node) { children[node.id] = []; parents[node.id] = []; });
     data.edges.forEach(function (e) {
-      if (e.type === "cites" || (visibleIds && !visibleIds.has(e.source))) return;
-      if (visibleIds && e.type === "thematically_supports" && !visibleIds.has(e.target)) return;
-      if (!children[e.source]) children[e.source] = [];
+      if (e.type === "cites" || (visibleIds && (!visibleIds.has(e.source) || !visibleIds.has(e.target)))) return;
       children[e.source].push(e.target);
-      parents[e.target] = e.source;
+      parents[e.target].push(e.source);
     });
-    ["P1", "P2", "P3"].forEach(function (id) {
+    Object.keys(children).forEach(function (id) {
       children[id].sort(function (a, b) {
-        return sourceCompare(data.nodeMap.get(a), data.nodeMap.get(b));
+        var left = data.nodeMap.get(a), right = data.nodeMap.get(b);
+        if (left.type === "bibliography_source" && right.type === "bibliography_source") return sourceCompare(left, right);
+        return a.localeCompare(b, "en", { numeric: true });
       });
     });
     return { children: children, parents: parents };
@@ -68,84 +68,97 @@
   }
 
   function assignSectors(tree) {
-    var sectors = { PROBLEM: [0, Math.PI * 2] };
-    var memo = {};
+    var sectors = { PROBLEM: [0, Math.PI * 2] }, memo = {};
     function visit(id) {
       var sector = sectors[id], children = tree.children[id] || [];
       var total = leafCounts(tree, id, memo), angle = sector[0];
       children.forEach(function (child) {
         var width = (sector[1] - sector[0]) * leafCounts(tree, child, memo) / total;
-        sectors[child] = [angle, angle + width];
+        if (!sectors[child]) {
+          sectors[child] = [angle, angle + width];
+          visit(child);
+        }
         angle += width;
-        visit(child);
       });
     }
     visit("PROBLEM");
     return sectors;
   }
 
-  function hierarchicalLayout(data, visibleIds) {
-    var tree = hierarchy(data, visibleIds), positions = { PROBLEM: { x: 0, y: -90, depth: 0 } };
-    var branchX = { P1: -390, P2: 0, P3: 390 };
-    ["P1", "P2", "P3"].forEach(function (id) {
-      positions[id] = { x: branchX[id], y: 20, depth: 1 };
-      var previousYear = null, row = 0, column = 0;
-      tree.children[id].forEach(function (child) {
-        var node = data.nodeMap.get(child);
-        if (previousYear !== null && node.year !== previousYear && column !== 0) {
-          row += 1;
-          column = 0;
-        }
-        positions[child] = {
-          x: branchX[id] + (column - 1.5) * 88,
-          y: 105 + row * 23,
-          depth: 2,
-          yearGroup: node.year == null ? "unknown" : String(node.year)
-        };
-        previousYear = node.year;
-        column += 1;
-        if (column === 4) { column = 0; row += 1; }
-      });
-    });
-    return { positions: positions, tree: tree };
-  }
-
-  function radialLayout(data, visibleIds) {
-    var tree = hierarchy(data, visibleIds), sectors = assignSectors(tree);
-    var positions = { PROBLEM: { x: 0, y: 0, depth: 0, angle: 0 } };
-    ["P1", "P2", "P3"].forEach(function (id) {
-      var angle = (sectors[id][0] + sectors[id][1]) / 2;
-      positions[id] = { x: 125 * Math.cos(angle), y: 125 * Math.sin(angle), depth: 1, angle: angle };
-      tree.children[id].forEach(function (child) {
-        var sector = sectors[child], a = (sector[0] + sector[1]) / 2;
-        positions[child] = { x: 370 * Math.cos(a), y: 370 * Math.sin(a), depth: 2, angle: a };
-      });
-    });
-    return { positions: positions, tree: tree, sectors: sectors };
-  }
-
-  function hyperbolicLayout(data, visibleIds) {
-    var radial = radialLayout(data, visibleIds), ell = 1.35;
+  function yearRanks(data, visibleIds) {
     var years = sourceNodes(data).filter(function (n) {
       return visibleIds.has(n.id) && n.year != null;
     }).map(function (n) { return n.year; });
     years = Array.from(new Set(years)).sort(function (a, b) { return a - b; });
-    var yearRanks = new Map(years.map(function (year, index) {
-      return [year, years.length > 1 ? index / (years.length - 1) : 0.5];
+    var ranks = new Map(years.map(function (year, index) {
+      return [year, years.length > 1 ? index / (years.length - 1) : 0];
     }));
+    return { ranks: ranks, range: years.length ? [years[0], years[years.length - 1]] : [] };
+  }
+
+  function ageRank(node, years) {
+    return node.year == null ? 0 : 1 - years.ranks.get(node.year);
+  }
+
+  function hierarchicalLayout(data, visibleIds) {
+    var radial = radialLayout(data, visibleIds), groups = {};
+    Object.keys(radial.positions).forEach(function (id) {
+      var type = data.nodeMap.get(id).type;
+      if (!groups[type]) groups[type] = [];
+      groups[type].push(id);
+    });
+    var positions = {};
+    Object.keys(groups).forEach(function (type) {
+      var ids = groups[type], spacing = type === "bibliography_source" ? 26 : 105;
+      ids.sort(function (a, b) { return radial.positions[a].angle - radial.positions[b].angle || a.localeCompare(b); });
+      ids.forEach(function (id, index) {
+        var p = radial.positions[id];
+        positions[id] = { x: p.depth * 230, y: (index - (ids.length - 1) / 2) * spacing,
+          depth: p.depth, yearRank: p.yearRank };
+      });
+    });
+    return { positions: positions, tree: radial.tree, yearRange: radial.yearRange };
+  }
+
+  function radialLayout(data, visibleIds) {
+    var tree = hierarchy(data, visibleIds), sectors = assignSectors(tree), years = yearRanks(data, visibleIds);
+    var positions = { PROBLEM: { x: 0, y: 0, depth: 0, angle: 0 } };
+    var levelRadii = { 1: 125, 2: 220, 3: 310 };
+    function visit(id) {
+      (tree.children[id] || []).forEach(function (child) {
+        if (positions[child]) return;
+        var node = data.nodeMap.get(child), sector = sectors[child];
+        var angle = (sector[0] + sector[1]) / 2, depth = positions[id].depth + 1, yearRank = null;
+        var radius = levelRadii[depth];
+        if (node.type === "bibliography_source") {
+          yearRank = node.year == null ? null : years.ranks.get(node.year);
+          depth = 4 + ageRank(node, years);
+          radius = 390 + 105 * ageRank(node, years);
+        }
+        positions[child] = { x: radius * Math.cos(angle), y: radius * Math.sin(angle),
+          depth: depth, angle: angle, yearRank: yearRank };
+        visit(child);
+      });
+    }
+    visit("PROBLEM");
+    return { positions: positions, tree: tree, sectors: sectors, yearRange: years.range };
+  }
+
+  function hyperbolicLayout(data, visibleIds) {
+    var radial = radialLayout(data, visibleIds), ell = 1.35, years = yearRanks(data, visibleIds);
     var positions = {};
     Object.keys(radial.positions).forEach(function (id) {
       var p = radial.positions[id], node = data.nodeMap.get(id), depth = p.depth, yearRank = null;
       if (node.type === "bibliography_source") {
-        yearRank = node.year == null ? null : yearRanks.get(node.year);
-        depth = node.year == null ? 2 : 1.55 + 0.9 * yearRank;
+        yearRank = node.year == null ? null : years.ranks.get(node.year);
+        depth = 3.35 + 1.1 * ageRank(node, years);
       }
       var rho = Math.tanh(depth * ell / 2);
       positions[id] = { x: rho * Math.cos(p.angle || 0), y: rho * Math.sin(p.angle || 0),
         depth: depth, yearRank: yearRank };
     });
     return { positions: positions, tree: radial.tree, sectors: radial.sectors, ell: ell,
-      yearRange: years.length ? [years[0], years[years.length - 1]] : [] };
+      yearRange: years.range };
   }
 
   function mobius(z, a) {
@@ -186,9 +199,44 @@
     return result;
   }
 
+  function citationChain(data, selectedId) {
+    var selected = data.nodeMap.get(selectedId);
+    if (!selected || selected.type !== "bibliography_source") return null;
+    var outgoing = {}, incoming = {};
+    data.edges.forEach(function (e) {
+      if (e.type !== "cites") return;
+      if (!outgoing[e.source]) outgoing[e.source] = [];
+      if (!incoming[e.target]) incoming[e.target] = [];
+      outgoing[e.source].push(e.target);
+      incoming[e.target].push(e.source);
+    });
+    var sourceIds = new Set([selectedId]), queue = [selectedId];
+    for (var index = 0; index < queue.length; index++) {
+      var id = queue[index];
+      (outgoing[id] || []).concat(incoming[id] || []).forEach(function (next) {
+        if (!sourceIds.has(next)) { sourceIds.add(next); queue.push(next); }
+      });
+    }
+    var tree = hierarchy(data), nodeIds = new Set(sourceIds), ancestors = Array.from(sourceIds);
+    for (var i = 0; i < ancestors.length; i++) {
+      (tree.parents[ancestors[i]] || []).forEach(function (parent) {
+        if (!nodeIds.has(parent)) { nodeIds.add(parent); ancestors.push(parent); }
+      });
+    }
+    var edges = data.edges.filter(function (e) {
+      return e.type === "cites" && sourceIds.has(e.source) && sourceIds.has(e.target);
+    });
+    return { sourceIds: sourceIds, nodeIds: nodeIds, edges: edges };
+  }
+
   function selectedCitations(data, visibleIds, show, direction, selectedId) {
-    if (!show) return [];
-    if (direction !== "all" && !selectedId) return [];
+    if (!show || (direction !== "all" && !selectedId)) return [];
+    if (direction === "chain") {
+      var chain = citationChain(data, selectedId);
+      return chain ? chain.edges.filter(function (e) {
+        return visibleIds.has(e.source) && visibleIds.has(e.target);
+      }) : [];
+    }
     return data.edges.filter(function (e) {
       return e.type === "cites" && visibleIds.has(e.source) && visibleIds.has(e.target) &&
         (direction === "all" || (direction === "outgoing" ? e.source === selectedId : e.target === selectedId));
@@ -214,6 +262,7 @@
     hyperbolicLayout: hyperbolicLayout,
     mobius: mobius,
     geodesic: geodesic,
+    citationChain: citationChain,
     selectedCitations: selectedCitations,
     page: page
   };

@@ -5,8 +5,11 @@ var http = require("http"), fs = require("fs"), path = require("path"), assert =
 var { chromium } = require("playwright");
 var root = path.join(__dirname, "..");
 var graph = require(path.join(root, "data", "literature-graph.json"));
+var C = require(path.join(root, "js", "literature-core.js"));
+graph.nodeMap = new Map(graph.nodes.map(function (n) { return [n.id, n]; }));
 var sources = graph.nodes.filter(function (n) { return n.type === "bibliography_source"; });
 var sample = sources.find(function (n) { return n.internal_reference_ids.length && n.cited_by_internal_ids.length && n.doi; });
+var sampleChain = C.citationChain(graph, sample.id);
 var mime = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".json": "application/json; charset=utf-8" };
 var server = http.createServer(function (request, response) {
   var pathname;
@@ -44,8 +47,8 @@ async function test(name, fn) {
   await test("relative graph JSON works at a GitHub Pages-style subpath; details stay lazy", async function () {
     await page.goto(prefix, { waitUntil: "domcontentloaded" });
     await page.waitForFunction(function () { return document.getElementById("literature").dataset.ready === "true"; });
-    assert.strictEqual(await page.locator("#lg-node-count").textContent(), "231 / 231");
-    assert.strictEqual(await page.locator("#lg-citation-count").textContent(), "379 / 379");
+    assert.strictEqual(await page.locator("#lg-node-count").textContent(), "244 / 244");
+    assert.strictEqual(await page.locator("#lg-citation-count").textContent(), "0 / 379");
     assert(requested.some(function (url) { return url.endsWith("/Educational-Live-Demo/data/literature-graph.json"); }));
     assert(!requested.some(function (url) { return url.indexOf("literature-details.json") >= 0; }));
     assert(await page.locator("#lg-force-wrap").isHidden());
@@ -69,21 +72,33 @@ async function test(name, fn) {
     assert.strictEqual(await page.locator("#lg-canvas").getAttribute("data-mode"), "normal");
     assert(await page.locator("#lg-hyper-note").isHidden());
   });
+  await test("selecting an article reveals its complete recursive citation chain and hierarchy", async function () {
+    assert.strictEqual(await page.locator("#lg-direction").inputValue(), "chain");
+    await page.locator("#lg-node-select").selectOption(sample.id);
+    assert(sampleChain.sourceIds.size > sample.internal_reference_ids.length + sample.cited_by_internal_ids.length);
+    assert.strictEqual(await page.locator("#lg-node-count").textContent(), sampleChain.nodeIds.size + " / 244");
+    assert.strictEqual(await page.locator("#lg-citation-count").textContent(), sampleChain.edges.length + " / 379");
+    var options = await page.locator("#lg-node-select option").evaluateAll(function (items) { return items.map(function (item) { return item.value; }); });
+    sampleChain.nodeIds.forEach(function (id) { assert(options.indexOf(id) >= 0, id + " must be revealed"); });
+    await page.locator("#lg-canvas").focus(); await page.keyboard.press("Escape");
+    assert.strictEqual(await page.locator("#lg-node-count").textContent(), "244 / 244");
+    assert.strictEqual(await page.locator("#lg-citation-count").textContent(), "0 / 379");
+  });
   await test("search, filters, citation visibility and direction update live", async function () {
     await page.locator("#lg-search").fill(sample.title.slice(0, 24));
     await page.waitForFunction(function (id) { return Array.from(document.getElementById("lg-node-select").options).some(function (option) { return option.value === id; }); }, sample.id);
     await page.locator("#lg-search").fill("");
     await page.locator("#lg-position").selectOption("P1");
-    assert.strictEqual(await page.locator("#lg-node-count").textContent(), "143 / 231");
+    assert.strictEqual(await page.locator("#lg-node-count").textContent(), "156 / 244");
     await page.locator("#lg-position").selectOption("all");
     await page.locator("#lg-year-min").fill("2011"); await page.locator("#lg-year-max").fill("2011");
-    assert.notStrictEqual(await page.locator("#lg-node-count").textContent(), "231 / 231");
+    assert.notStrictEqual(await page.locator("#lg-node-count").textContent(), "244 / 244");
     await page.locator("#lg-year-min").fill(""); await page.locator("#lg-year-max").fill("");
     await page.locator("#lg-type").selectOption("article");
-    assert.notStrictEqual(await page.locator("#lg-node-count").textContent(), "231 / 231");
+    assert.notStrictEqual(await page.locator("#lg-node-count").textContent(), "244 / 244");
     await page.locator("#lg-type").selectOption("all");
     await page.locator("#lg-abstract").selectOption("yes");
-    assert.strictEqual(await page.locator("#lg-node-count").textContent(), "205 / 231");
+    assert.strictEqual(await page.locator("#lg-node-count").textContent(), "218 / 244");
     await page.locator("#lg-abstract").selectOption("all");
     await page.locator("#lg-direction").selectOption("outgoing");
     assert.strictEqual(await page.locator("#lg-citation-count").textContent(), "0 / 379");

@@ -13,15 +13,18 @@ function check(name, fn) {
 }
 
 var sources = data.nodes.filter(function (n) { return n.type === "bibliography_source"; });
+var tasks = data.nodes.filter(function (n) { return n.type === "dissertation_task"; });
+var methods = data.nodes.filter(function (n) { return n.type === "dissertation_method"; });
 var ids = new Set(data.nodes.map(function (n) { return n.id; }));
 var sourceIds = new Set(sources.map(function (n) { return n.id; }));
 var citations = data.edges.filter(function (e) { return e.type === "cites"; });
 data.nodeMap = new Map(data.nodes.map(function (n) { return [n.id, n]; }));
 var visible = new Set(ids);
 
-check("exactly 231 nodes, 227 sources and 609 edges", function () {
-  assert.strictEqual(data.nodes.length, 231); assert.strictEqual(sources.length, 227);
-  assert.strictEqual(data.edges.length, 609); assert.strictEqual(citations.length, 379);
+check("new graph has 244 nodes, five hierarchy levels and 664 edges", function () {
+  assert.strictEqual(data.nodes.length, 244); assert.strictEqual(sources.length, 227);
+  assert.strictEqual(tasks.length, 4); assert.strictEqual(methods.length, 9);
+  assert.strictEqual(data.edges.length, 664); assert.strictEqual(citations.length, 379);
   assert.strictEqual(ids.size, data.nodes.length);
   assert.strictEqual(new Set(sources.map(function (n) { return n.zotero_key; })).size, 227);
 });
@@ -35,6 +38,16 @@ check("all edges have valid types, endpoints and citation direction", function (
         e.source + " must cite " + e.target);
       assert(data.nodeMap.get(e.target).cited_by_internal_ids.indexOf(e.source) >= 0);
     }
+  });
+  var tree = C.hierarchy(data);
+  sources.forEach(function (node) {
+    assert(tree.parents[node.id].every(function (id) { return data.nodeMap.get(id).type === "dissertation_method"; }));
+    var queue = [node.id], seen = new Set();
+    for (var i = 0; i < queue.length; i++) {
+      if (seen.has(queue[i])) continue;
+      seen.add(queue[i]); queue.push.apply(queue, tree.parents[queue[i]]);
+    }
+    assert(seen.has("PROBLEM"), node.id + " must have a hierarchy path to PROBLEM");
   });
 });
 check("derived metadata and lazy details are complete", function () {
@@ -53,16 +66,17 @@ check("derived metadata and lazy details are complete", function () {
 check("all ordinary layouts place every visible node without starting a simulation", function () {
   ["hierarchical", "radial"].forEach(function (layout) {
     var result = layout === "hierarchical" ? C.hierarchicalLayout(data, visible) : C.radialLayout(data, visible);
-    assert.strictEqual(Object.keys(result.positions).length, 231);
+    assert.strictEqual(Object.keys(result.positions).length, 244);
     Object.keys(result.positions).forEach(function (id) {
       assert(Number.isFinite(result.positions[id].x) && Number.isFinite(result.positions[id].y));
     });
   });
 });
-check("hierarchy is sorted by year, unknown year last, then full title", function () {
+check("method children are sorted by year, unknown year last, then full title", function () {
   var tree = C.hierarchy(data, visible);
-  ["P1", "P2", "P3"].forEach(function (id) {
-    var branch = tree.children[id].map(function (child) { return data.nodeMap.get(child); });
+  methods.forEach(function (method) {
+    var branch = tree.children[method.id].map(function (child) { return data.nodeMap.get(child); });
+    assert(branch.every(function (node) { return node.type === "bibliography_source"; }));
     assert.deepStrictEqual(branch, branch.slice().sort(C.sourceCompare));
   });
   assert(C.sourceCompare({ year: null, title: "A" }, { year: 2026, title: "Z" }) > 0);
@@ -73,31 +87,44 @@ check("source radius grows with confirmed internal incoming citations", function
   assert(C.sourceRadius({ internal_incoming_count: 4 }) < C.sourceRadius({ internal_incoming_count: 14 }));
   assert.strictEqual(C.sourceRadius({ internal_incoming_count: 14 }), 3 + 1.65 * Math.sqrt(14));
 });
-check("hyperbolic sectors follow leaf counts and radii combine hierarchy with time", function () {
+check("hyperbolic radii put older articles farther from their Position", function () {
   var result = C.hyperbolicLayout(data, visible);
-  assert.strictEqual(Object.keys(result.positions).length, 231);
+  assert.strictEqual(Object.keys(result.positions).length, 244);
   ["P1", "P2", "P3"].forEach(function (id) {
     var p = result.positions[id], expected = Math.tanh(result.ell / 2);
     assert(Math.abs(Math.hypot(p.x, p.y) - expected) < 1e-12);
-    var sector = result.sectors[id], leaves = result.tree.children[id].length;
-    assert(Math.abs((sector[1] - sector[0]) / (Math.PI * 2) - leaves / 227) < 1e-12);
+  });
+  tasks.forEach(function (node) {
+    assert(Math.abs(result.positions[node.id].depth - 2) < 1e-12);
+  });
+  methods.forEach(function (node) {
+    assert(Math.abs(result.positions[node.id].depth - 3) < 1e-12);
   });
   var byYear = new Map();
   sources.forEach(function (n) {
     var p = result.positions[n.id], radius = Math.hypot(p.x, p.y);
-    assert(radius > Math.tanh(result.ell / 2) && radius < 1);
+    assert(radius > Math.tanh(3 * result.ell / 2) && radius < 1);
     if (!byYear.has(n.year)) byYear.set(n.year, []);
     byYear.get(n.year).push(radius);
   });
-  var years = Array.from(byYear.keys()).sort(function (a, b) { return a - b; });
+  var years = Array.from(byYear.keys()).filter(function (year) { return year != null; }).sort(function (a, b) { return a - b; });
   years.forEach(function (year, index) {
-    var radii = byYear.get(year), expectedDepth = 1.55 + 0.9 * index / (years.length - 1);
+    var radii = byYear.get(year), expectedDepth = 3.35 + 1.1 * (1 - index / (years.length - 1));
     radii.forEach(function (radius) {
       assert(Math.abs(radius - Math.tanh(expectedDepth * result.ell / 2)) < 1e-12);
     });
-    if (index) assert(radii[0] > byYear.get(years[index - 1])[0]);
+    if (index) assert(radii[0] < byYear.get(years[index - 1])[0]);
   });
   assert.deepStrictEqual(result.yearRange, [years[0], years[years.length - 1]]);
+});
+check("ordinary layouts also increase article distance with age", function () {
+  var hierarchical = C.hierarchicalLayout(data, visible).positions;
+  var radial = C.radialLayout(data, visible).positions;
+  var oldSource = sources.slice().sort(function (a, b) { return a.year - b.year; })[0];
+  var newSource = sources.slice().sort(function (a, b) { return b.year - a.year; })[0];
+  assert(hierarchical[oldSource.id].x > hierarchical[newSource.id].x);
+  assert(Math.hypot(radial[oldSource.id].x, radial[oldSource.id].y) >
+    Math.hypot(radial[newSource.id].x, radial[newSource.id].y));
 });
 check("Mobius focus and geodesics preserve disk geometry", function () {
   assert.deepStrictEqual(C.mobius([0.2, 0.3], [0, 0]), [0.2, 0.3]);
@@ -115,13 +142,37 @@ check("search and filters use full title, authors, DOI and year", function () {
   assert.strictEqual(C.filterSources(data, Object.assign({}, base, { position: "P1" })).length, 139);
   assert.strictEqual(C.filterSources(data, Object.assign({}, base, { abstract: "yes" })).length, 201);
 });
-check("citation layer direction and paging stay bounded", function () {
+check("full citation chain is recursive in both directions and includes hierarchy paths", function () {
+  var sample = data.nodeMap.get("v35-162"), chain = C.citationChain(data, sample.id);
+  assert(chain && chain.sourceIds.size > 10);
+  ["bartolomei_epileptogenicity_2008", "george_early_2023", "maturana_critical_2020"].forEach(function (id) {
+    assert(chain.sourceIds.has(id), id + " must be in the chain");
+  });
+  assert(chain.nodeIds.has("PROBLEM"));
+  var tree = C.hierarchy(data);
+  chain.sourceIds.forEach(function (id) {
+    var queue = [id], seen = new Set();
+    for (var i = 0; i < queue.length; i++) {
+      if (seen.has(queue[i])) continue;
+      seen.add(queue[i]);
+      tree.parents[queue[i]].forEach(function (parent) {
+        assert(chain.nodeIds.has(parent), parent + " must be revealed for " + id);
+        queue.push(parent);
+      });
+    }
+    assert(seen.has("PROBLEM"), id + " must have a visible path to PROBLEM");
+  });
+  assert.strictEqual(C.selectedCitations(data, chain.nodeIds, true, "chain", sample.id).length, chain.edges.length);
+  assert(chain.edges.every(function (e) { return chain.sourceIds.has(e.source) && chain.sourceIds.has(e.target); }));
+});
+check("direct citation layer direction and paging stay bounded", function () {
   var sample = sources.find(function (n) { return n.internal_reference_ids.length && n.cited_by_internal_ids.length; });
   var outgoing = C.selectedCitations(data, visible, true, "outgoing", sample.id);
   var incoming = C.selectedCitations(data, visible, true, "incoming", sample.id);
   assert(outgoing.length && outgoing.every(function (e) { return e.source === sample.id; }));
   assert(incoming.length && incoming.every(function (e) { return e.target === sample.id; }));
   assert.strictEqual(C.selectedCitations(data, visible, false, "all", null).length, 0);
+  assert.strictEqual(C.selectedCitations(data, visible, true, "chain", null).length, 0);
   var longest = sources.slice().sort(function (a, b) { return details[b.id].references.length - details[a.id].references.length; })[0];
   var page = C.page(details[longest.id].references, 1, 20);
   assert.strictEqual(page.items.length, 20); assert(page.pages > 20);
@@ -133,6 +184,7 @@ check("HTML uses relative JSON paths and both language entry points retain the s
   assert(html.indexOf('data-details-url="data/literature-details.json"') >= 0);
   assert(html.indexOf('href="#literature"') >= 0 && html.indexOf('id="literature"') >= 0);
   assert(html.indexOf('lang="ru">Научная проблема и граф литературы') >= 0);
+  assert(html.indexOf('value="chain"') >= 0);
   assert(ru.indexOf('../?lang=ru') >= 0);
 });
 

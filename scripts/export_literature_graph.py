@@ -14,7 +14,7 @@ import json
 import re
 import sys
 import unicodedata
-from collections import Counter
+from collections import Counter, defaultdict, deque
 from pathlib import Path
 
 SOURCE_COUNT = 227
@@ -22,6 +22,12 @@ EDGE_TYPES = {"cites", "decomposes_into", "thematically_supports"}
 REFERENCE_KEYS = {
     "citation", "doi", "evidence_source", "openalex_id", "pmid",
     "title", "type", "url", "year",
+}
+HIERARCHY_PAIRS = {
+    ("scientific_problem", "dissertation_position", "decomposes_into"),
+    ("dissertation_position", "dissertation_task", "decomposes_into"),
+    ("dissertation_task", "dissertation_method", "decomposes_into"),
+    ("dissertation_method", "bibliography_source", "thematically_supports"),
 }
 
 
@@ -87,7 +93,7 @@ def export(source_path, bibtex_path, output_dir):
 
     outgoing = {node["id"]: set() for node in sources}
     incoming = {node["id"]: set() for node in sources}
-    hierarchy = {node["id"]: set() for node in sources}
+    parents = defaultdict(set)
     edge_counts = Counter()
     for index, edge in enumerate(edges):
         require(isinstance(edge, dict), f"Edge {index} must be an object")
@@ -100,14 +106,13 @@ def export(source_path, bibtex_path, output_dir):
             require(source != target, f"Citation edge {index} is a self-citation")
             outgoing[source].add(target)
             incoming[target].add(source)
-        elif kind == "thematically_supports":
-            require(source in {"P1", "P2", "P3"} and target in hierarchy,
-                    f"Thematic edge {index} must join a position to a source")
-            hierarchy[target].add(source)
+        else:
+            pair = (by_id[source].get("type"), by_id[target].get("type"), kind)
+            require(pair in HIERARCHY_PAIRS, f"Hierarchy edge {index} has invalid level transition {pair!r}")
+            parents[target].add(source)
 
-    require(edge_counts["decomposes_into"] == 3, "Expected three decomposes_into edges")
-    require(edge_counts["thematically_supports"] == SOURCE_COUNT,
-            "Expected exactly one thematic edge per source")
+    require(edge_counts["decomposes_into"] > 0 and edge_counts["thematically_supports"] > 0,
+            "Hierarchy edges are required")
     require(len({(e.get("source"), e.get("target")) for e in edges if e.get("type") == "cites"}) ==
             edge_counts["cites"], "Duplicate citation edges")
 
@@ -121,9 +126,20 @@ def export(source_path, bibtex_path, output_dir):
                 f"{node_id}: internal_reference_ids do not match outgoing cites edges")
         require(set(declared_in) == incoming[node_id],
                 f"{node_id}: cited_by_internal_ids do not match incoming cites edges")
-        require(set(node.get("positions", [])) == hierarchy[node_id],
-                f"{node_id}: positions do not match thematic edges")
-        require(len(hierarchy[node_id]) == 1, f"{node_id}: expected exactly one position")
+        require(parents[node_id], f"{node_id}: expected at least one parent method")
+        ancestors = set()
+        queue = deque(parents[node_id])
+        while queue:
+            parent = queue.popleft()
+            if parent in ancestors:
+                continue
+            ancestors.add(parent)
+            queue.extend(parents[parent])
+        source_positions = {parent for parent in ancestors if by_id[parent]["type"] == "dissertation_position"}
+        require(set(node.get("positions", [])).issubset(source_positions),
+                f"{node_id}: positions are not reachable through hierarchy ancestors")
+        require(source_positions, f"{node_id}: no path to a dissertation position")
+        require("PROBLEM" in ancestors, f"{node_id}: no path to PROBLEM")
         require(isinstance(node.get("title"), str) and node["title"].strip(),
                 f"{node_id}: title is required")
         require(isinstance(node.get("authors"), list), f"{node_id}: authors must be a list")
@@ -161,7 +177,7 @@ def export(source_path, bibtex_path, output_dir):
             "pmid": node.get("pmid"),
             "abstract_source": node.get("abstract_source"),
             "missing_fields": list(node["missing_fields"]),
-            "positions": sorted(hierarchy[node_id]),
+            "positions": sorted(node.get("positions", [])),
             "search_text": normalized(" ".join(search_parts)),
             "internal_incoming_count": len(incoming[node_id]),
             "internal_outgoing_count": len(outgoing[node_id]),
@@ -217,7 +233,7 @@ def export(source_path, bibtex_path, output_dir):
     }
     meta = dict(raw.get("meta", {}))
     meta["counts"] = counts
-    graph = {"schema_version": 1, "meta": meta, "nodes": graph_nodes, "edges": graph_edges}
+    graph = {"schema_version": 2, "meta": meta, "nodes": graph_nodes, "edges": graph_edges}
     detail_document = {"schema_version": 1, "details": details}
 
     output_dir.mkdir(parents=True, exist_ok=True)

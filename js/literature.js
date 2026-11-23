@@ -89,18 +89,36 @@
     select.value = value;
     if (select.value !== value) select.value = "";
   }
+  function updateVisibleGraph() {
+    var chain = byId("lg-direction").value === "chain" ? C.citationChain(state.data, state.selectedId) : null;
+    if (chain) {
+      state.visibleIds = new Set(chain.nodeIds);
+      state.visibleSources = C.sourceNodes(state.data).filter(function (node) {
+        return chain.sourceIds.has(node.id);
+      }).sort(C.sourceCompare);
+    } else {
+      state.visibleIds = new Set(state.data.nodes.filter(function (node) {
+        return node.type !== "bibliography_source";
+      }).map(function (node) { return node.id; }));
+      state.visibleSources.forEach(function (node) { state.visibleIds.add(node.id); });
+    }
+    state.visibleOrder = state.data.nodes.filter(function (node) {
+      return state.visibleIds.has(node.id);
+    }).map(function (node) { return node.id; });
+    updateCitationEdges();
+  }
   function applyFilters() {
     if (!state.data) return;
     state.visibleSources = C.filterSources(state.data, currentFilters()).sort(C.sourceCompare);
-    state.visibleIds = new Set(["PROBLEM", "P1", "P2", "P3"]);
-    state.visibleSources.forEach(function (n) { state.visibleIds.add(n.id); });
-    state.visibleOrder = ["PROBLEM", "P1", "P2", "P3"].concat(state.visibleSources.map(function (n) { return n.id; }));
-    if (state.selectedId && !state.visibleIds.has(state.selectedId)) {
+    var selected = state.data.nodeMap.get(state.selectedId);
+    if (selected && selected.type === "bibliography_source" && !state.visibleSources.some(function (node) {
+      return node.id === state.selectedId;
+    })) {
       state.selectedId = null;
       state.detailToken += 1;
       renderDetails();
     }
-    updateCitationEdges();
+    updateVisibleGraph();
     computeLayout(true);
     updateNodeOptions();
     updateSummary();
@@ -213,12 +231,15 @@
   }
 
   function nodeRadius(node, scale) {
-    var base = node.type === "scientific_problem" ? 11 : node.type === "dissertation_position" ? 8 : C.sourceRadius(node);
+    var base = node.type === "scientific_problem" ? 11 : node.type === "dissertation_position" ? 8 :
+      node.type === "dissertation_task" ? 7 : node.type === "dissertation_method" ? 6 : C.sourceRadius(node);
     return Math.max(base, 2.8 / (scale || 1));
   }
   function nodeColor(node, palette) {
     if (node.type === "scientific_problem") return palette.ink;
     if (node.type === "dissertation_position") return palette.position;
+    if (node.type === "dissertation_task") return palette.p2;
+    if (node.type === "dissertation_method") return palette.p3;
     return palette[node.positions[0].toLowerCase()] || palette.p1;
   }
   function arrow(context, from, to, color, width, dashed, curved, targetRadius) {
@@ -322,6 +343,8 @@
     function hyperRadius(node) {
       if (node.type === "scientific_problem") return 10;
       if (node.type === "dissertation_position") return 7;
+      if (node.type === "dissertation_task") return 6;
+      if (node.type === "dissertation_method") return 5;
       return C.sourceRadius(node);
     }
     state.data.edges.forEach(function (e) {
@@ -473,8 +496,14 @@
       return;
     }
     if (node.type !== "bibliography_source") {
+      var labels = {
+        scientific_problem: t("Research problem", "Научная проблема"),
+        dissertation_position: t("Dissertation Position", "Положение диссертации"),
+        dissertation_task: t("Dissertation task", "Задача диссертации"),
+        dissertation_method: t("Dissertation method", "Метод диссертации")
+      };
       detailsBody.innerHTML = '<p class="lg-detail-title">' + esc(node.title) + '</p><p class="lg-detail-meta">' + esc(node.id) + ' · ' +
-        esc(node.type === "scientific_problem" ? t("Research problem", "Научная проблема") : t("Dissertation Position", "Положение диссертации")) + '</p>';
+        esc(labels[node.type] || node.type) + '</p>';
       return;
     }
     var detail = state.details && state.details.details[node.id];
@@ -518,8 +547,11 @@
     }
     state.selectedId = id;
     state.pages = { outgoing: 1, incoming: 1 };
+    updateVisibleGraph();
+    computeLayout(true);
+    updateNodeOptions();
     byId("lg-node-select").value = id;
-    updateCitationEdges(); updateSummary(); updateCounters(); renderDetails(); requestDraw();
+    updateSummary(); updateCounters(); renderDetails(); requestDraw();
     var token = ++state.detailToken, node = state.data.nodeMap.get(id);
     if (node.type === "bibliography_source" && !state.details) {
       ensureDetails().then(function () { if (token === state.detailToken) renderDetails(); }).catch(function (error) {
@@ -553,7 +585,7 @@
       byId(id).addEventListener(id === "lg-search" ? "input" : "change", applyFilters);
     });
     byId("lg-citations").addEventListener("change", function () { updateCitationEdges(); updateCounters(); requestDraw(); });
-    byId("lg-direction").addEventListener("change", function () { updateCitationEdges(); updateCounters(); requestDraw(); });
+    byId("lg-direction").addEventListener("change", applyFilters);
     byId("lg-force-toggle").addEventListener("click", function () { if (state.forceRunning) stopForce(); else startForce(); });
     byId("lg-zoom-in").addEventListener("click", function () { zoom(1.25); });
     byId("lg-zoom-out").addEventListener("click", function () { zoom(0.8); });
@@ -627,7 +659,7 @@
       else if (event.key === "+" || event.key === "=") { event.preventDefault(); zoom(1.25); }
       else if (event.key === "-") { event.preventDefault(); zoom(0.8); }
       else if (event.key === "0") { event.preventDefault(); if (state.mode === "hyper") { state.hyperFocus = [0, 0]; state.hyperZoom = 1; } else fitNormal(); requestDraw(); }
-      else if (event.key === "Escape") { state.selectedId = null; state.hoverId = null; state.detailToken += 1; updateCitationEdges(); updateSummary(); updateCounters(); renderDetails(); requestDraw(); }
+      else if (event.key === "Escape") { state.selectedId = null; state.hoverId = null; state.detailToken += 1; applyFilters(); renderDetails(); }
     });
     document.addEventListener("eld:lang", function () {
       section.querySelectorAll("option[data-en]").forEach(function (option) { option.textContent = option.dataset[language()]; });
