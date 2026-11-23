@@ -75,6 +75,7 @@ async function test(name, fn) {
     assert(await page.locator("#lg-hyper-note").isHidden());
   });
   await test("selecting an article reveals its complete recursive citation chain and hierarchy", async function () {
+    await page.locator("#lg-direction").selectOption("chain");
     assert.strictEqual(await page.locator("#lg-direction").inputValue(), "chain");
     var selectionGeneration = await page.locator("#lg-canvas").getAttribute("data-generation");
     await page.locator("#lg-node-select").selectOption(sample.id);
@@ -109,11 +110,22 @@ async function test(name, fn) {
     assert((await page.locator('#lg-node-select option[value="' + authorWork.id + '"]').textContent()).indexOf("★ ") === 0);
     assert((await page.locator('#lg-node-select option[value="' + terminalSource.id + '"]').textContent()).indexOf("■ ") === 0);
   });
-  await test("Reset rebuilds the current ordinary or hyperbolic layout", async function () {
+  await test("Reset restores every node and edge and rebuilds the current layout", async function () {
+    await page.locator("#lg-search").fill(sample.title.slice(0, 24));
+    await page.locator("#lg-node-select").selectOption(sample.id);
+    await page.locator("#lg-citations").uncheck();
+    assert.notStrictEqual(await page.locator("#lg-node-count").textContent(), "244 / 244");
     var generation = +(await page.locator("#lg-canvas").getAttribute("data-generation"));
     await page.locator("#lg-reset").click();
     assert.strictEqual(+(await page.locator("#lg-canvas").getAttribute("data-generation")), generation + 1);
     assert.strictEqual(await page.locator("#lg-canvas").getAttribute("data-layout"), "hierarchical");
+    assert.strictEqual(await page.locator("#lg-canvas").getAttribute("data-selected"), "");
+    assert.strictEqual(await page.locator("#lg-node-count").textContent(), "244 / 244");
+    assert.strictEqual(await page.locator("#lg-citation-count").textContent(), "379 / 379");
+    assert.strictEqual(await page.locator("#lg-canvas").getAttribute("data-hierarchy"), "285");
+    assert.strictEqual(await page.locator("#lg-direction").inputValue(), "all");
+    assert(await page.locator("#lg-citations").isChecked());
+    assert.strictEqual(await page.locator("#lg-search").inputValue(), "");
     await page.locator("#lg-layout").selectOption("radial");
     generation = +(await page.locator("#lg-canvas").getAttribute("data-generation"));
     await page.locator("#lg-reset").click();

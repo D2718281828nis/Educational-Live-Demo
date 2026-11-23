@@ -622,7 +622,11 @@
     byId("lg-zoom-out").addEventListener("click", function () { zoom(0.8); });
     byId("lg-fit").addEventListener("click", function () { if (state.mode === "hyper") { state.hyperFocus = [0, 0]; state.hyperZoom = 1; } else fitNormal(); requestDraw(); });
     byId("lg-reset").addEventListener("click", function () {
-      hideTooltip(); computeLayout(true);
+      state.selectedId = null; state.hoverId = null; state.detailToken += 1;
+      clearFilters();
+      byId("lg-citations").checked = true;
+      byId("lg-direction").value = "all";
+      hideTooltip(); applyFilters(); renderDetails();
     });
     byId("lg-node-select").addEventListener("change", function () { if (this.value) selectNode(this.value); });
     detailsBody.addEventListener("click", function (event) {
