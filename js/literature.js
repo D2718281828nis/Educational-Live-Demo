@@ -708,7 +708,7 @@
   function validate(data) {
     if (!data || !Array.isArray(data.nodes) || !Array.isArray(data.edges) || !data.meta || !data.meta.counts) throw new Error("Invalid graph schema");
     var sources = data.nodes.filter(function (n) { return n.type === "bibliography_source"; });
-    if (sources.length !== 227) throw new Error("Expected 227 sources, got " + sources.length);
+    if (sources.length !== 373) throw new Error("Expected 373 sources, got " + sources.length);
     data.nodeMap = new Map(data.nodes.map(function (n) { return [n.id, n]; }));
     if (data.nodeMap.size !== data.nodes.length) throw new Error("Duplicate node ids");
     data.edges.forEach(function (e) { if (!data.nodeMap.has(e.source) || !data.nodeMap.has(e.target)) throw new Error("Missing edge endpoint"); });

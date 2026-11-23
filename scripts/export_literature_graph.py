@@ -17,7 +17,7 @@ import unicodedata
 from collections import Counter, defaultdict, deque
 from pathlib import Path
 
-SOURCE_COUNT = 227
+SOURCE_COUNT = 373
 EDGE_TYPES = {"cites", "decomposes_into", "thematically_supports"}
 REFERENCE_KEYS = {
     "citation", "doi", "evidence_source", "openalex_id", "pmid",

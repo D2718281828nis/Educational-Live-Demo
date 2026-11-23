@@ -21,12 +21,12 @@ var citations = data.edges.filter(function (e) { return e.type === "cites"; });
 data.nodeMap = new Map(data.nodes.map(function (n) { return [n.id, n]; }));
 var visible = new Set(ids);
 
-check("new graph has 244 nodes, five hierarchy levels and 664 edges", function () {
-  assert.strictEqual(data.nodes.length, 244); assert.strictEqual(sources.length, 227);
+check("new graph has 390 nodes, five hierarchy levels and 1987 edges", function () {
+  assert.strictEqual(data.nodes.length, 390); assert.strictEqual(sources.length, 373);
   assert.strictEqual(tasks.length, 4); assert.strictEqual(methods.length, 9);
-  assert.strictEqual(data.edges.length, 664); assert.strictEqual(citations.length, 379);
+  assert.strictEqual(data.edges.length, 1987); assert.strictEqual(citations.length, 1513);
   assert.strictEqual(ids.size, data.nodes.length);
-  assert.strictEqual(new Set(sources.map(function (n) { return n.zotero_key; })).size, 227);
+  assert.strictEqual(new Set(sources.map(function (n) { return n.zotero_key; })).size, 373);
 });
 check("all edges have valid types, endpoints and citation direction", function () {
   var types = new Set(["cites", "decomposes_into", "thematically_supports"]);
@@ -61,12 +61,12 @@ check("derived metadata and lazy details are complete", function () {
     assert.strictEqual(n.has_abstract, !!details[n.id].abstract.trim());
     references += details[n.id].references.length; if (n.has_abstract) abstracts++;
   });
-  assert.strictEqual(references, 22999); assert.strictEqual(abstracts, 201);
+  assert.strictEqual(references, 33686); assert.strictEqual(abstracts, 303);
 });
 check("all ordinary layouts place every visible node without starting a simulation", function () {
   ["hierarchical", "radial"].forEach(function (layout) {
     var result = layout === "hierarchical" ? C.hierarchicalLayout(data, visible) : C.radialLayout(data, visible);
-    assert.strictEqual(Object.keys(result.positions).length, 244);
+    assert.strictEqual(Object.keys(result.positions).length, 390);
     Object.keys(result.positions).forEach(function (id) {
       assert(Number.isFinite(result.positions[id].x) && Number.isFinite(result.positions[id].y));
     });
@@ -92,14 +92,14 @@ check("author works and terminal sources have explicit visual markers", function
   assert(C.isAuthorWork(data.nodeMap.get("__2026")), "Russian author spelling must be recognised");
   assert(C.isAuthorWork(data.nodeMap.get("andrikov_situational_2026")));
   assert(!C.isAuthorWork(data.nodeMap.get("bali_maxing_2011")));
-  assert.strictEqual(sources.filter(C.isTerminalSource).length, 48);
+  assert.strictEqual(sources.filter(C.isTerminalSource).length, 62);
   assert(C.isTerminalSource(data.nodeMap.get("jardine_review_2006")));
   assert(!C.isTerminalSource(data.nodeMap.get("bali_maxing_2011")), "isolated sources are not terminal");
   assert(!C.isTerminalSource(data.nodeMap.get("min_factscore_2023")), "outgoing citations exclude terminal sources");
 });
 check("hyperbolic radii put older articles farther from their Position", function () {
   var result = C.hyperbolicLayout(data, visible);
-  assert.strictEqual(Object.keys(result.positions).length, 244);
+  assert.strictEqual(Object.keys(result.positions).length, 390);
   ["P1", "P2", "P3"].forEach(function (id) {
     var p = result.positions[id], expected = Math.tanh(result.ell / 2);
     assert(Math.abs(Math.hypot(p.x, p.y) - expected) < 1e-12);
@@ -149,8 +149,8 @@ check("search and filters use full title, authors, DOI and year", function () {
   [sample.title.slice(0, 24), sample.authors[0], sample.doi, String(sample.year)].forEach(function (query) {
     assert(C.filterSources(data, Object.assign({}, base, { query: query })).some(function (n) { return n.id === sample.id; }), query);
   });
-  assert.strictEqual(C.filterSources(data, Object.assign({}, base, { position: "P1" })).length, 139);
-  assert.strictEqual(C.filterSources(data, Object.assign({}, base, { abstract: "yes" })).length, 201);
+  assert.strictEqual(C.filterSources(data, Object.assign({}, base, { position: "P1" })).length, 214);
+  assert.strictEqual(C.filterSources(data, Object.assign({}, base, { abstract: "yes" })).length, 303);
 });
 check("full citation chain is recursive in both directions and includes hierarchy paths", function () {
   var sample = data.nodeMap.get("v35-162"), chain = C.citationChain(data, sample.id);

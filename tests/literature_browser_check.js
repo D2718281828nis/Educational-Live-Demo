@@ -49,8 +49,8 @@ async function test(name, fn) {
   await test("relative graph JSON works at a GitHub Pages-style subpath; details stay lazy", async function () {
     await page.goto(prefix, { waitUntil: "domcontentloaded" });
     await page.waitForFunction(function () { return document.getElementById("literature").dataset.ready === "true"; });
-    assert.strictEqual(await page.locator("#lg-node-count").textContent(), "244 / 244");
-    assert.strictEqual(await page.locator("#lg-citation-count").textContent(), "0 / 379");
+    assert.strictEqual(await page.locator("#lg-node-count").textContent(), "390 / 390");
+    assert.strictEqual(await page.locator("#lg-citation-count").textContent(), "0 / 1513");
     assert(requested.some(function (url) { return url.endsWith("/Educational-Live-Demo/data/literature-graph.json"); }));
     assert(!requested.some(function (url) { return url.indexOf("literature-details.json") >= 0; }));
     assert(await page.locator("#lg-force-wrap").isHidden());
@@ -87,8 +87,8 @@ async function test(name, fn) {
     assert.strictEqual(await page.locator("#lg-canvas").getAttribute("data-selected"), sample.id,
       "the selected article must be centred");
     assert(sampleChain.sourceIds.size > sample.internal_reference_ids.length + sample.cited_by_internal_ids.length);
-    assert.strictEqual(await page.locator("#lg-node-count").textContent(), sampleChain.nodeIds.size + " / 244");
-    assert.strictEqual(await page.locator("#lg-citation-count").textContent(), sampleChain.edges.length + " / 379");
+    assert.strictEqual(await page.locator("#lg-node-count").textContent(), sampleChain.nodeIds.size + " / 390");
+    assert.strictEqual(await page.locator("#lg-citation-count").textContent(), sampleChain.edges.length + " / 1513");
     var hierarchyCount = graph.edges.filter(function (edge) {
       return edge.type !== "cites" && sampleChain.nodeIds.has(edge.source) && sampleChain.nodeIds.has(edge.target);
     }).length;
@@ -96,17 +96,17 @@ async function test(name, fn) {
     var options = await page.locator("#lg-node-select option").evaluateAll(function (items) { return items.map(function (item) { return item.value; }); });
     sampleChain.nodeIds.forEach(function (id) { assert(options.indexOf(id) >= 0, id + " must be revealed"); });
     await page.locator("#lg-direction").selectOption("all");
-    assert.strictEqual(await page.locator("#lg-node-count").textContent(), sampleChain.nodeIds.size + " / 244");
-    assert.strictEqual(await page.locator("#lg-citation-count").textContent(), sampleChain.edges.length + " / 379");
+    assert.strictEqual(await page.locator("#lg-node-count").textContent(), sampleChain.nodeIds.size + " / 390");
+    assert.strictEqual(await page.locator("#lg-citation-count").textContent(), sampleChain.edges.length + " / 1513");
     assert.strictEqual(await page.locator("#lg-canvas").getAttribute("data-hierarchy"), String(hierarchyCount));
     await page.locator("#lg-direction").selectOption("chain");
     await page.locator("#lg-canvas").focus(); await page.keyboard.press("Escape");
-    assert.strictEqual(await page.locator("#lg-node-count").textContent(), "244 / 244");
-    assert.strictEqual(await page.locator("#lg-citation-count").textContent(), "0 / 379");
+    assert.strictEqual(await page.locator("#lg-node-count").textContent(), "390 / 390");
+    assert.strictEqual(await page.locator("#lg-citation-count").textContent(), "0 / 1513");
   });
   await test("author and terminal article markers appear in the accessible node list", async function () {
     assert.strictEqual(await page.locator("#lg-canvas").getAttribute("data-author-works"), "26");
-    assert.strictEqual(await page.locator("#lg-canvas").getAttribute("data-terminal-sources"), "48");
+    assert.strictEqual(await page.locator("#lg-canvas").getAttribute("data-terminal-sources"), "62");
     assert((await page.locator('#lg-node-select option[value="' + authorWork.id + '"]').textContent()).indexOf("★ ") === 0);
     assert((await page.locator('#lg-node-select option[value="' + terminalSource.id + '"]').textContent()).indexOf("■ ") === 0);
   });
@@ -114,15 +114,15 @@ async function test(name, fn) {
     await page.locator("#lg-search").fill(sample.title.slice(0, 24));
     await page.locator("#lg-node-select").selectOption(sample.id);
     await page.locator("#lg-citations").uncheck();
-    assert.notStrictEqual(await page.locator("#lg-node-count").textContent(), "244 / 244");
+    assert.notStrictEqual(await page.locator("#lg-node-count").textContent(), "390 / 390");
     var generation = +(await page.locator("#lg-canvas").getAttribute("data-generation"));
     await page.locator("#lg-reset").click();
     assert.strictEqual(+(await page.locator("#lg-canvas").getAttribute("data-generation")), generation + 1);
     assert.strictEqual(await page.locator("#lg-canvas").getAttribute("data-layout"), "hierarchical");
     assert.strictEqual(await page.locator("#lg-canvas").getAttribute("data-selected"), "");
-    assert.strictEqual(await page.locator("#lg-node-count").textContent(), "244 / 244");
-    assert.strictEqual(await page.locator("#lg-citation-count").textContent(), "379 / 379");
-    assert.strictEqual(await page.locator("#lg-canvas").getAttribute("data-hierarchy"), "285");
+    assert.strictEqual(await page.locator("#lg-node-count").textContent(), "390 / 390");
+    assert.strictEqual(await page.locator("#lg-citation-count").textContent(), "1513 / 1513");
+    assert.strictEqual(await page.locator("#lg-canvas").getAttribute("data-hierarchy"), "474");
     assert.strictEqual(await page.locator("#lg-direction").inputValue(), "all");
     assert(await page.locator("#lg-citations").isChecked());
     assert.strictEqual(await page.locator("#lg-search").inputValue(), "");
@@ -144,23 +144,23 @@ async function test(name, fn) {
     await page.waitForFunction(function (id) { return Array.from(document.getElementById("lg-node-select").options).some(function (option) { return option.value === id; }); }, sample.id);
     await page.locator("#lg-search").fill("");
     await page.locator("#lg-position").selectOption("P1");
-    assert.strictEqual(await page.locator("#lg-node-count").textContent(), "156 / 244");
+    assert.strictEqual(await page.locator("#lg-node-count").textContent(), "231 / 390");
     await page.locator("#lg-position").selectOption("all");
     await page.locator("#lg-year-min").fill("2011"); await page.locator("#lg-year-max").fill("2011");
-    assert.notStrictEqual(await page.locator("#lg-node-count").textContent(), "244 / 244");
+    assert.notStrictEqual(await page.locator("#lg-node-count").textContent(), "390 / 390");
     await page.locator("#lg-year-min").fill(""); await page.locator("#lg-year-max").fill("");
     await page.locator("#lg-type").selectOption("article");
-    assert.notStrictEqual(await page.locator("#lg-node-count").textContent(), "244 / 244");
+    assert.notStrictEqual(await page.locator("#lg-node-count").textContent(), "390 / 390");
     await page.locator("#lg-type").selectOption("all");
     await page.locator("#lg-abstract").selectOption("yes");
-    assert.strictEqual(await page.locator("#lg-node-count").textContent(), "218 / 244");
+    assert.strictEqual(await page.locator("#lg-node-count").textContent(), "320 / 390");
     await page.locator("#lg-abstract").selectOption("all");
     await page.locator("#lg-direction").selectOption("outgoing");
-    assert.strictEqual(await page.locator("#lg-citation-count").textContent(), "0 / 379");
+    assert.strictEqual(await page.locator("#lg-citation-count").textContent(), "0 / 1513");
     await page.locator("#lg-node-select").selectOption(sample.id);
-    assert.strictEqual(await page.locator("#lg-citation-count").textContent(), sample.internal_reference_ids.length + " / 379");
+    assert.strictEqual(await page.locator("#lg-citation-count").textContent(), sample.internal_reference_ids.length + " / 1513");
     await page.locator("#lg-citations").uncheck();
-    assert.strictEqual(await page.locator("#lg-citation-count").textContent(), "0 / 379");
+    assert.strictEqual(await page.locator("#lg-citation-count").textContent(), "0 / 1513");
     await page.locator("#lg-citations").check(); await page.locator("#lg-direction").selectOption("all");
   });
   await test("source card lazily loads full abstract/references, pages them and opens DOI", async function () {

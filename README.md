@@ -90,7 +90,7 @@ node tests/p2_check.js             # Position 2 node types/K-hop trace and graph
 node tests/p3_check.js             # Position 3 number checks, verdict parsing and agent fault scenarios
 node tests/p3_ui_check.js          # Position 3 UI helpers: draft diffs, permalink state, frozen-write probe
 node tests/p3_agent_check.js       # Position 3 agents: replayed calls, 0 tokens, y unchanged, faults flagged; planner stops, tool matrix
-node tests/literature_check.js     # 227 sources, citation direction, metadata and ordinary/hyperbolic layouts
+node tests/literature_check.js     # 373 sources, citation direction, metadata and ordinary/hyperbolic layouts
 npm ci && npx playwright install chromium --no-shell
 npm run test:literature            # static checks + real Chromium UI, subpaths, mobile, EN/RU and themes
 ```
@@ -130,8 +130,8 @@ js/conclusion.js  section 6: conclusion — who computes what, with live values 
 js/literature-core.js deterministic five-level hierarchy/radial/hyperbolic layouts, recursive citation chains, age-based article distances, filters, Möbius transform and geodesics
 js/literature.js    Canvas visualisers, shared controls, keyboard access and lazy paged source details
 scripts/export_literature_graph.py validates the prepared graph and exports the two static JSON files (stdlib only)
-data/literature-graph.json 244 nodes (four tasks and nine methods), 664 hierarchy/citation edges and short source metadata
-data/literature-details.json full abstracts and 22,999 references, fetched only on source selection
+data/literature-graph.json 390 nodes (four tasks and nine methods), 1,987 hierarchy/citation edges and short source metadata
+data/literature-details.json full abstracts and 33,686 references, fetched only on source selection
 data/p2_datasets.json synthetic datasets for the Position 2 interactive lab
 js/p2-data.js     the same datasets as a script, so section 4.2 works from file:// (node tests/build_p2_data.js)
 tests/port_check.js           checks the JS graph methods against Graph-EVT-agent (Python): node tests/port_check.js
@@ -244,7 +244,7 @@ node tests/p2_check.js             # типы вершин, трасса K ша�
 node tests/p3_check.js             # проверка чисел, разбор вердикта и сценарии ошибок агентов Положения 3
 node tests/p3_ui_check.js          # помощники интерфейса Положения 3: различия черновиков, permalink состояния
 node tests/p3_agent_check.js       # агенты Положения 3: воспроизведённые вызовы, 0 токенов, y неизменен, ошибки помечены; остановки планировщика, матрица инструментов
-node tests/literature_check.js     # 227 источников, направления цитирований, метаданные и обычные/гиперболические раскладки
+node tests/literature_check.js     # 373 источников, направления цитирований, метаданные и обычные/гиперболические раскладки
 npm ci && npx playwright install chromium --no-shell
 npm run test:literature            # статические проверки + Chromium UI, относительные пути, mobile, EN/RU и темы
 ```
@@ -285,8 +285,8 @@ js/conclusion.js  раздел 6: заключение — кто что выч�
 js/literature-core.js детерминированные пятиуровневые иерархические/радиальные/гиперболические раскладки, рекурсивные цепочки цитирований, расстояния статей по возрасту, фильтры, преобразование Мёбиуса и геодезические
 js/literature.js    Canvas-визуализаторы, общие фильтры, клавиатура и ленивая постраничная карточка источника
 scripts/export_literature_graph.py проверка подготовленного графа и экспорт двух статических JSON (только stdlib)
-data/literature-graph.json 244 узла (четыре задачи и девять методов), 664 иерархических/citation-ребра и краткие метаданные источников
-data/literature-details.json полные аннотации и 22 999 ссылок, загружаются только при выборе источника
+data/literature-graph.json 390 узлов (четыре задачи и девять методов), 1987 иерархических/citation-рёбер и краткие метаданные источников
+data/literature-details.json полные аннотации и 33 686 ссылок, загружаются только при выборе источника
 data/p2_datasets.json синтетические данные для интерактивного опыта Положения 2
 js/p2-data.js     те же данные в виде скрипта, чтобы раздел 4.2 работал из file:// (node tests/build_p2_data.js)
 js/onedim.js      раздел 3: графики и элементы управления
