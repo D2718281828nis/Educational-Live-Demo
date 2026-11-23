@@ -207,39 +207,49 @@
       if (e.type !== "cites") return;
       if (!outgoing[e.source]) outgoing[e.source] = [];
       if (!incoming[e.target]) incoming[e.target] = [];
-      outgoing[e.source].push(e.target);
-      incoming[e.target].push(e.source);
+      outgoing[e.source].push(e);
+      incoming[e.target].push(e);
     });
-    var sourceIds = new Set([selectedId]), queue = [selectedId];
-    for (var index = 0; index < queue.length; index++) {
-      var id = queue[index];
-      (outgoing[id] || []).concat(incoming[id] || []).forEach(function (next) {
-        if (!sourceIds.has(next)) { sourceIds.add(next); queue.push(next); }
-      });
+    var sourceIds = new Set([selectedId]), pathEdges = new Set();
+    function walk(links, forward) {
+      var queue = [selectedId], visited = new Set();
+      for (var index = 0; index < queue.length; index++) {
+        var id = queue[index];
+        if (visited.has(id)) continue;
+        visited.add(id);
+        (links[id] || []).forEach(function (edge) {
+          var next = forward ? edge.target : edge.source;
+          pathEdges.add(edge);
+          sourceIds.add(next);
+          if (!visited.has(next)) queue.push(next);
+        });
+      }
     }
+    walk(outgoing, true);
+    walk(incoming, false);
     var tree = hierarchy(data), nodeIds = new Set(sourceIds), ancestors = Array.from(sourceIds);
     for (var i = 0; i < ancestors.length; i++) {
       (tree.parents[ancestors[i]] || []).forEach(function (parent) {
         if (!nodeIds.has(parent)) { nodeIds.add(parent); ancestors.push(parent); }
       });
     }
-    var edges = data.edges.filter(function (e) {
-      return e.type === "cites" && sourceIds.has(e.source) && sourceIds.has(e.target);
-    });
+    var edges = data.edges.filter(function (e) { return pathEdges.has(e); });
     return { sourceIds: sourceIds, nodeIds: nodeIds, edges: edges };
   }
 
   function selectedCitations(data, visibleIds, show, direction, selectedId) {
     if (!show || (direction !== "all" && !selectedId)) return [];
-    if (direction === "chain") {
-      var chain = citationChain(data, selectedId);
-      return chain ? chain.edges.filter(function (e) {
-        return visibleIds.has(e.source) && visibleIds.has(e.target);
-      }) : [];
+    var chain = selectedId ? citationChain(data, selectedId) : null;
+    if (chain) {
+      return chain.edges.filter(function (e) {
+        return visibleIds.has(e.source) && visibleIds.has(e.target) &&
+          (direction === "chain" || direction === "all" ||
+            (direction === "outgoing" ? e.source === selectedId : e.target === selectedId));
+      });
     }
+    if (selectedId) return [];
     return data.edges.filter(function (e) {
-      return e.type === "cites" && visibleIds.has(e.source) && visibleIds.has(e.target) &&
-        (direction === "all" || (direction === "outgoing" ? e.source === selectedId : e.target === selectedId));
+      return e.type === "cites" && visibleIds.has(e.source) && visibleIds.has(e.target);
     });
   }
 

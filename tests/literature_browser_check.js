@@ -78,8 +78,17 @@ async function test(name, fn) {
     assert(sampleChain.sourceIds.size > sample.internal_reference_ids.length + sample.cited_by_internal_ids.length);
     assert.strictEqual(await page.locator("#lg-node-count").textContent(), sampleChain.nodeIds.size + " / 244");
     assert.strictEqual(await page.locator("#lg-citation-count").textContent(), sampleChain.edges.length + " / 379");
+    var hierarchyCount = graph.edges.filter(function (edge) {
+      return edge.type !== "cites" && sampleChain.nodeIds.has(edge.source) && sampleChain.nodeIds.has(edge.target);
+    }).length;
+    assert.strictEqual(await page.locator("#lg-canvas").getAttribute("data-hierarchy"), String(hierarchyCount));
     var options = await page.locator("#lg-node-select option").evaluateAll(function (items) { return items.map(function (item) { return item.value; }); });
     sampleChain.nodeIds.forEach(function (id) { assert(options.indexOf(id) >= 0, id + " must be revealed"); });
+    await page.locator("#lg-direction").selectOption("all");
+    assert.strictEqual(await page.locator("#lg-node-count").textContent(), sampleChain.nodeIds.size + " / 244");
+    assert.strictEqual(await page.locator("#lg-citation-count").textContent(), sampleChain.edges.length + " / 379");
+    assert.strictEqual(await page.locator("#lg-canvas").getAttribute("data-hierarchy"), String(hierarchyCount));
+    await page.locator("#lg-direction").selectOption("chain");
     await page.locator("#lg-canvas").focus(); await page.keyboard.press("Escape");
     assert.strictEqual(await page.locator("#lg-node-count").textContent(), "244 / 244");
     assert.strictEqual(await page.locator("#lg-citation-count").textContent(), "0 / 379");

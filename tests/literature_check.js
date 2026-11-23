@@ -148,6 +148,8 @@ check("full citation chain is recursive in both directions and includes hierarch
   ["bartolomei_epileptogenicity_2008", "george_early_2023", "maturana_critical_2020"].forEach(function (id) {
     assert(chain.sourceIds.has(id), id + " must be in the chain");
   });
+  assert(!chain.sourceIds.has("v35-163"), "a co-citing side branch must stay hidden");
+  assert(!chain.edges.some(function (e) { return e.source === "v35-163"; }), "side-branch edges must stay hidden");
   assert(chain.nodeIds.has("PROBLEM"));
   var tree = C.hierarchy(data);
   chain.sourceIds.forEach(function (id) {
@@ -163,6 +165,7 @@ check("full citation chain is recursive in both directions and includes hierarch
     assert(seen.has("PROBLEM"), id + " must have a visible path to PROBLEM");
   });
   assert.strictEqual(C.selectedCitations(data, chain.nodeIds, true, "chain", sample.id).length, chain.edges.length);
+  assert.strictEqual(C.selectedCitations(data, chain.nodeIds, true, "all", sample.id).length, chain.edges.length);
   assert(chain.edges.every(function (e) { return chain.sourceIds.has(e.source) && chain.sourceIds.has(e.target); }));
 });
 check("direct citation layer direction and paging stay bounded", function () {

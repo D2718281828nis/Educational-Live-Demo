@@ -70,6 +70,9 @@
     byId("lg-citation-count").textContent = state.citationEdges.length + " / " + state.data.meta.counts.internal_citations;
     canvas.dataset.visible = String(state.visibleIds.size);
     canvas.dataset.citations = String(state.citationEdges.length);
+    canvas.dataset.hierarchy = String(state.data.edges.filter(function (edge) {
+      return edge.type !== "cites" && state.visibleIds.has(edge.source) && state.visibleIds.has(edge.target);
+    }).length);
     canvas.dataset.mode = state.mode;
     canvas.dataset.layout = state.layout;
     canvas.dataset.selected = state.selectedId || "";
@@ -90,7 +93,7 @@
     if (select.value !== value) select.value = "";
   }
   function updateVisibleGraph() {
-    var chain = byId("lg-direction").value === "chain" ? C.citationChain(state.data, state.selectedId) : null;
+    var chain = C.citationChain(state.data, state.selectedId);
     if (chain) {
       state.visibleIds = new Set(chain.nodeIds);
       state.visibleSources = C.sourceNodes(state.data).filter(function (node) {
@@ -190,8 +193,8 @@
     var generation = state.generation;
     var ids = Object.keys(state.positions);
     var links = state.data.edges.filter(function (e) {
-      return state.visibleIds.has(e.source) && state.visibleIds.has(e.target);
-    });
+      return e.type !== "cites" && state.visibleIds.has(e.source) && state.visibleIds.has(e.target);
+    }).concat(state.citationEdges);
     function tick() {
       if (!state.forceRunning || generation !== state.generation) return;
       var i, j, a, b, dx, dy, distance, force;
